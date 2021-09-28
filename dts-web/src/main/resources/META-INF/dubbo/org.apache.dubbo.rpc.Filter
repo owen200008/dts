@@ -1,0 +1,3 @@
+selfValidationFilter=com.utopia.data.transfer.web.archetype.config.filter.dubbo.SelfValidationFilter
+prometheusFilter=com.utopia.data.transfer.web.archetype.config.filter.dubbo.PrometheusFilter
+utopiaExceptionFilter=com.utopia.data.transfer.web.archetype.config.filter.dubbo.UtopiaExceptionFilter
