@@ -2,9 +2,9 @@ package com.utopia.data.transfer.core.code.utils;
 
 import com.utopia.data.transfer.core.archetype.base.ServiceException;
 import com.utopia.data.transfer.core.code.base.ErrorCode;
-import com.utopia.data.transfer.core.code.bean.DataMedia;
-import com.utopia.data.transfer.core.code.bean.DataMediaPair;
-import com.utopia.data.transfer.core.code.bean.Pipeline;
+import com.utopia.data.transfer.model.code.data.media.DataMedia;
+import com.utopia.data.transfer.model.code.data.media.DataMediaPair;
+import com.utopia.data.transfer.model.code.pipeline.Pipeline;
 import org.apache.commons.lang3.StringUtils;
 
 /**

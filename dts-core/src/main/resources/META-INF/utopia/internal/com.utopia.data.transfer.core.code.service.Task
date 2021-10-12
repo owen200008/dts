@@ -1,0 +1,4 @@
+SELECT=com.utopia.data.transfer.core.code.service.impl.task.SelectTaskImpl
+EXTRACT=com.utopia.data.transfer.core.code.service.impl.task.ExtractTaskImpl
+TRANSFORM=com.utopia.data.transfer.core.code.service.impl.task.TransformTaskImpl
+LOAD=com.utopia.data.transfer.core.code.service.impl.task.LoadTaskImpl

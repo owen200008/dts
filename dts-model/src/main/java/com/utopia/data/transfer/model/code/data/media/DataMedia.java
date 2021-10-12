@@ -1,7 +1,9 @@
-package com.utopia.data.transfer.core.code.bean;
+package com.utopia.data.transfer.model.code.data.media;
 
-import com.utopia.data.transfer.core.code.base.datasource.bean.DataMediaSource;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
@@ -12,6 +14,9 @@ import java.io.Serializable;
  * @alter_date
  */
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class DataMedia implements Serializable {
 
     /**

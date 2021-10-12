@@ -1,4 +1,4 @@
-package com.utopia.data.transfer.core.code.bean;
+package com.utopia.data.transfer.model.code.pipeline;
 
 import lombok.Data;
 
@@ -12,10 +12,13 @@ import java.io.Serializable;
  */
 @Data
 public class PipelineParameter implements Serializable {
+
+    private SelectParamter selectParamter;
+
     /**
-     * 目标集群
+     * 实体名
      */
-    private String destinationName;
+    private String entityName;
 
     /**
      * 订阅的客户端id
@@ -25,12 +28,12 @@ public class PipelineParameter implements Serializable {
     /**
      *  订阅批次大小
      */
-    private Integer batchsize          = 10000 * 10;
+    private Integer batchsize               = 10000;
 
     /**
      * 订阅超时时间
      */
-    private Long batchTimeout               = -1L;
+    private Long batchTimeout               = 5000L;
 
     /**
      * 是否需要dumpSelector信息

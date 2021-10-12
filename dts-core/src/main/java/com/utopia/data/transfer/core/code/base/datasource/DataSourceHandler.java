@@ -1,6 +1,6 @@
 package com.utopia.data.transfer.core.code.base.datasource;
 
-import com.utopia.data.transfer.core.code.base.datasource.bean.DataMediaSource;
+import com.utopia.data.transfer.model.code.data.media.DataMediaSource;
 import com.utopia.data.transfer.core.code.base.datasource.bean.DataSourceItem;
 import com.utopia.extension.UtopiaSPI;
 

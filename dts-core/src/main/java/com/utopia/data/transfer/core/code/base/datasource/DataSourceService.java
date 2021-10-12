@@ -1,6 +1,6 @@
 package com.utopia.data.transfer.core.code.base.datasource;
 
-import com.utopia.data.transfer.core.code.base.datasource.bean.DataMediaSource;
+import com.utopia.data.transfer.model.code.data.media.DataMediaSource;
 import com.utopia.data.transfer.core.code.base.datasource.bean.DataSourceItem;
 
 /**
@@ -24,5 +24,5 @@ public interface DataSourceService {
      *
      * @param pipelineId
      */
-    void destroy(Long pipelineId);
+    void closePipeline(Long pipelineId);
 }

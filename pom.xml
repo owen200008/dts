@@ -36,6 +36,8 @@
     <otter_canal_version>1.1.5</otter_canal_version>
     <ddlutils_version>1.0</ddlutils_version>
     <dbcp_version>1.4</dbcp_version>
+    <common_lang>2.6</common_lang>
+    <groovy.version>2.4.19</groovy.version>
   </properties>
 
   <modules>
@@ -101,6 +103,18 @@
         <groupId>commons-dbcp</groupId>
         <artifactId>commons-dbcp</artifactId>
         <version>${dbcp_version}</version>
+      </dependency>
+      <!-- https://mvnrepository.com/artifact/commons-lang/commons-lang -->
+      <dependency>
+        <groupId>commons-lang</groupId>
+        <artifactId>commons-lang</artifactId>
+        <version>${common_lang}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.groovy</groupId>
+        <artifactId>groovy</artifactId>
+        <version>${groovy.version}</version>
+        <classifier>indy</classifier>
       </dependency>
     </dependencies>
   </dependencyManagement>

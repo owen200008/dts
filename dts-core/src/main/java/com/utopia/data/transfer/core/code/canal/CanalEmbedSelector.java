@@ -4,6 +4,7 @@ import com.alibaba.otter.canal.instance.core.CanalInstance;
 import com.alibaba.otter.canal.instance.core.CanalInstanceGenerator;
 import com.alibaba.otter.canal.instance.manager.CanalInstanceWithManager;
 import com.alibaba.otter.canal.instance.manager.model.Canal;
+import com.alibaba.otter.canal.instance.manager.model.CanalParameter;
 import com.alibaba.otter.canal.parse.CanalEventParser;
 import com.alibaba.otter.canal.parse.ha.CanalHAController;
 import com.alibaba.otter.canal.parse.inbound.mysql.MysqlEventParser;
@@ -14,26 +15,31 @@ import com.alibaba.otter.canal.sink.AbstractCanalEventSink;
 import com.alibaba.otter.canal.sink.CanalEventSink;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
+import com.mysql.cj.conf.ConnectionUrlParser;
 import com.utopia.data.transfer.core.archetype.base.ServiceException;
 import com.utopia.data.transfer.core.code.base.ErrorCode;
 import com.utopia.data.transfer.core.code.base.config.DTSConstants;
-import com.utopia.data.transfer.core.code.bean.Pipeline;
+import com.utopia.data.transfer.model.code.entity.EntityDesc;
+import com.utopia.data.transfer.model.code.pipeline.Pipeline;
 import com.utopia.data.transfer.core.code.model.EventData;
 import com.utopia.data.transfer.core.code.model.Message;
 import com.utopia.data.transfer.core.code.service.ConfigService;
 import com.utopia.data.transfer.core.code.utils.MessageDumper;
-import com.utopia.data.transfer.core.code.utils.MessageParser;
+import com.utopia.data.transfer.core.code.service.MessageParser;
 import com.utopia.utils.CollectionUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.SystemUtils;
 import org.slf4j.MDC;
 
+import java.net.InetSocketAddress;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.LockSupport;
+import java.util.stream.Collectors;
 
 /**
  * @author owen.cai
@@ -45,10 +51,9 @@ import java.util.concurrent.locks.LockSupport;
 public class CanalEmbedSelector {
     private static final String     DATE_FORMAT      = "yyyy-MM-dd HH:mm:ss";
     private static final String     SEP              = SystemUtils.LINE_SEPARATOR;
-    private static final int        maxEmptyTimes    = 10;
     private int                     logSplitSize     = 50;
 
-    private Long                    pipelineId;
+    private Pipeline                pipeline;
     private ConfigService           configService;
     private MessageParser           messageParser;
     private CanalDownStreamHandler  handler;
@@ -56,49 +61,34 @@ public class CanalEmbedSelector {
     private CanalServerWithEmbedded canalServer = new CanalServerWithEmbedded();
     private ClientIdentity          clientIdentity;
     private String                  filter;
-    private String                  destination;
-    private int                     batchSize        = 10000;
-    private long                    batchTimeout     = -1L;
-    private boolean                 dump             = true;
-    private boolean                 dumpDetail       = true;
 
-    private volatile boolean        running          = false;                                            // 是否处于运行中
-    private volatile long           lastEntryTime    = 0;
+    // 是否处于运行中
+    private volatile boolean        running          = false;
 
-    public CanalEmbedSelector(Long pipelineId, ConfigService configService){
-        this.pipelineId = pipelineId;
+    public CanalEmbedSelector(Long pipelineId, ConfigService configService, MessageParser messageParser){
         this.configService = configService;
+        this.pipeline = configService.getPipeline(pipelineId);
+        this.messageParser = messageParser;
+    }
+
+    public boolean isStart() {
+        return running;
+    }
+
+    public void ack(Long batchId) {
+        canalServer.ack(clientIdentity, batchId);
     }
 
     public void start(){
         if (running) {
             return;
         }
-        Pipeline pipeline = configService.getPipeline(this.pipelineId);
         this.filter = CanalFilterSupport.makeFilterExpression(pipeline);
-        this.destination = pipeline.getParams().getDestinationName();
-        this.batchSize = pipeline.getParams().getBatchsize();
-        this.batchTimeout = pipeline.getParams().getBatchTimeout();
-        if (pipeline.getParams().getDumpSelector() != null) {
-            dump = pipeline.getParams().getDumpSelector();
-        }
-
-        if (pipeline.getParams().getDumpSelectorDetail() != null) {
-            dumpDetail = pipeline.getParams().getDumpSelectorDetail();
-        }
 
         canalServer.setCanalInstanceGenerator(new CanalInstanceGenerator() {
             @Override
-            public CanalInstance generate(String destination) {
-                Canal canal = configService.getCanal(destination);
-                long slaveId = 10000;// 默认基数
-                if (canal.getCanalParameter().getSlaveId() != null) {
-                    slaveId = canal.getCanalParameter().getSlaveId();
-                }
-                canal.getCanalParameter().setSlaveId(slaveId + pipelineId);
-                canal.getCanalParameter().setDdlIsolation(true);
-                canal.getCanalParameter().setFilterTableError(false);
-                canal.getCanalParameter().setMemoryStorageRawEntry(false);
+            public CanalInstance generate(String entityName) {
+                Canal canal = createCanalByEntity(configService.getEntityDesc(entityName));
 
                 CanalInstanceWithManager instance = new CanalInstanceWithManager(canal, filter){
                     @Override
@@ -128,7 +118,7 @@ public class CanalEmbedSelector {
                 CanalEventSink eventSink = instance.getEventSink();
                 if (eventSink instanceof AbstractCanalEventSink) {
                     handler = new CanalDownStreamHandler();
-                    handler.setPipelineId(pipelineId);
+                    handler.setPipelineId(pipeline.getId());
                     handler.setDetectingIntervalInSeconds(canal.getCanalParameter().getDetectingIntervalInSeconds());
 //                    OtterContextLocator.autowire(handler); // 注入一下spring资源
                     ((AbstractCanalEventSink) eventSink).addHandler(handler, 0); // 添加到开头
@@ -140,8 +130,8 @@ public class CanalEmbedSelector {
 
         canalServer.start();
 
-        canalServer.start(destination);
-        this.clientIdentity = new ClientIdentity(destination, pipeline.getParams().getClientId(), filter);
+        canalServer.start(pipeline.getParams().getEntityName());
+        this.clientIdentity = new ClientIdentity(pipeline.getParams().getEntityName(), pipeline.getParams().getClientId(), filter);
         /**
          * 发起一次订阅
          */
@@ -162,53 +152,71 @@ public class CanalEmbedSelector {
         }
 
         handler = null;
-        canalServer.stop(destination);
+        canalServer.stop(pipeline.getParams().getEntityName());
         canalServer.stop();
     }
 
+    protected Canal createCanalByEntity(EntityDesc entityDesc){
+        Canal canal = new Canal();
+        canal.setId(entityDesc.getId());
+        canal.setName(entityDesc.getName());
+        canal.setDesc(entityDesc.getDesc());
+        //canal.setStatus(CanalStatus.START);
+        long slaveId = 10000;// 默认基数
+        if (entityDesc.getSlaveId() != null) {
+            slaveId = entityDesc.getSlaveId();
+        }
+        CanalParameter canalParameter = new CanalParameter();
+        canalParameter.setZkClusterId(entityDesc.getZkClusterId());
+        canalParameter.setZkClusters(entityDesc.getZkClusters());
+        //使用zk
+        canalParameter.setMetaMode(CanalParameter.MetaMode.ZOOKEEPER);
 
-    public Message<EventData> selector() throws InterruptedException {
-        int emptyTimes = 0;
-        com.alibaba.otter.canal.protocol.Message message = null;
-        /**
-         * 进行轮询处理
-         */
-        if (batchTimeout < 0) {
-            while (running) {
-                message = canalServer.getWithoutAck(clientIdentity, batchSize);
-                /**
-                 * 代表没数据
-                 */
-                if (message == null || message.getId() == -1L) {
-                    applyWait(emptyTimes++);
-                } else {
-                    break;
-                }
-            }
-            if (!running) {
-                throw new InterruptedException();
-            }
-        } else {
-            /**
-             * 进行超时控制
-             */
-            while (running) {
-                message = canalServer.getWithoutAck(clientIdentity, batchSize, batchTimeout, TimeUnit.MILLISECONDS);
-                if (message == null || message.getId() == -1L) {
-                    // 代表没数据
-                    continue;
-                } else {
-                    break;
-                }
-            }
-            if (!running) {
-                throw new InterruptedException();
-            }
+        ConnectionUrlParser connectionUrlParser = ConnectionUrlParser.parseConnectionString(entityDesc.getUrl());
+        List<CanalParameter.DataSourcing> collect = connectionUrlParser.getHosts().stream()
+                .map(item -> new CanalParameter.DataSourcing(CanalParameter.SourcingType.MYSQL, new InetSocketAddress(item.getHost(), item.getPort())))
+                .collect(Collectors.toList());
+        canalParameter.setGroupDbAddresses(Arrays.asList(collect));
+        canalParameter.setDbUsername(entityDesc.getUsername());
+        canalParameter.setDbPassword(entityDesc.getPassword());
+
+        //索引模式
+        canalParameter.setIndexMode(CanalParameter.IndexMode.META);
+        canalParameter.setSlaveId(slaveId + pipeline.getId());
+        //心跳检查
+        canalParameter.setDetectingSQL("insert into retl.xdual values(1,now()) on duplicate key update x=now()");
+        canalParameter.setDetectingIntervalInSeconds(5);
+
+        canalParameter.setDdlIsolation(true);
+        canalParameter.setFilterTableError(false);
+        canalParameter.setMemoryStorageRawEntry(false);
+
+
+        //使用gtid
+        canalParameter.setGtidEnable(true);
+
+        canal.setCanalParameter(canalParameter);
+        canal.setGmtCreate(entityDesc.getGmtCreate());
+        canal.setGmtModified(entityDesc.getGmtModified());
+
+        return canal;
+    }
+
+
+    public Optional<Message<EventData>> selector() throws InterruptedException {
+        com.alibaba.otter.canal.protocol.Message message = canalServer.getWithoutAck(clientIdentity, pipeline.getParams().getBatchsize(), pipeline.getParams().getBatchTimeout(), TimeUnit.MILLISECONDS);;
+        if (message == null || message.getId() == -1L) {
+            //no data
+            return Optional.empty();
+        }
+
+        if (!running) {
+            throw new InterruptedException();
         }
 
         List<CanalEntry.Entry> entries = null;
         if (message.isRaw()) {
-            entries = new ArrayList<CanalEntry.Entry>(message.getRawEntries().size());
+            entries = new ArrayList(message.getRawEntries().size());
             for (ByteString entry : message.getRawEntries()) {
                 try {
                     entries.add(CanalEntry.Entry.parseFrom(entry));
@@ -221,18 +229,10 @@ public class CanalEmbedSelector {
         }
 
         // 过滤事务头/尾和回环数据
-        List<EventData> eventDatas = messageParser.parse(pipelineId, entries);
+        List<EventData> eventDatas = messageParser.parse(pipeline.getId(), entries);
         Message<EventData> result = new Message(message.getId(), eventDatas);
-        // 更新一下最后的entry时间，包括被过滤的数据
-        if (!CollectionUtils.isEmpty(entries)) {
-            long lastEntryTime = entries.get(entries.size() - 1).getHeader().getExecuteTime();
-            if (lastEntryTime > 0) {
-                // oracle的时间可能为0
-                this.lastEntryTime = lastEntryTime;
-            }
-        }
 
-        if (dump && log.isInfoEnabled()) {
+        if (Boolean.TRUE.equals(pipeline.getParams().getDumpSelector()) && log.isInfoEnabled()) {
             String startPosition = null;
             String endPosition = null;
             if (!CollectionUtils.isEmpty(entries)) {
@@ -243,22 +243,7 @@ public class CanalEmbedSelector {
             // 记录一下，方便追查问题
             dumpMessages(result, startPosition, endPosition, entries.size());
         }
-        return result;
-    }
-
-    /**
-     * 处理无数据的情况，避免空循环挂死
-     * @param emptyTimes
-     */
-    private void applyWait(int emptyTimes) {
-        int newEmptyTimes = emptyTimes > maxEmptyTimes ? maxEmptyTimes : emptyTimes;
-        if (emptyTimes <= 3) {
-            // 3次以内
-            Thread.yield();
-        } else {
-            // 超过3次，最多只sleep 10ms
-            LockSupport.parkNanos(1000 * 1000L * newEmptyTimes);
-        }
+        return Optional.of(result);
     }
 
     private String buildPositionForDump(CanalEntry.Entry entry) {
@@ -274,11 +259,12 @@ public class CanalEmbedSelector {
      */
     private synchronized void dumpMessages(Message message, String startPosition, String endPosition, int total) {
         try {
-            MDC.put(DTSConstants.splitPipelineSelectLogFileKey, String.valueOf(pipelineId));
+            MDC.put(DTSConstants.splitPipelineSelectLogFileKey, String.valueOf(pipeline.getId()));
             log.info(SEP + "****************************************************" + SEP);
             log.info(MessageDumper.dumpMessageInfo(message, startPosition, endPosition, total));
             log.info("****************************************************" + SEP);
-            if (dumpDetail) {// 判断一下是否需要打印详细信息
+            if (Boolean.TRUE.equals(pipeline.getParams().getDumpSelectorDetail())) {
+                // 判断一下是否需要打印详细信息
                 dumpEventDatas(message.getDatas());
                 log.info("****************************************************" + SEP);
             }
@@ -302,5 +288,9 @@ public class CanalEmbedSelector {
             }
             index += logSplitSize;
         } while (index < size);
+    }
+
+    public void rollback() {
+        canalServer.rollback(clientIdentity);
     }
 }

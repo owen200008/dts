@@ -1,7 +1,8 @@
 package com.utopia.data.transfer.core.code.service;
 
-import com.alibaba.otter.canal.instance.manager.model.Canal;
-import com.utopia.data.transfer.core.code.bean.Pipeline;
+import com.utopia.data.transfer.model.code.DTSServiceConf;
+import com.utopia.data.transfer.model.code.entity.EntityDesc;
+import com.utopia.data.transfer.model.code.pipeline.Pipeline;
 
 /**
  * @author owen.cai
@@ -10,6 +11,13 @@ import com.utopia.data.transfer.core.code.bean.Pipeline;
  * @alter_date
  */
 public interface ConfigService {
+
+
+    /**
+     * 重新加载
+     * @param object
+     */
+    void reloadConf(DTSServiceConf object);
 
     /**
      * 获取pipeline配置
@@ -20,8 +28,9 @@ public interface ConfigService {
 
     /**
      * 获取canal配置
-     * @param destination
+     * @param entityName
      * @return
      */
-    Canal getCanal(String destination);
+    EntityDesc getEntityDesc(String entityName);
+
 }

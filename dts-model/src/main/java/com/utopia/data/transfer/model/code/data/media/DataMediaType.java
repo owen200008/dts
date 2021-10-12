@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.utopia.data.transfer.core.code.base.datasource.bean;
+package com.utopia.data.transfer.model.code.data.media;
 
 /**
  * @author jianghang 2011-9-2 上午11:36:21

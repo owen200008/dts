@@ -1,15 +1,11 @@
 package com.utopia.data.transfer.core.code.service.impl;
 
-import com.alibaba.otter.canal.instance.manager.model.Canal;
-import com.utopia.data.transfer.core.code.bean.Pipeline;
-import com.utopia.data.transfer.core.code.config.CanalConfig;
-import com.utopia.data.transfer.core.code.config.PipelineConfig;
+import com.utopia.data.transfer.model.code.DTSServiceConf;
+import com.utopia.data.transfer.model.code.entity.EntityDesc;
+import com.utopia.data.transfer.model.code.pipeline.Pipeline;
 import com.utopia.data.transfer.core.code.service.ConfigService;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -22,18 +18,13 @@ import java.util.stream.Collectors;
 @Service
 public class ConfigServiceImpl implements ConfigService {
 
-    @Resource
-    PipelineConfig pipelineConfig;
-    @Resource
-    CanalConfig canalConfig;
+    private Map<Long, Pipeline> mapPipeline;
+    private Map<String, EntityDesc> mapEntity;
 
-    Map<Long, Pipeline> mapPipeline;
-    Map<String, Canal> mapCanal;
-
-    @PostConstruct
-    public void init(){
-        mapPipeline = pipelineConfig.getList().stream().collect(Collectors.toMap(Pipeline::getId, item -> item));
-        mapCanal = canalConfig.getList().stream().collect(Collectors.toMap(Canal::getName, item -> item));
+    @Override
+    public void reloadConf(DTSServiceConf object) {
+        this.mapPipeline = object.getList().stream().collect(Collectors.toMap(Pipeline::getId, item -> item));
+        this.mapEntity = object.getEntityDescs().stream().collect(Collectors.toMap(EntityDesc::getName, item -> item));
     }
 
     @Override
@@ -42,7 +33,7 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     @Override
-    public Canal getCanal(String destination) {
-        return mapCanal.get(destination);
+    public EntityDesc getEntityDesc(String entityName) {
+        return mapEntity.get(entityName);
     }
 }

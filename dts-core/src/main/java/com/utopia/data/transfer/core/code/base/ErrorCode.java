@@ -28,6 +28,8 @@ public class ErrorCode extends BaseErrorCode {
     public final static UtopiaErrorCodeClass GET_TABLE_ERROR = new UtopiaErrorCodeClass(24106, "");
 
 
+    public final static UtopiaErrorCodeClass SELECT_RULE_INIT_FAIL = new UtopiaErrorCodeClass(24497, "");
+    public final static UtopiaErrorCodeClass SELECT_RULE_NO_FIND = new UtopiaErrorCodeClass(24498, "");
     public final static UtopiaErrorCodeClass INIT_CONFIG_ERROR = new UtopiaErrorCodeClass(24499, "");
     public final static UtopiaErrorCodeClass CODE_END = new UtopiaErrorCodeClass(24500, "");
 }

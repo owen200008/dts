@@ -6,7 +6,7 @@ import com.utopia.data.transfer.core.archetype.base.ServiceException;
 import com.utopia.data.transfer.core.code.base.ErrorCode;
 import com.utopia.data.transfer.core.code.base.datasource.DataSourceHandler;
 import com.utopia.data.transfer.core.code.base.datasource.DataSourceService;
-import com.utopia.data.transfer.core.code.base.datasource.bean.DataMediaSource;
+import com.utopia.data.transfer.model.code.data.media.DataMediaSource;
 import com.utopia.data.transfer.core.code.base.datasource.bean.DataSourceItem;
 import com.utopia.extension.UtopiaExtensionLoader;
 import com.utopia.log.BasicLogUtil;
@@ -78,14 +78,14 @@ public class DataSourceServiceImpl implements DataSourceService, DisposableBean 
     }
 
     @Override
-    public void destroy(Long pipelineId) {
+    public void closePipeline(Long pipelineId) {
         dataSources.invalidate(pipelineId);
     }
 
     @Override
     public void destroy() throws Exception {
         for (Long pipelineId : dataSources.asMap().keySet()) {
-            destroy(pipelineId);
+            closePipeline(pipelineId);
         }
     }
 }

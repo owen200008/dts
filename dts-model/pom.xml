@@ -40,7 +40,7 @@
       <groupId>com.utopia</groupId>
       <artifactId>utopia-utils</artifactId>
     </dependency>
-    <!-- archetype define end *************************************************** -->
+      <!-- archetype define end *************************************************** -->
 
     <!-- project define begin *************************************************** -->
   </dependencies>

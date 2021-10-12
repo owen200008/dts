@@ -11,7 +11,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @ComponentScan(basePackages = {"com.utopia"})
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 @EnableAsync
-@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class, RedisAutoConfiguration.class})
+@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
 public class Application {
 
     public static void main(String[] args) {

@@ -6,6 +6,7 @@ import lombok.Data;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author owen.cai
@@ -17,7 +18,7 @@ import java.util.List;
 public class EventData implements Serializable {
 
     /**
-     * otter内部维护的一套tableId，与manager中得到的table Id对应
+     * dts内部维护的一套tableId，与manager中得到的table Id对应
      */
     private long              tableId          = -1;
 
@@ -43,13 +44,17 @@ public class EventData implements Serializable {
     /**
      * 变更后的主键值,如果是insert/delete变更前和变更后的主键值是一样的.
      */
-    private List<EventColumn> keys             = new ArrayList<EventColumn>();
+    private List<EventColumn> keys;
 
     /**
      * 非主键的其他字段
      */
-    private List<EventColumn> columns          = new ArrayList<EventColumn>();
+    private List<EventColumn> columns;
 
+    /**
+     * 未更新的字段
+     */
+    private Map<String, EventColumn> allColumns;
     // ====================== 运行过程中对数据的附加属性 =============================
     /**
      * 预计的size大小，基于binlog event的推算

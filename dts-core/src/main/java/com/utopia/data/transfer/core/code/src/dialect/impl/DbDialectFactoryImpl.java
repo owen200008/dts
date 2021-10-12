@@ -9,7 +9,7 @@ import com.utopia.data.transfer.core.archetype.base.ServiceException;
 import com.utopia.data.transfer.core.code.base.ErrorCode;
 import com.utopia.data.transfer.core.code.base.datasource.DataSourceService;
 import com.utopia.data.transfer.core.code.base.datasource.bean.DataSourceItem;
-import com.utopia.data.transfer.core.code.base.datasource.bean.db.DbMediaSource;
+import com.utopia.data.transfer.model.code.data.media.DataMediaSource;
 import com.utopia.data.transfer.core.code.src.dialect.DbDialect;
 import com.utopia.data.transfer.core.code.src.dialect.DbDialectFactory;
 import com.utopia.data.transfer.core.code.src.dialect.DbDialectHandler;
@@ -44,26 +44,26 @@ public class DbDialectFactoryImpl implements DbDialectFactory, DisposableBean {
     /**
      * 第一层pipelineId , 第二层DbMediaSource id
      */
-    private LoadingCache<Long, LoadingCache<DbMediaSource, DbDialect>> dialects;
+    private LoadingCache<Long, LoadingCache<DataMediaSource, DbDialect>> dialects;
 
     public DbDialectFactoryImpl(){
-        this.dialects = CacheBuilder.newBuilder().softValues().removalListener((RemovalListener<Long, LoadingCache<DbMediaSource, DbDialect>>) result -> {
+        this.dialects = CacheBuilder.newBuilder().softValues().removalListener((RemovalListener<Long, LoadingCache<DataMediaSource, DbDialect>>) result -> {
             if (result == null) {
                 return;
             }
-            LoadingCache<DbMediaSource, DbDialect> value = result.getValue();
+            LoadingCache<DataMediaSource, DbDialect> value = result.getValue();
             if (value == null) {
                 return;
             }
             for (DbDialect dbDialect : value.asMap().values()) {
                 dbDialect.destory();
             }
-        }).build(new CacheLoader<Long, LoadingCache<DbMediaSource, DbDialect>>() {
+        }).build(new CacheLoader<Long, LoadingCache<DataMediaSource, DbDialect>>() {
             @Override
-            public LoadingCache<DbMediaSource, DbDialect> load(Long pipelineId) throws Exception {
-                return CacheBuilder.newBuilder().build(new CacheLoader<DbMediaSource, DbDialect>() {
+            public LoadingCache<DataMediaSource, DbDialect> load(Long pipelineId) throws Exception {
+                return CacheBuilder.newBuilder().build(new CacheLoader<DataMediaSource, DbDialect>() {
                     @Override
-                    public DbDialect load(DbMediaSource source) throws Exception {
+                    public DbDialect load(DataMediaSource source) throws Exception {
                         DataSourceItem<DataSource> dataSource = dataSourceService.getDataSource(pipelineId, source);
                         final JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource.getItem());
                         return (DbDialect) jdbcTemplate.execute((ConnectionCallback) c -> {
@@ -100,12 +100,12 @@ public class DbDialectFactoryImpl implements DbDialectFactory, DisposableBean {
     public void destroy() throws Exception {
         Set<Long> pipelineIds = new HashSet<Long>(dialects.asMap().keySet());
         for (Long pipelineId : pipelineIds) {
-            destory(pipelineId);
+            closePipeline(pipelineId);
         }
     }
 
     @Override
-    public DbDialect getDbDialect(Long pipelineId, DbMediaSource source) {
+    public DbDialect getDbDialect(Long pipelineId, DataMediaSource source) {
         try {
             return dialects.get(pipelineId).get(source);
         } catch (ExecutionException e) {
@@ -116,7 +116,7 @@ public class DbDialectFactoryImpl implements DbDialectFactory, DisposableBean {
     }
 
     @Override
-    public void destory(Long pipelineId) {
+    public void closePipeline(Long pipelineId) {
         dialects.invalidate(pipelineId);
     }
 }

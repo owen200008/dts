@@ -1,7 +1,7 @@
 package com.utopia.data.transfer.core.code.base.datasource.impl;
 
 import com.utopia.data.transfer.core.code.base.datasource.DataSourceHandler;
-import com.utopia.data.transfer.core.code.base.datasource.bean.DataMediaSource;
+import com.utopia.data.transfer.model.code.data.media.DataMediaSource;
 import com.utopia.data.transfer.core.code.base.datasource.bean.DataSourceItem;
 import com.utopia.data.transfer.core.code.base.datasource.bean.db.mysql.MysqlMediaSource;
 import lombok.extern.slf4j.Slf4j;
@@ -57,10 +57,10 @@ public class DataSourceHandlerMysql implements DataSourceHandler {
         dbcpDs.setMinEvictableIdleTimeMillis(mysqlMediaSource.getMinEvictableIdleTimeMillis());
 
         // 动态的参数
-        dbcpDs.setDriverClassName(mysqlMediaSource.getDriver());
-        dbcpDs.setUrl(mysqlMediaSource.getUrl());
-        dbcpDs.setUsername(mysqlMediaSource.getUsername());
-        dbcpDs.setPassword(mysqlMediaSource.getPassword());
+        dbcpDs.setDriverClassName(mysqlMediaSource.getEntityDesc().getDriver());
+        dbcpDs.setUrl(mysqlMediaSource.getEntityDesc().getUrl());
+        dbcpDs.setUsername(mysqlMediaSource.getEntityDesc().getUsername());
+        dbcpDs.setPassword(mysqlMediaSource.getEntityDesc().getPassword());
 
         // open the batch mode for mysql since 5.1.8
         dbcpDs.addConnectionProperty("useServerPrepStmts", "false");

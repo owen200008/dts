@@ -1,7 +1,7 @@
 package com.utopia.data.transfer.core.code.src.dialect;
 
 
-import com.utopia.data.transfer.core.code.base.datasource.bean.db.DbMediaSource;
+import com.utopia.data.transfer.model.code.data.media.DataMediaSource;
 
 
 /**
@@ -19,11 +19,11 @@ public interface DbDialectFactory {
      * @param source
      * @return
      */
-    DbDialect getDbDialect(Long pipelineId, DbMediaSource source);
+    DbDialect getDbDialect(Long pipelineId, DataMediaSource source);
 
     /**
      *
      * @param pipelineId
      */
-    void destory(Long pipelineId);
+    void closePipeline(Long pipelineId);
 }

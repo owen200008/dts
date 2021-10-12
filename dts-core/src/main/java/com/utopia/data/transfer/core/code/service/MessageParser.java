@@ -1,22 +1,22 @@
-package com.utopia.data.transfer.core.code.utils;
+package com.utopia.data.transfer.core.code.service;
 
 import com.alibaba.otter.canal.protocol.CanalEntry;
 import com.utopia.data.transfer.core.archetype.base.ServiceException;
 import com.utopia.data.transfer.core.code.base.ErrorCode;
-import com.utopia.data.transfer.core.code.bean.DataMedia;
-import com.utopia.data.transfer.core.code.bean.DataMediaPair;
-import com.utopia.data.transfer.core.code.bean.Pipeline;
+import com.utopia.data.transfer.core.code.utils.ConfigHelper;
+import com.utopia.data.transfer.core.code.utils.EventColumnIndexComparable;
+import com.utopia.data.transfer.model.code.data.media.DataMedia;
+import com.utopia.data.transfer.model.code.data.media.DataMediaPair;
+import com.utopia.data.transfer.model.code.pipeline.Pipeline;
 import com.utopia.data.transfer.core.code.src.dialect.DbDialect;
 import com.utopia.data.transfer.core.code.model.EventData;
 import com.utopia.data.transfer.core.code.model.EventType;
-import com.utopia.data.transfer.core.code.service.ConfigService;
 import com.utopia.data.transfer.core.code.src.dialect.DbDialectFactory;
-import com.utopia.data.transfer.core.code.base.datasource.bean.db.DbMediaSource;
 import com.utopia.data.transfer.core.code.src.model.EventColumn;
 import com.utopia.utils.CollectionUtils;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ddlutils.model.Table;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
 
@@ -27,11 +27,12 @@ import java.util.*;
  * @alter_date
  */
 @Slf4j
+@Service
 public class MessageParser {
 
-    @Setter
+    @Autowired
     private ConfigService configService;
-    @Setter
+    @Autowired
     private DbDialectFactory dbDialectFactory;
 
     private static final String compatibleMarkTable            = "retl_client";
@@ -127,8 +128,7 @@ public class MessageParser {
             // 如果EventType是CREATE/ALTER，需要reload
             // DataMediaInfo;并且把CREATE/ALTER类型的事件丢弃掉.
             if (dataMedia != null && (eventType.isCreate() || eventType.isAlter() || eventType.isRename())) {
-                DbDialect dbDialect = dbDialectFactory.getDbDialect(pipeline.getId(),
-                        (DbMediaSource) dataMedia.getSource());
+                DbDialect dbDialect = dbDialectFactory.getDbDialect(pipeline.getId(), dataMedia.getSource());
                 dbDialect.reloadTable(schemaName, tableName);// 更新下meta信息
             }
 
@@ -163,23 +163,15 @@ public class MessageParser {
         eventData.setExecuteTime(entry.getHeader().getExecuteTime());
         EventType eventType = eventData.getEventType();
 
-        Table table = null;
         DataMediaPair dataMediaPair = ConfigHelper.findDataMediaPairBySourceName(pipeline,
                 eventData.getSchemaName(),
                 eventData.getTableName());
         DataMedia dataMedia = dataMediaPair.getSource();
         eventData.setTableId(dataMedia.getId());
-        // 获取目标表
-        DataMedia targetDataMedia = dataMediaPair.getTarget();
 
         List<CanalEntry.Column> beforeColumns = rowData.getBeforeColumnsList();
         List<CanalEntry.Column> afterColumns = rowData.getAfterColumnsList();
         String tableName = eventData.getSchemaName() + "." + eventData.getTableName();
-
-        // 判断一下是否需要all columns
-        // 如果是rowMode模式，所有字段都需要标记为updated
-        boolean isRowMode = false;
-        boolean needAllColumns = false;
 
         // 变更后的主键
         Map<String, EventColumn> keyColumns = new LinkedHashMap<String, EventColumn>();
@@ -187,56 +179,60 @@ public class MessageParser {
         Map<String, EventColumn> oldKeyColumns = new LinkedHashMap<String, EventColumn>();
         // 有变化的非主键
         Map<String, EventColumn> notKeyColumns = new LinkedHashMap<String, EventColumn>();
+        //所有键
+        Map<String, EventColumn> allColumns = new LinkedHashMap<String, EventColumn>();
 
         if (eventType.isInsert()) {
             for (CanalEntry.Column column : afterColumns) {
+                EventColumn eventColumn = copyEventColumn(column, true);
+                allColumns.put(column.getName(), eventColumn);
                 if (isKey(tableName, column)) {
-                    keyColumns.put(column.getName(), copyEventColumn(column, true));
+                    keyColumns.put(column.getName(), eventColumn);
                 } else {
                     // mysql 有效
-                    notKeyColumns.put(column.getName(), copyEventColumn(column, true));
+                    notKeyColumns.put(column.getName(), eventColumn);
                 }
             }
         } else if (eventType.isDelete()) {
             for (CanalEntry.Column column : beforeColumns) {
+                EventColumn eventColumn = copyEventColumn(column, true);
+                allColumns.put(column.getName(), eventColumn);
                 if (isKey(tableName, column)) {
-                    keyColumns.put(column.getName(), copyEventColumn(column, true));
+                    keyColumns.put(column.getName(), eventColumn);
                 } else {
                     // mysql 有效
-                    notKeyColumns.put(column.getName(), copyEventColumn(column, true));
+                    notKeyColumns.put(column.getName(), eventColumn);
                 }
             }
         } else if (eventType.isUpdate()) {
             // 获取变更前的主键.
             for (CanalEntry.Column column : beforeColumns) {
                 if (isKey(tableName, column)) {
-                    oldKeyColumns.put(column.getName(), copyEventColumn(column, true));
+                    EventColumn eventColumn = copyEventColumn(column, true);
+                    allColumns.put(column.getName(), eventColumn);
+
+                    oldKeyColumns.put(column.getName(), eventColumn);
                     // 同时记录一下new
                     // key,因为mysql5.6之后出现了minimal模式,after里会没有主键信息,需要在before记录中找
-                    keyColumns.put(column.getName(), copyEventColumn(column, true));
-                } else {
-                    if (needAllColumns && entry.getHeader().getSourceType() == CanalEntry.Type.ORACLE) {
-                        // 针对行记录同步时，针对oracle记录一下非主键的字段，因为update时针对未变更的字段在aftercolume里没有
-                        notKeyColumns.put(column.getName(), copyEventColumn(column, isRowMode));
-                    }
+                    keyColumns.put(column.getName(), eventColumn);
                 }
             }
             for (CanalEntry.Column column : afterColumns) {
                 if (isKey(tableName, column)) {
+                    EventColumn eventColumn = copyEventColumn(column, true);
+                    allColumns.put(column.getName(), eventColumn);
                     // 获取变更后的主键
-                    keyColumns.put(column.getName(), copyEventColumn(column, true));
-                } else if (needAllColumns || entry.getHeader().getSourceType() == CanalEntry.Type.ORACLE
-                        || column.getUpdated()) {
+                    keyColumns.put(column.getName(), eventColumn);
+                } else if (column.getUpdated()) {
+                    EventColumn eventColumn = copyEventColumn(column, true);
+                    allColumns.put(column.getName(), eventColumn);
                     // 在update操作时，oracle和mysql存放变更的非主键值的方式不同,oracle只有变更的字段;
                     // mysql会把变更前和变更后的字段都发出来，只需要取有变更的字段.
-                    // 如果是oracle库，after里一定为对应的变更字段
-
-                    boolean isUpdate = true;
-                    if (entry.getHeader().getSourceType() == CanalEntry.Type.MYSQL) { // mysql的after里部分数据为未变更,oracle里after里为变更字段
-                        isUpdate = column.getUpdated();
-                    }
-
-                    notKeyColumns.put(column.getName(), copyEventColumn(column, isRowMode || isUpdate));// 如果是rowMode，所有字段都为updated
+                    notKeyColumns.put(column.getName(), eventColumn);
+                }
+                else{
+                    EventColumn eventColumn = copyEventColumn(column, false);
+                    allColumns.put(column.getName(), eventColumn);
                 }
             }
         }
@@ -250,32 +246,13 @@ public class MessageParser {
         Collections.sort(columns, new EventColumnIndexComparable());
         if (!keyColumns.isEmpty()) {
             eventData.setKeys(keys);
-            if (eventData.getEventType().isUpdate() && !oldKeys.equals(keys)) { // update类型，如果存在主键不同,则记录下old
+            if (eventData.getEventType().isUpdate() && !oldKeys.equals(keys)) {
+                // update类型，如果存在主键不同,则记录下old
                 // keys为变更前的主键
                 eventData.setOldKeys(oldKeys);
             }
             eventData.setColumns(columns);
-            // } else if (CanalEntry.Type.MYSQL ==
-            // entry.getHeader().getSourceType()) {
-            // // 只支持mysql无主键同步
-            // if (eventType.isUpdate()) {
-            // List<EventColumn> oldColumns = new ArrayList<EventColumn>();
-            // List<EventColumn> newColumns = new ArrayList<EventColumn>();
-            // for (Column column : beforeColumns) {
-            // oldColumns.add(copyEventColumn(column, true, tableHolder));
-            // }
-            //
-            // for (Column column : afterColumns) {
-            // newColumns.add(copyEventColumn(column, true, tableHolder));
-            // }
-            // Collections.sort(oldColumns, new EventColumnIndexComparable());
-            // Collections.sort(newColumns, new EventColumnIndexComparable());
-            // eventData.setOldKeys(oldColumns);// 做为老主键
-            // eventData.setKeys(newColumns);// 做为新主键，需要保证新老主键字段数量一致
-            // } else {
-            // // 针对无主键，等同为所有都是主键进行处理
-            // eventData.setKeys(columns);
-            // }
+            eventData.setAllColumns(allColumns);
         } else {
             throw new ServiceException(ErrorCode.DTS_KEY_COLUMN_NOFIND.getCode(), "this rowdata has no pks , entry: " + entry.toString() + " and rowData: "
                     + rowData);

@@ -1,6 +1,6 @@
 package com.utopia.data.transfer.core.code.base.datasource.bean.db.mysql;
 
-import com.utopia.data.transfer.core.code.base.datasource.bean.db.DbMediaSource;
+import com.utopia.data.transfer.model.code.data.media.DataMediaSource;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,7 +12,7 @@ import java.util.Properties;
  * @alter_author
  * @alter_date
  */
-public class MysqlMediaSource extends DbMediaSource {
+public class MysqlMediaSource extends DataMediaSource {
     @Getter
     @Setter
     private Properties          properties;

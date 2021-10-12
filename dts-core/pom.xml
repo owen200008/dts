@@ -30,6 +30,10 @@
       <artifactId>spring-boot-configuration-processor</artifactId>
       <optional>true</optional>
     </dependency>
+      <dependency>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-data-redis</artifactId>
+      </dependency>
 
     <dependency>
       <groupId>org.apache.dubbo</groupId>
@@ -125,6 +129,23 @@
     <dependency>
       <groupId>com.utopia</groupId>
       <artifactId>register-center-sync</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.utopia</groupId>
+      <artifactId>register-center-instance</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.utopia</groupId>
+      <artifactId>spi-starter</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.utopia</groupId>
+      <artifactId>distributed-lock-redis</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy</artifactId>
+      <classifier>indy</classifier>
     </dependency>
   </dependencies>
   <build>
