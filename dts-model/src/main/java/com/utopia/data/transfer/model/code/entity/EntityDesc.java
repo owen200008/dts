@@ -1,5 +1,6 @@
 package com.utopia.data.transfer.model.code.entity;
 
+import com.utopia.data.transfer.model.code.data.media.DataMediaType;
 import lombok.Data;
 
 import com.utopia.data.transfer.model.code.entity.mysql.MysqlProperty;
@@ -20,10 +21,16 @@ public class EntityDesc implements Serializable {
      * 对应的名字
      */
     private String              name;
+
     /**
-     * 描述
+     * 实体类型
      */
-    private String              desc;
+    private DataMediaType       type;
+
+    /**
+     * 编码方式
+     */
+    private String              encode;
 
     /**
      * 创建时间
@@ -34,17 +41,6 @@ public class EntityDesc implements Serializable {
      * 修改时间
      */
     private Date                gmtModified;
-
-
-    /**
-     * zk集群id，为管理方便
-     */
-    private Long                zkClusterId;
-
-    /**
-     * zk集群地址
-     */
-    private List<String>        zkClusters;
 
     /**
      * 链接到mysql的slaveId

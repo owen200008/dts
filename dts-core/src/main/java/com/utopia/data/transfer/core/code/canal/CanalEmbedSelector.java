@@ -60,6 +60,7 @@ public class CanalEmbedSelector {
     private ConfigService           configService;
     private MessageParser           messageParser;
     private CanalDownStreamHandler  handler;
+    private CanalZKConfig           canalZKConfig;
 
     private CanalServerWithEmbedded canalServer = new CanalServerWithEmbedded();
     private ClientIdentity          clientIdentity;
@@ -68,10 +69,12 @@ public class CanalEmbedSelector {
     // 是否处于运行中
     private volatile boolean        running          = false;
 
-    public CanalEmbedSelector(Long pipelineId, ConfigService configService, MessageParser messageParser){
+    public CanalEmbedSelector(Long pipelineId, ConfigService configService, MessageParser messageParser, EntityDesc source, CanalZKConfig canalZKConfig){
         this.configService = configService;
         this.pipeline = configService.getPipeline(pipelineId);
         this.messageParser = messageParser;
+        this.canalZKConfig = canalZKConfig;
+        this.source = source;
     }
 
     public boolean isStart() {
@@ -86,7 +89,6 @@ public class CanalEmbedSelector {
         if (running) {
             return;
         }
-        this.source = configService.getEntityDesc(pipeline.getSource().getEntityId());
         this.filter = CanalFilterSupport.makeFilterExpression(pipeline);
 
         canalServer.setCanalInstanceGenerator(new CanalInstanceGenerator() {
@@ -166,7 +168,6 @@ public class CanalEmbedSelector {
         Canal canal = new Canal();
         canal.setId(entityDesc.getId());
         canal.setName(entityDesc.getName());
-        canal.setDesc(entityDesc.getDesc());
         //canal.setStatus(CanalStatus.START);
         // 默认基数
         long slaveId = 10000;
@@ -174,8 +175,8 @@ public class CanalEmbedSelector {
             slaveId = entityDesc.getSlaveId();
         }
         CanalParameter canalParameter = new CanalParameter();
-        canalParameter.setZkClusterId(entityDesc.getZkClusterId());
-        canalParameter.setZkClusters(entityDesc.getZkClusters());
+        canalParameter.setZkClusterId(canalZKConfig.getZkClusterId());
+        canalParameter.setZkClusters(canalZKConfig.getZkAddress());
         //使用zk
         canalParameter.setMetaMode(CanalParameter.MetaMode.ZOOKEEPER);
 

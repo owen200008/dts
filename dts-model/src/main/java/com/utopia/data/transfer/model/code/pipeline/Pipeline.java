@@ -27,8 +27,8 @@ public class Pipeline implements Serializable {
     private String              name;
 
     private List<DataMediaRulePair> pairs;
-    private DataMediaSource source;
-    private DataMediaSource target;
+    private Long sourceEntityId;
+    private Long targetEntityId;
 
     private PipelineParameter params;
 

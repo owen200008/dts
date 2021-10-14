@@ -55,7 +55,7 @@ public class LoadRunDB implements LoadRun {
     }
 
     private UtopiaErrorCodeClass doDml(LoadContext loadContext, List<TransferEventData> transferEventData) {
-        DbDialect dbDialect = dbDialectFactory.getDbDialect(loadContext.getPipeline().getId(), loadContext.getPipeline().getTarget());
+        DbDialect dbDialect = dbDialectFactory.getDbDialect(loadContext.getPipeline().getId(), loadContext.getTargetEntityDesc());
 
         LobCreator lobCreator = dbDialect.getLobHandler().getLobCreator();
         try {
@@ -146,7 +146,7 @@ public class LoadRunDB implements LoadRun {
 
 
     private UtopiaErrorCodeClass doDdl(LoadContext loadContext, List<TransferEventData> transferEventData) {
-        DbDialect dbDialect = dbDialectFactory.getDbDialect(loadContext.getPipeline().getId(), loadContext.getPipeline().getTarget());
+        DbDialect dbDialect = dbDialectFactory.getDbDialect(loadContext.getPipeline().getId(), loadContext.getTargetEntityDesc());
         //ddl 不支持回滚，只要有失败就全失败
         try {
             for (final TransferEventData data : transferEventData) {

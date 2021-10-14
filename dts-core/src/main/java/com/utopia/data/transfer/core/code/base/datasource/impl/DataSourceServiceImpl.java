@@ -8,6 +8,7 @@ import com.utopia.data.transfer.core.code.base.datasource.DataSourceHandler;
 import com.utopia.data.transfer.core.code.base.datasource.DataSourceService;
 import com.utopia.data.transfer.model.code.data.media.DataMediaSource;
 import com.utopia.data.transfer.core.code.base.datasource.bean.DataSourceItem;
+import com.utopia.data.transfer.model.code.entity.EntityDesc;
 import com.utopia.extension.UtopiaExtensionLoader;
 import com.utopia.log.BasicLogUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -28,14 +29,14 @@ import java.util.concurrent.ExecutionException;
 @Service
 public class DataSourceServiceImpl implements DataSourceService, DisposableBean {
 
-    private LoadingCache<Long, LoadingCache<DataMediaSource, DataSourceItem>> dataSources;
+    private LoadingCache<Long, LoadingCache<EntityDesc, DataSourceItem>> dataSources;
 
     public DataSourceServiceImpl(){
-        this.dataSources = CacheBuilder.newBuilder().removalListener((RemovalListener<Long, LoadingCache<DataMediaSource, DataSourceItem>>) result -> {
+        this.dataSources = CacheBuilder.newBuilder().removalListener((RemovalListener<Long, LoadingCache<EntityDesc, DataSourceItem>>) result -> {
             if (result == null) {
                 return;
             }
-            LoadingCache<DataMediaSource, DataSourceItem> value = result.getValue();
+            LoadingCache<EntityDesc, DataSourceItem> value = result.getValue();
             if (value == null) {
                 return;
             }
@@ -47,19 +48,19 @@ public class DataSourceServiceImpl implements DataSourceService, DisposableBean 
                     log.error("ERROR ## close the datasource has an error", e);
                 }
             });
-        }).build(new CacheLoader<Long, LoadingCache<DataMediaSource, DataSourceItem>>() {
+        }).build(new CacheLoader<Long, LoadingCache<EntityDesc, DataSourceItem>>() {
             @Override
-            public LoadingCache<DataMediaSource, DataSourceItem> load(Long pipelineId) throws Exception {
-                return CacheBuilder.newBuilder().build(new CacheLoader<DataMediaSource, DataSourceItem>() {
+            public LoadingCache<EntityDesc, DataSourceItem> load(Long pipelineId) throws Exception {
+                return CacheBuilder.newBuilder().build(new CacheLoader<EntityDesc, DataSourceItem>() {
                     @Override
-                    public DataSourceItem load(DataMediaSource dataMediaSource) {
-                        DataSourceHandler extension = UtopiaExtensionLoader.getExtensionLoader(DataSourceHandler.class).getExtension(dataMediaSource.getType().name());
+                    public DataSourceItem load(EntityDesc entityDesc) {
+                        DataSourceHandler extension = UtopiaExtensionLoader.getExtensionLoader(DataSourceHandler.class).getExtension(entityDesc.getType().name());
                         if(extension == null){
-                            String createDataSource_error = BasicLogUtil.argBuild("DataSourceHandler no find type", JSON.toJSONString(dataMediaSource));
+                            String createDataSource_error = BasicLogUtil.argBuild("DataSourceHandler no find type", JSON.toJSONString(entityDesc));
                             log.error(createDataSource_error);
                             throw new ServiceException(ErrorCode.NO_SUPPORT_DATASOURCE_TYPE.getCode(), createDataSource_error);
                         }
-                        return extension.create(dataMediaSource);
+                        return extension.create(entityDesc);
                     }
                 });
             }
@@ -67,9 +68,9 @@ public class DataSourceServiceImpl implements DataSourceService, DisposableBean 
     }
 
     @Override
-    public <T> DataSourceItem<T> getDataSource(long pipelineId, DataMediaSource dataMediaSource) {
+    public <T> DataSourceItem<T> getDataSource(long pipelineId, EntityDesc entityDesc) {
         try {
-            return dataSources.get(pipelineId).get(dataMediaSource);
+            return dataSources.get(pipelineId).get(entityDesc);
         } catch (ExecutionException e) {
             String getDataSource_exception = BasicLogUtil.argBuild("getDataSource exception", e);
             log.error(getDataSource_exception);

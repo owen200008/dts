@@ -1,7 +1,7 @@
 package com.utopia.data.transfer.core.code.base.datasource;
 
-import com.utopia.data.transfer.model.code.data.media.DataMediaSource;
 import com.utopia.data.transfer.core.code.base.datasource.bean.DataSourceItem;
+import com.utopia.data.transfer.model.code.entity.EntityDesc;
 import com.utopia.extension.UtopiaSPI;
 
 import javax.sql.DataSource;
@@ -22,7 +22,7 @@ public interface DataSourceHandler {
      *
      * @return
      */
-    DataSourceItem create(DataMediaSource dbMediaSource);
+    DataSourceItem create(EntityDesc entityDesc);
 
     /**
      * 扩展功能,可以在 {@link DataSource} 被 destroy 之前做一些事情<br/>

@@ -1,11 +1,8 @@
 package com.utopia.data.transfer.core.code.base.datasource.impl;
 
 import com.utopia.data.transfer.core.code.base.datasource.DataSourceHandler;
-import com.utopia.data.transfer.core.code.service.ConfigService;
-import com.utopia.data.transfer.model.code.data.media.DataMediaSource;
 import com.utopia.data.transfer.core.code.base.datasource.bean.DataSourceItem;
 import com.utopia.data.transfer.model.code.entity.EntityDesc;
-import com.utopia.extension.UtopiaSPIInject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.lang3.StringUtils;
@@ -23,14 +20,9 @@ import java.util.Arrays;
 @Slf4j
 public class DataSourceHandlerMysql implements DataSourceHandler {
 
-    @UtopiaSPIInject
-    private ConfigService configService;
 
     @Override
-    public DataSourceItem create(DataMediaSource dataMediaSource) {
-
-        EntityDesc entityDesc = configService.getEntityDesc(dataMediaSource.getEntityId());
-
+    public DataSourceItem create(EntityDesc entityDesc) {
         BasicDataSource dbcpDs = new BasicDataSource();
 
         // 初始化连接池时创建的连接数
@@ -79,12 +71,12 @@ public class DataSourceHandlerMysql implements DataSourceHandler {
         dbcpDs.addConnectionProperty("noDatetimeStringSync", "true");
         // 允许sqlMode为非严格模式
         dbcpDs.addConnectionProperty("jdbcCompliantTruncation", "false");
-        if (StringUtils.isNotEmpty(dataMediaSource.getEncode())) {
-            if (StringUtils.equalsIgnoreCase(dataMediaSource.getEncode(), "utf8mb4")) {
+        if (StringUtils.isNotEmpty(entityDesc.getEncode())) {
+            if (StringUtils.equalsIgnoreCase(entityDesc.getEncode(), "utf8mb4")) {
                 dbcpDs.addConnectionProperty("characterEncoding", "utf8");
                 dbcpDs.setConnectionInitSqls(Arrays.asList("set names utf8mb4"));
             } else {
-                dbcpDs.addConnectionProperty("characterEncoding", dataMediaSource.getEncode());
+                dbcpDs.addConnectionProperty("characterEncoding", entityDesc.getEncode());
             }
         }
         dbcpDs.setValidationQuery("select 1");

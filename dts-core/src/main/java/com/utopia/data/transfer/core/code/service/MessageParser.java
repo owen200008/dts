@@ -128,8 +128,9 @@ public class MessageParser {
             // 如果EventType是CREATE/ALTER，需要reload
             // DataMediaInfo;并且把CREATE/ALTER类型的事件丢弃掉.
             if (dataMedia != null && (eventType.isCreate() || eventType.isAlter() || eventType.isRename())) {
-                DbDialect dbDialect = dbDialectFactory.getDbDialect(pipeline.getId(), pipeline.getSource());
-                dbDialect.reloadTable(schemaName, tableName);// 更新下meta信息
+                DbDialect dbDialect = dbDialectFactory.getDbDialect(pipeline.getId(), configService.getEntityDesc(pipeline.getSourceEntityId()));
+                // 更新下meta信息
+                dbDialect.reloadTable(schemaName, tableName);
             }
 
             // 处理下ddl操作

@@ -2,6 +2,7 @@ package com.utopia.data.transfer.core.code.service.impl.task;
 
 import com.utopia.data.transfer.core.archetype.base.ServiceException;
 import com.utopia.data.transfer.core.code.base.ErrorCode;
+import com.utopia.data.transfer.core.code.service.ConfigService;
 import com.utopia.data.transfer.core.code.service.impl.TaskImpl;
 import com.utopia.data.transfer.core.code.service.impl.task.load.LoadContext;
 import com.utopia.data.transfer.core.code.service.impl.task.load.LoadRun;
@@ -39,9 +40,12 @@ public class LoadTaskImpl extends TaskImpl implements LoadContext, LoadTransferF
     public static String TRANSFER_VERSION = "1.0.0";
 
     @UtopiaSPIInject
-    ApplicationContext applicationContext;
+    private ApplicationContext applicationContext;
     @UtopiaSPIInject
-    ApplicationEventPublisher applicationEventPublisher;
+    private ApplicationEventPublisher applicationEventPublisher;
+    @UtopiaSPIInject
+    private ConfigService configService;
+
 
     private ServiceBean<LoadTransferFacade> serviceBean;
 
@@ -125,9 +129,9 @@ public class LoadTaskImpl extends TaskImpl implements LoadContext, LoadTransferF
         try {
             arbitrateEventService.getPipelineEventService().waitLoadResource(pipelineId);
 
-            LoadRun extension = UtopiaExtensionLoader.getExtensionLoader(LoadRun.class).getExtension(pipeline.getTarget().getType().name());
+            LoadRun extension = UtopiaExtensionLoader.getExtensionLoader(LoadRun.class).getExtension(this.targetEntityDesc.getType().name());
             if(Objects.isNull(extension)) {
-                log.error("get load extension error {}", String.valueOf(pipeline.getTarget().getType()));
+                log.error("get load extension error {}", String.valueOf(this.targetEntityDesc.getType()));
                 throw new UtopiaRunTimeException(ErrorCode.LOAD_GET_EXTENSION_FAIL);
             }
             this.loadRun = extension;

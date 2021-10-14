@@ -4,6 +4,7 @@ import com.utopia.data.transfer.core.code.service.ArbitrateEventService;
 import com.utopia.data.transfer.core.code.service.ConfigService;
 import com.utopia.data.transfer.core.code.service.MessageParser;
 import com.utopia.data.transfer.core.code.service.Task;
+import com.utopia.data.transfer.model.code.entity.EntityDesc;
 import com.utopia.data.transfer.model.code.pipeline.Pipeline;
 import com.utopia.extension.UtopiaSPIInject;
 import lombok.Getter;
@@ -32,6 +33,10 @@ public abstract class TaskImpl implements Runnable, Task {
     protected Long                      pipelineId;
     @Getter
     protected Pipeline                  pipeline;
+    @Getter
+    protected EntityDesc                sourceEntityDesc;
+    @Getter
+    protected EntityDesc                targetEntityDesc;
 
     protected volatile boolean          running = true;
 
@@ -43,6 +48,8 @@ public abstract class TaskImpl implements Runnable, Task {
     public void startTask(Long pipelineId) {
         this.pipelineId = pipelineId;
         this.pipeline = configService.getPipeline(pipelineId);
+        this.sourceEntityDesc = configService.getEntityDesc(this.pipeline.getSourceEntityId());
+        this.targetEntityDesc = configService.getEntityDesc(this.pipeline.getTargetEntityId());
 
         thread.setName(createTaskName(pipelineId, ClassUtils.getShortClassName(this.getClass())));
 

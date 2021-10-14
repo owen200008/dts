@@ -79,9 +79,9 @@ public class DbRuleMapping implements DbRuleTemplate {
             sql.append("update ");
             appendFullName(sql, pair);
             sql.append(" set ");
-            appendColumnSet(sql, data.getColumns(), SQL_SPLITE, columns);
+            appendColumnSet(false, sql, data.getColumns(), SQL_SPLITE, columns);
             if(existOldKeys && !CollectionUtils.isEmpty(data.getKeys())){
-                appendColumnSet(sql, data.getKeys(), SQL_SPLITE, columns);
+                appendColumnSet(true, sql, data.getKeys(), SQL_SPLITE, columns);
             }
             sql.append(" where (");
             if(existOldKeys){
@@ -108,8 +108,11 @@ public class DbRuleMapping implements DbRuleTemplate {
     }
 
 
-    protected void appendColumnSet(StringBuilder sql, List<EventColumn> columns, String separator, List<EventColumn> setColumns) {
+    protected void appendColumnSet(boolean existBefore, StringBuilder sql, List<EventColumn> columns, String separator, List<EventColumn> setColumns) {
         int size = columns.size();
+        if(size > 0 && existBefore){
+            sql.append(separator);
+        }
         for (int i = 0; i < size; i++) {
             EventColumn eventColumn = columns.get(i);
             if(eventColumn.isNull()){

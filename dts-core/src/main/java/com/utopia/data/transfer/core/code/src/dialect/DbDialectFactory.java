@@ -2,6 +2,7 @@ package com.utopia.data.transfer.core.code.src.dialect;
 
 
 import com.utopia.data.transfer.model.code.data.media.DataMediaSource;
+import com.utopia.data.transfer.model.code.entity.EntityDesc;
 
 
 /**
@@ -19,7 +20,7 @@ public interface DbDialectFactory {
      * @param source
      * @return
      */
-    DbDialect getDbDialect(Long pipelineId, DataMediaSource source);
+    DbDialect getDbDialect(Long pipelineId, EntityDesc source);
 
     /**
      *

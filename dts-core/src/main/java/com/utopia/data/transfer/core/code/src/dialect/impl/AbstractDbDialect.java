@@ -7,7 +7,6 @@ import com.utopia.data.transfer.core.archetype.base.ServiceException;
 import com.utopia.data.transfer.core.code.base.ErrorCode;
 import com.utopia.data.transfer.core.code.src.dialect.DbDialect;
 import com.utopia.data.transfer.core.code.src.dialect.DdlUtils;
-import com.utopia.data.transfer.core.code.src.dialect.SqlTemplate;
 import com.utopia.log.BasicLogUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;

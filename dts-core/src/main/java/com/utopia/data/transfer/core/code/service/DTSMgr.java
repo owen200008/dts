@@ -156,8 +156,7 @@ public class DTSMgr implements UtopiaShutdownHook.ShutdownCallbackFunc, LocalCac
             EntityDesc mainAEntity = new EntityDesc();
             mainAEntity.setId(main_a_entityId);
             mainAEntity.setName("main-a-test");
-            mainAEntity.setZkClusterId(main_a_entityId);
-            mainAEntity.setZkClusters(Arrays.asList("172.26.9.11:2181"));
+            mainAEntity.setType(DataMediaType.MYSQL);
             mainAEntity.setUrl("jdbc:mysql://main-a-db.blurams.vip:3306/dts?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC");
             mainAEntity.setUsername("root");
             mainAEntity.setPassword("root");
@@ -168,27 +167,13 @@ public class DTSMgr implements UtopiaShutdownHook.ShutdownCallbackFunc, LocalCac
             EntityDesc mainBEntity = new EntityDesc();
             mainBEntity.setId(main_b_entityId);
             mainBEntity.setName("main-b");
-            mainBEntity.setZkClusterId(main_b_entityId);
-            mainBEntity.setZkClusters(Arrays.asList("172.26.9.21:2181"));
+            mainBEntity.setType(DataMediaType.MYSQL);
             mainBEntity.setUrl("jdbc:mysql://main-b-db.blurams.vip:3306/dts?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC");
             mainBEntity.setUsername("root");
             mainBEntity.setPassword("root");
             mainBEntity.setDriver("com.mysql.cj.jdbc.Driver");
             mainBEntity.setMysql(new MysqlProperty());
             dtsServiceConf.setEntityDescs(Arrays.asList(mainAEntity, mainBEntity));
-
-
-            DataMediaSource dbMediaSourceMainA = new DataMediaSource();
-            dbMediaSourceMainA.setId(main_a_entityId);
-            dbMediaSourceMainA.setName("main-a-test");
-            dbMediaSourceMainA.setType(DataMediaType.MYSQL);
-            dbMediaSourceMainA.setEntityId(main_a_entityId);
-
-            DataMediaSource dbMediaSourceMainB = new DataMediaSource();
-            dbMediaSourceMainB.setId(main_b_entityId);
-            dbMediaSourceMainB.setName("main_b");
-            dbMediaSourceMainB.setType(DataMediaType.MYSQL);
-            dbMediaSourceMainB.setEntityId(main_b_entityId);
 
             PipelineParameter pipelineParameter = new PipelineParameter();
             SelectParamter selectParamter = new SelectParamter();
@@ -205,8 +190,8 @@ public class DTSMgr implements UtopiaShutdownHook.ShutdownCallbackFunc, LocalCac
             dtsServiceConf.setList(Arrays.asList(Pipeline.builder()
                     .id(11L)
                     .name("a_to_b")
-                    .source(dbMediaSourceMainA)
-                    .target(dbMediaSourceMainB)
+                    .sourceEntityId(main_a_entityId)
+                    .targetEntityId(main_b_entityId)
                     .pairs(Arrays.asList(DataMediaRulePair.builder()
                             .source(DataMediaRuleSource.builder()
                                     .id(11)

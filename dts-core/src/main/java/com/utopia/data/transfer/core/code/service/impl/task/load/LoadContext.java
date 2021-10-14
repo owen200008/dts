@@ -1,5 +1,6 @@
 package com.utopia.data.transfer.core.code.service.impl.task.load;
 
+import com.utopia.data.transfer.model.code.entity.EntityDesc;
 import com.utopia.data.transfer.model.code.pipeline.Pipeline;
 
 /**
@@ -15,4 +16,10 @@ public interface LoadContext {
      * @return
      */
     Pipeline getPipeline();
+
+    /**
+     * 获取targetentity
+     * @return
+     */
+    EntityDesc getTargetEntityDesc();
 }

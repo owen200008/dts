@@ -3,6 +3,7 @@ package com.utopia.data.transfer.core.code.service.impl.task;
 import com.alibaba.fastjson.JSON;
 import com.utopia.data.transfer.core.code.base.ErrorCode;
 import com.utopia.data.transfer.core.code.canal.CanalEmbedSelector;
+import com.utopia.data.transfer.core.code.canal.CanalZKConfig;
 import com.utopia.data.transfer.core.code.model.EventData;
 import com.utopia.data.transfer.core.code.model.Message;
 import com.utopia.data.transfer.core.code.service.impl.TaskImpl;
@@ -11,6 +12,7 @@ import com.utopia.data.transfer.model.code.pipeline.Pipeline;
 import com.utopia.data.transfer.model.code.pipeline.SelectParamter;
 import com.utopia.exception.UtopiaRunTimeException;
 import com.utopia.extension.UtopiaExtensionLoader;
+import com.utopia.extension.UtopiaSPIInject;
 import com.utopia.model.rsp.UtopiaResponseModel;
 import com.utopia.utils.BooleanMutex;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +36,9 @@ import java.util.concurrent.locks.LockSupport;
  */
 @Slf4j
 public class SelectTaskImpl extends TaskImpl {
+
+    @UtopiaSPIInject
+    private CanalZKConfig canalZKConfig;
 
     // 运行调度控制
     private volatile boolean            isStart             = false;
@@ -121,7 +126,7 @@ public class SelectTaskImpl extends TaskImpl {
                     new LinkedBlockingQueue<Runnable>());
             // 启动selector
             // 获取对应的selector
-            canalSelector = new CanalEmbedSelector(pipelineId, configService, messageParser);
+            canalSelector = new CanalEmbedSelector(pipelineId, configService, messageParser, this.sourceEntityDesc, canalZKConfig);
             canalSelector.start();
 
             startProcessSelect();

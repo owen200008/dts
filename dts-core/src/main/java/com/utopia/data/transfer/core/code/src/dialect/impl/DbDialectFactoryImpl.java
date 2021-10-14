@@ -13,6 +13,7 @@ import com.utopia.data.transfer.model.code.data.media.DataMediaSource;
 import com.utopia.data.transfer.core.code.src.dialect.DbDialect;
 import com.utopia.data.transfer.core.code.src.dialect.DbDialectFactory;
 import com.utopia.data.transfer.core.code.src.dialect.DbDialectHandler;
+import com.utopia.data.transfer.model.code.entity.EntityDesc;
 import com.utopia.extension.UtopiaExtensionLoader;
 import com.utopia.log.BasicLogUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -44,26 +45,26 @@ public class DbDialectFactoryImpl implements DbDialectFactory, DisposableBean {
     /**
      * 第一层pipelineId , 第二层DbMediaSource id
      */
-    private LoadingCache<Long, LoadingCache<DataMediaSource, DbDialect>> dialects;
+    private LoadingCache<Long, LoadingCache<EntityDesc, DbDialect>> dialects;
 
     public DbDialectFactoryImpl(){
-        this.dialects = CacheBuilder.newBuilder().softValues().removalListener((RemovalListener<Long, LoadingCache<DataMediaSource, DbDialect>>) result -> {
+        this.dialects = CacheBuilder.newBuilder().softValues().removalListener((RemovalListener<Long, LoadingCache<EntityDesc, DbDialect>>) result -> {
             if (result == null) {
                 return;
             }
-            LoadingCache<DataMediaSource, DbDialect> value = result.getValue();
+            LoadingCache<EntityDesc, DbDialect> value = result.getValue();
             if (value == null) {
                 return;
             }
             for (DbDialect dbDialect : value.asMap().values()) {
                 dbDialect.destory();
             }
-        }).build(new CacheLoader<Long, LoadingCache<DataMediaSource, DbDialect>>() {
+        }).build(new CacheLoader<Long, LoadingCache<EntityDesc, DbDialect>>() {
             @Override
-            public LoadingCache<DataMediaSource, DbDialect> load(Long pipelineId) throws Exception {
-                return CacheBuilder.newBuilder().build(new CacheLoader<DataMediaSource, DbDialect>() {
+            public LoadingCache<EntityDesc, DbDialect> load(Long pipelineId) throws Exception {
+                return CacheBuilder.newBuilder().build(new CacheLoader<EntityDesc, DbDialect>() {
                     @Override
-                    public DbDialect load(DataMediaSource source) throws Exception {
+                    public DbDialect load(EntityDesc source) throws Exception {
                         DataSourceItem<DataSource> dataSource = dataSourceService.getDataSource(pipelineId, source);
                         final JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource.getItem());
                         return (DbDialect) jdbcTemplate.execute((ConnectionCallback) c -> {
@@ -105,7 +106,7 @@ public class DbDialectFactoryImpl implements DbDialectFactory, DisposableBean {
     }
 
     @Override
-    public DbDialect getDbDialect(Long pipelineId, DataMediaSource source) {
+    public DbDialect getDbDialect(Long pipelineId, EntityDesc source) {
         try {
             return dialects.get(pipelineId).get(source);
         } catch (ExecutionException e) {
