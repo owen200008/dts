@@ -96,13 +96,13 @@ public class LoadRunDB implements LoadRun {
             int sqlType = column.getColumnType();
 
             Object param = null;
-            if (dbDialect instanceof MysqlDialect
-                    && (sqlType == Types.TIME || sqlType == Types.TIMESTAMP || sqlType == Types.DATE)) {
-                // 解决mysql的0000-00-00 00:00:00问题，直接依赖mysql
-                // driver进行处理，如果转化为Timestamp会出错
-                param = column.getColumnValue();
-            } else {
-                if(!column.isNull()){
+            if(!column.isNull()){
+                if (dbDialect instanceof MysqlDialect
+                        && (sqlType == Types.TIME || sqlType == Types.TIMESTAMP || sqlType == Types.DATE)) {
+                    // 解决mysql的0000-00-00 00:00:00问题，直接依赖mysql
+                    // driver进行处理，如果转化为Timestamp会出错
+                    param = column.getColumnValue();
+                } else {
                     param = SqlUtils.stringToSqlValue(column.getColumnValue(),
                             sqlType,
                             dbDialect.isEmptyStringNulled());

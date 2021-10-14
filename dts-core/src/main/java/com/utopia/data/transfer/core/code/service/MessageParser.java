@@ -239,7 +239,7 @@ public class MessageParser {
 
         //更新和删除需要有主键
         if(eventType.isUpdate()){
-            if(keyColumns.isEmpty()){
+            if(keyColumns.isEmpty()) {
                 throw new ServiceException(ErrorCode.DTS_KEY_COLUMN_NOFIND.getCode(), "this update rowdata has no pks , entry: " + entry.toString() + " and rowData: "
                         + rowData);
             }

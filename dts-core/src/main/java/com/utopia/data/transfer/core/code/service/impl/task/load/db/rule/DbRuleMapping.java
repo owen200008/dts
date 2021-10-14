@@ -32,12 +32,14 @@ public class DbRuleMapping implements DbRuleTemplate {
             sql.append("insert into ");
             appendFullName(sql, pair);
             sql.append("(");
+            boolean bExistBefore = false;
             if(!CollectionUtils.isEmpty(data.getKeys())){
-                appendColumnName(sql, data.getKeys());
+                appendColumnName(false, sql, data.getKeys());
                 columns.addAll(data.getKeys());
+                bExistBefore = true;
             }
             if(!CollectionUtils.isEmpty(data.getColumns())){
-                appendColumnName(sql, data.getColumns());
+                appendColumnName(bExistBefore, sql, data.getColumns());
                 columns.addAll(data.getColumns());
             }
             sql.append(") values (");
@@ -117,7 +119,6 @@ public class DbRuleMapping implements DbRuleTemplate {
                 sql.append(" ").append(columns.get(i).getColumnName()).append(" = ").append("? ");
                 setColumns.add(eventColumn);
             }
-            setColumns.add(eventColumn);
             if (i != size - 1) {
                 sql.append(separator);
             }
@@ -141,8 +142,11 @@ public class DbRuleMapping implements DbRuleTemplate {
         }
     }
 
-    protected void appendColumnName(StringBuilder sql, List<EventColumn> columns) {
+    protected void appendColumnName(boolean existBefore, StringBuilder sql, List<EventColumn> columns) {
         int size = columns.size();
+        if(size > 0 && existBefore){
+            sql.append(" , ");
+        }
         for (int i = 0; i < size; i++) {
             sql.append(columns.get(i).getColumnName()).append((i + 1 < size) ? " , " : "");
         }

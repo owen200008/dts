@@ -159,8 +159,8 @@ public class DTSMgr implements UtopiaShutdownHook.ShutdownCallbackFunc, LocalCac
             mainAEntity.setZkClusterId(main_a_entityId);
             mainAEntity.setZkClusters(Arrays.asList("172.26.9.11:2181"));
             mainAEntity.setUrl("jdbc:mysql://main-a-db.blurams.vip:3306/dts?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC");
-            mainAEntity.setUsername("dev");
-            mainAEntity.setPassword("dev");
+            mainAEntity.setUsername("root");
+            mainAEntity.setPassword("root");
             mainAEntity.setDriver("com.mysql.cj.jdbc.Driver");
             mainAEntity.setMysql(new MysqlProperty());
 
@@ -171,8 +171,8 @@ public class DTSMgr implements UtopiaShutdownHook.ShutdownCallbackFunc, LocalCac
             mainBEntity.setZkClusterId(main_b_entityId);
             mainBEntity.setZkClusters(Arrays.asList("172.26.9.21:2181"));
             mainBEntity.setUrl("jdbc:mysql://main-b-db.blurams.vip:3306/dts?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC");
-            mainBEntity.setUsername("dev");
-            mainBEntity.setPassword("dev");
+            mainBEntity.setUsername("root");
+            mainBEntity.setPassword("root");
             mainBEntity.setDriver("com.mysql.cj.jdbc.Driver");
             mainBEntity.setMysql(new MysqlProperty());
             dtsServiceConf.setEntityDescs(Arrays.asList(mainAEntity, mainBEntity));
