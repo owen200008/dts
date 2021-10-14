@@ -6,15 +6,10 @@ import com.utopia.data.transfer.core.code.service.MessageParser;
 import com.utopia.data.transfer.core.code.service.Task;
 import com.utopia.data.transfer.model.code.pipeline.Pipeline;
 import com.utopia.extension.UtopiaSPIInject;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Future;
 
 /**
  * @author owen.cai
@@ -33,13 +28,12 @@ public abstract class TaskImpl implements Runnable, Task {
     protected ArbitrateEventService arbitrateEventService;
 
     protected Thread                    thread = new Thread(this);
+    @Getter
     protected Long                      pipelineId;
+    @Getter
     protected Pipeline                  pipeline;
 
-
-
     protected volatile boolean          running = true;
-    protected Map<Long, Future>         pendingFuture = new HashMap();
 
     protected String createTaskName(long pipelineId, String taskName) {
         return new StringBuilder().append("pipelineId = ").append(pipelineId).append(",taskName = ").append(taskName).toString();
@@ -59,19 +53,6 @@ public abstract class TaskImpl implements Runnable, Task {
     public void shutdown() {
         running = false;
         thread.interrupt();
-
-        List<Future> cancelFutures = new ArrayList();
-        for (Map.Entry<Long, Future> entry : pendingFuture.entrySet()) {
-            if (!entry.getValue().isDone()) {
-                log.warn("WARN ## Task future processId[{}] canceled!", entry.getKey());
-                cancelFutures.add(entry.getValue());
-            }
-        }
-
-        for (Future future : cancelFutures) {
-            future.cancel(true);
-        }
-        pendingFuture.clear();
     }
 
     @Override

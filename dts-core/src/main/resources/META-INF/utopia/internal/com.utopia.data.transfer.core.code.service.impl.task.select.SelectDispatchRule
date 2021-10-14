@@ -1,1 +1,2 @@
 QUEUE=com.utopia.data.transfer.core.code.service.impl.task.select.dispatch.SelectDispatchRuleQueue
+DUBBO=com.utopia.data.transfer.core.code.service.impl.task.select.dispatch.SelectDispatchDubbo

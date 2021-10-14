@@ -17,17 +17,12 @@ import java.io.Serializable;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class DataMedia implements Serializable {
+public class DataMediaRuleSource implements Serializable {
 
     /**
      * 唯一描述表信息
      */
     private long                id;
-
-    /**
-     * 介质源地址信息
-     */
-    private DataMediaSource     source;
 
     private String              namespace;
     private String              value;

@@ -1,5 +1,7 @@
 package com.utopia.data.transfer.core.code.src.dialect;
 
+import com.utopia.utils.CollectionUtils;
+
 /**
  * @author owen.cai
  * @create_date 2021/9/24
@@ -24,9 +26,9 @@ public abstract class AbstractSqlTemplate implements SqlTemplate {
     }
 
     @Override
-    public String getUpdateSql(String schemaName, String tableName, String[] pkNames, String[] columnNames, boolean updatePks, String shardColumn) {
+    public String getUpdateSql(String schemaName, String tableName, String[] pkNames, String[] columnNames) {
         StringBuilder sql = new StringBuilder("update " + getFullName(schemaName, tableName) + " set ");
-        appendExcludeSingleShardColumnEquals(sql, columnNames, ",", updatePks, shardColumn);
+        appendExcludeSingleShardColumnEquals(sql, columnNames, ",");
         sql.append(" where (");
         appendColumnEquals(sql, pkNames, "and");
         sql.append(")");
@@ -36,10 +38,15 @@ public abstract class AbstractSqlTemplate implements SqlTemplate {
     @Override
     public String getInsertSql(String schemaName, String tableName, String[] pkNames, String[] columnNames) {
         StringBuilder sql = new StringBuilder("insert into " + getFullName(schemaName, tableName) + "(");
-        String[] allColumns = new String[pkNames.length + columnNames.length];
-        System.arraycopy(columnNames, 0, allColumns, 0, columnNames.length);
-        System.arraycopy(pkNames, 0, allColumns, columnNames.length, pkNames.length);
+        int nLength = (pkNames == null ? 0 : pkNames.length) + (columnNames == null ? 0 : columnNames.length);
 
+        String[] allColumns = new String[nLength];
+        if(columnNames != null){
+            System.arraycopy(columnNames, 0, allColumns, 0, columnNames.length);
+        }
+        if(pkNames != null){
+            System.arraycopy(pkNames, 0, allColumns, columnNames.length, pkNames.length);
+        }
         int size = allColumns.length;
         for (int i = 0; i < size; i++) {
             sql.append(appendEscape(allColumns[i])).append((i + 1 < size) ? "," : "");
@@ -52,9 +59,9 @@ public abstract class AbstractSqlTemplate implements SqlTemplate {
     }
 
     @Override
-    public String getDeleteSql(String schemaName, String tableName, String[] pkNames) {
+    public String getDeleteSql(String schemaName, String tableName, String[] pkNames, String[] columnNames) {
         StringBuilder sql = new StringBuilder("delete from " + getFullName(schemaName, tableName) + " where ");
-        appendColumnEquals(sql, pkNames, "and");
+        appendColumnEquals(sql, pkNames == null ? columnNames : pkNames, "and");
         return sql.toString();
     }
 
@@ -88,15 +95,10 @@ public abstract class AbstractSqlTemplate implements SqlTemplate {
      * @param sql
      * @param columns
      * @param separator
-     * @param excludeShardColumn 需要排除的 拆分列
      */
-    protected void appendExcludeSingleShardColumnEquals(StringBuilder sql, String[] columns, String separator, boolean updatePks, String excludeShardColumn) {
+    protected void appendExcludeSingleShardColumnEquals(StringBuilder sql, String[] columns, String separator) {
         int size = columns.length;
         for (int i = 0; i < size; i++) {
-            // 如果是DRDS数据库, 并且存在拆分键 且 等于当前循环列, 跳过
-            if(!updatePks && excludeShardColumn != null && columns[i].equals(excludeShardColumn)){
-                continue;
-            }
             sql.append(" ").append(appendEscape(columns[i])).append(" = ").append("? ");
             if (i != size - 1) {
                 sql.append(separator);

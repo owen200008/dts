@@ -5,14 +5,14 @@ import com.utopia.data.transfer.core.archetype.base.ServiceException;
 import com.utopia.data.transfer.core.code.base.ErrorCode;
 import com.utopia.data.transfer.core.code.utils.ConfigHelper;
 import com.utopia.data.transfer.core.code.utils.EventColumnIndexComparable;
-import com.utopia.data.transfer.model.code.data.media.DataMedia;
-import com.utopia.data.transfer.model.code.data.media.DataMediaPair;
+import com.utopia.data.transfer.model.code.data.media.DataMediaRuleSource;
+import com.utopia.data.transfer.model.code.data.media.DataMediaRulePair;
+import com.utopia.data.transfer.model.code.entity.EventColumn;
+import com.utopia.data.transfer.model.code.event.EventType;
 import com.utopia.data.transfer.model.code.pipeline.Pipeline;
 import com.utopia.data.transfer.core.code.src.dialect.DbDialect;
 import com.utopia.data.transfer.core.code.model.EventData;
-import com.utopia.data.transfer.core.code.model.EventType;
 import com.utopia.data.transfer.core.code.src.dialect.DbDialectFactory;
-import com.utopia.data.transfer.core.code.src.model.EventColumn;
 import com.utopia.utils.CollectionUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -121,14 +121,14 @@ public class MessageParser {
                 notExistReturnNull = true;
             }
 
-            DataMedia dataMedia = ConfigHelper.findSourceDataMedia(pipeline,
+            DataMediaRuleSource dataMedia = ConfigHelper.findSourceDataMedia(pipeline,
                     schemaName,
                     tableName,
                     notExistReturnNull);
             // 如果EventType是CREATE/ALTER，需要reload
             // DataMediaInfo;并且把CREATE/ALTER类型的事件丢弃掉.
             if (dataMedia != null && (eventType.isCreate() || eventType.isAlter() || eventType.isRename())) {
-                DbDialect dbDialect = dbDialectFactory.getDbDialect(pipeline.getId(), dataMedia.getSource());
+                DbDialect dbDialect = dbDialectFactory.getDbDialect(pipeline.getId(), pipeline.getSource());
                 dbDialect.reloadTable(schemaName, tableName);// 更新下meta信息
             }
 
@@ -163,10 +163,10 @@ public class MessageParser {
         eventData.setExecuteTime(entry.getHeader().getExecuteTime());
         EventType eventType = eventData.getEventType();
 
-        DataMediaPair dataMediaPair = ConfigHelper.findDataMediaPairBySourceName(pipeline,
+        DataMediaRulePair dataMediaPair = ConfigHelper.findDataMediaPairBySourceName(pipeline,
                 eventData.getSchemaName(),
                 eventData.getTableName());
-        DataMedia dataMedia = dataMediaPair.getSource();
+        DataMediaRuleSource dataMedia = dataMediaPair.getSource();
         eventData.setTableId(dataMedia.getId());
 
         List<CanalEntry.Column> beforeColumns = rowData.getBeforeColumnsList();
@@ -237,6 +237,13 @@ public class MessageParser {
             }
         }
 
+        //更新和删除需要有主键
+        if(eventType.isUpdate()){
+            if(keyColumns.isEmpty()){
+                throw new ServiceException(ErrorCode.DTS_KEY_COLUMN_NOFIND.getCode(), "this update rowdata has no pks , entry: " + entry.toString() + " and rowData: "
+                        + rowData);
+            }
+        }
         List<EventColumn> keys = new ArrayList<EventColumn>(keyColumns.values());
         List<EventColumn> oldKeys = new ArrayList<EventColumn>(oldKeyColumns.values());
         List<EventColumn> columns = new ArrayList<EventColumn>(notKeyColumns.values());
@@ -244,20 +251,15 @@ public class MessageParser {
         Collections.sort(keys, new EventColumnIndexComparable());
         Collections.sort(oldKeys, new EventColumnIndexComparable());
         Collections.sort(columns, new EventColumnIndexComparable());
-        if (!keyColumns.isEmpty()) {
-            eventData.setKeys(keys);
-            if (eventData.getEventType().isUpdate() && !oldKeys.equals(keys)) {
-                // update类型，如果存在主键不同,则记录下old
-                // keys为变更前的主键
-                eventData.setOldKeys(oldKeys);
-            }
-            eventData.setColumns(columns);
-            eventData.setAllColumns(allColumns);
-        } else {
-            throw new ServiceException(ErrorCode.DTS_KEY_COLUMN_NOFIND.getCode(), "this rowdata has no pks , entry: " + entry.toString() + " and rowData: "
-                    + rowData);
-        }
 
+        eventData.setKeys(keys);
+        if (eventData.getEventType().isUpdate() && !oldKeys.equals(keys)) {
+            // update类型，如果存在主键不同,则记录下old
+            // keys为变更前的主键
+            eventData.setOldKeys(oldKeys);
+        }
+        eventData.setColumns(columns);
+        eventData.setAllColumns(allColumns);
         return eventData;
     }
 

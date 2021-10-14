@@ -27,6 +27,7 @@ import com.utopia.data.transfer.core.code.service.ConfigService;
 import com.utopia.data.transfer.core.code.utils.MessageDumper;
 import com.utopia.data.transfer.core.code.service.MessageParser;
 import com.utopia.utils.CollectionUtils;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.SystemUtils;
 import org.slf4j.MDC;
@@ -53,7 +54,9 @@ public class CanalEmbedSelector {
     private static final String     SEP              = SystemUtils.LINE_SEPARATOR;
     private int                     logSplitSize     = 50;
 
+    @Getter
     private Pipeline                pipeline;
+    private EntityDesc              source;
     private ConfigService           configService;
     private MessageParser           messageParser;
     private CanalDownStreamHandler  handler;
@@ -83,12 +86,13 @@ public class CanalEmbedSelector {
         if (running) {
             return;
         }
+        this.source = configService.getEntityDesc(pipeline.getSource().getEntityId());
         this.filter = CanalFilterSupport.makeFilterExpression(pipeline);
 
         canalServer.setCanalInstanceGenerator(new CanalInstanceGenerator() {
             @Override
             public CanalInstance generate(String entityName) {
-                Canal canal = createCanalByEntity(configService.getEntityDesc(entityName));
+                Canal canal = createCanalByEntity(source);
 
                 CanalInstanceWithManager instance = new CanalInstanceWithManager(canal, filter){
                     @Override
@@ -130,8 +134,10 @@ public class CanalEmbedSelector {
 
         canalServer.start();
 
-        canalServer.start(pipeline.getParams().getEntityName());
-        this.clientIdentity = new ClientIdentity(pipeline.getParams().getEntityName(), pipeline.getParams().getClientId(), filter);
+
+
+        canalServer.start(this.source.getName());
+        this.clientIdentity = new ClientIdentity(this.source.getName(), pipeline.getParams().getClientId(), filter);
         /**
          * 发起一次订阅
          */
@@ -152,7 +158,7 @@ public class CanalEmbedSelector {
         }
 
         handler = null;
-        canalServer.stop(pipeline.getParams().getEntityName());
+        canalServer.stop(this.source.getName());
         canalServer.stop();
     }
 
@@ -162,7 +168,8 @@ public class CanalEmbedSelector {
         canal.setName(entityDesc.getName());
         canal.setDesc(entityDesc.getDesc());
         //canal.setStatus(CanalStatus.START);
-        long slaveId = 10000;// 默认基数
+        // 默认基数
+        long slaveId = 10000;
         if (entityDesc.getSlaveId() != null) {
             slaveId = entityDesc.getSlaveId();
         }

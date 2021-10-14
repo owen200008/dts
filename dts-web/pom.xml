@@ -81,6 +81,10 @@
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.utopia</groupId>
+      <artifactId>utopia-apolicy-dubbo</artifactId>
+    </dependency>
 
     <!-- test -->
     <dependency>

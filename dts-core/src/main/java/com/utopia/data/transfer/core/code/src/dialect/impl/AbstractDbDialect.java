@@ -38,7 +38,6 @@ public abstract class AbstractDbDialect implements DbDialect {
     protected int                      databaseMinorVersion;
     protected String                   databaseName;
     protected JdbcTemplate             jdbcTemplate;
-    protected SqlTemplate              sqlTemplate;
     protected LobHandler               lobHandler;
     protected TransactionTemplate      transactionTemplate;
     protected LoadingCache<List<String>, Table> tables;
@@ -170,11 +169,6 @@ public abstract class AbstractDbDialect implements DbDialect {
     @Override
     public TransactionTemplate getTransactionTemplate() {
         return transactionTemplate;
-    }
-
-    @Override
-    public SqlTemplate getSqlTemplate() {
-        return sqlTemplate;
     }
 
     @Override

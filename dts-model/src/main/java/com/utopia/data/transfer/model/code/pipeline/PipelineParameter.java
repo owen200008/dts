@@ -16,11 +16,6 @@ public class PipelineParameter implements Serializable {
     private SelectParamter selectParamter;
 
     /**
-     * 实体名
-     */
-    private String entityName;
-
-    /**
      * 订阅的客户端id
      */
     private Short clientId;
@@ -44,4 +39,14 @@ public class PipelineParameter implements Serializable {
      * 是否需要dumpSelector的详细信息
      */
     private Boolean               dumpSelectorDetail         = true;
+
+    /**
+     * 资源超时时间
+     */
+    private Integer resourceTimeout = 60;
+
+    /**
+     * 单次处理超时时间
+     */
+    private Integer processTimeout = 10;
 }

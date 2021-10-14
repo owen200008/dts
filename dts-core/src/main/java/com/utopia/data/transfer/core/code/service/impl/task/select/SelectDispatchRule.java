@@ -2,8 +2,11 @@ package com.utopia.data.transfer.core.code.service.impl.task.select;
 
 import com.utopia.data.transfer.core.code.model.EventData;
 import com.utopia.data.transfer.core.code.model.Message;
+import com.utopia.data.transfer.model.code.pipeline.Pipeline;
 import com.utopia.extension.UtopiaSPI;
-import com.utopia.utils.BooleanMutex;
+import com.utopia.model.rsp.UtopiaResponseModel;
+
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @author owen.cai
@@ -21,8 +24,9 @@ public interface SelectDispatchRule {
 
     /**
      *
+     * @param pipeline id
      * @param message
      * @return
      */
-    BooleanMutex dispatch(Message<EventData> message);
+    CompletableFuture<UtopiaResponseModel> dispatch(Pipeline pipeline, Message<EventData> message);
 }

@@ -1,9 +1,11 @@
 package com.utopia.data.transfer.core.code.base.datasource.impl;
 
 import com.utopia.data.transfer.core.code.base.datasource.DataSourceHandler;
+import com.utopia.data.transfer.core.code.service.ConfigService;
 import com.utopia.data.transfer.model.code.data.media.DataMediaSource;
 import com.utopia.data.transfer.core.code.base.datasource.bean.DataSourceItem;
-import com.utopia.data.transfer.core.code.base.datasource.bean.db.mysql.MysqlMediaSource;
+import com.utopia.data.transfer.model.code.entity.EntityDesc;
+import com.utopia.extension.UtopiaSPIInject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.lang3.StringUtils;
@@ -21,30 +23,34 @@ import java.util.Arrays;
 @Slf4j
 public class DataSourceHandlerMysql implements DataSourceHandler {
 
+    @UtopiaSPIInject
+    private ConfigService configService;
+
     @Override
     public DataSourceItem create(DataMediaSource dataMediaSource) {
-        MysqlMediaSource mysqlMediaSource = (MysqlMediaSource)dataMediaSource;
+
+        EntityDesc entityDesc = configService.getEntityDesc(dataMediaSource.getEntityId());
 
         BasicDataSource dbcpDs = new BasicDataSource();
 
         // 初始化连接池时创建的连接数
-        dbcpDs.setInitialSize(mysqlMediaSource.getInitialSize());
+        dbcpDs.setInitialSize(entityDesc.getMysql().getInitialSize());
         // 连接池允许的最大并发连接数，值为非正数时表示不限制
-        dbcpDs.setMaxActive(mysqlMediaSource.getMaxActive());
+        dbcpDs.setMaxActive(entityDesc.getMysql().getMaxActive());
         // 连接池中的最大空闲连接数，超过时，多余的空闲连接将会被释放，值为负数时表示不限制
-        dbcpDs.setMaxIdle(mysqlMediaSource.getMaxIdle());
+        dbcpDs.setMaxIdle(entityDesc.getMysql().getMaxIdle());
         // 连接池中的最小空闲连接数，低于此数值时将会创建所欠缺的连接，值为0时表示不创建
-        dbcpDs.setMinIdle(mysqlMediaSource.getMinIdle());
+        dbcpDs.setMinIdle(entityDesc.getMysql().getMinIdle());
         // 以毫秒表示的当连接池中没有可用连接时等待可用连接返回的时间，超时则抛出异常，值为-1时表示无限等待
-        dbcpDs.setMaxWait(mysqlMediaSource.getMaxWait());
+        dbcpDs.setMaxWait(entityDesc.getMysql().getMaxWait());
         // 是否清除已经超过removeAbandonedTimeout设置的无效连接
         dbcpDs.setRemoveAbandoned(true);
         // 当清除无效链接时是否在日志中记录清除信息的标志
         dbcpDs.setLogAbandoned(true);
         // 以秒表示清除无效链接的时限
-        dbcpDs.setRemoveAbandonedTimeout(mysqlMediaSource.getRemoveAbandonedTimeout());
+        dbcpDs.setRemoveAbandonedTimeout(entityDesc.getMysql().getRemoveAbandonedTimeout());
         // 确保连接池中没有已破损的连接
-        dbcpDs.setNumTestsPerEvictionRun(mysqlMediaSource.getNumTestsPerEvictionRun());
+        dbcpDs.setNumTestsPerEvictionRun(entityDesc.getMysql().getNumTestsPerEvictionRun());
         // 指定连接被调用时是否经过校验
         dbcpDs.setTestOnBorrow(false);
         // 指定连接返回到池中时是否经过校验
@@ -52,15 +58,15 @@ public class DataSourceHandlerMysql implements DataSourceHandler {
         // 指定连接进入空闲状态时是否经过空闲对象驱逐进程的校验
         dbcpDs.setTestWhileIdle(true);
         // 以毫秒表示空闲对象驱逐进程由运行状态进入休眠状态的时长，值为非正数时表示不运行任何空闲对象驱逐进程
-        dbcpDs.setTimeBetweenEvictionRunsMillis(mysqlMediaSource.getTimeBetweenEvictionRunsMillis());
+        dbcpDs.setTimeBetweenEvictionRunsMillis(entityDesc.getMysql().getTimeBetweenEvictionRunsMillis());
         // 以毫秒表示连接被空闲对象驱逐进程驱逐前在池中保持空闲状态的最小时间
-        dbcpDs.setMinEvictableIdleTimeMillis(mysqlMediaSource.getMinEvictableIdleTimeMillis());
+        dbcpDs.setMinEvictableIdleTimeMillis(entityDesc.getMysql().getMinEvictableIdleTimeMillis());
 
         // 动态的参数
-        dbcpDs.setDriverClassName(mysqlMediaSource.getEntityDesc().getDriver());
-        dbcpDs.setUrl(mysqlMediaSource.getEntityDesc().getUrl());
-        dbcpDs.setUsername(mysqlMediaSource.getEntityDesc().getUsername());
-        dbcpDs.setPassword(mysqlMediaSource.getEntityDesc().getPassword());
+        dbcpDs.setDriverClassName(entityDesc.getDriver());
+        dbcpDs.setUrl(entityDesc.getUrl());
+        dbcpDs.setUsername(entityDesc.getUsername());
+        dbcpDs.setPassword(entityDesc.getPassword());
 
         // open the batch mode for mysql since 5.1.8
         dbcpDs.addConnectionProperty("useServerPrepStmts", "false");
@@ -73,12 +79,12 @@ public class DataSourceHandlerMysql implements DataSourceHandler {
         dbcpDs.addConnectionProperty("noDatetimeStringSync", "true");
         // 允许sqlMode为非严格模式
         dbcpDs.addConnectionProperty("jdbcCompliantTruncation", "false");
-        if (StringUtils.isNotEmpty(mysqlMediaSource.getEncode())) {
-            if (StringUtils.equalsIgnoreCase(mysqlMediaSource.getEncode(), "utf8mb4")) {
+        if (StringUtils.isNotEmpty(dataMediaSource.getEncode())) {
+            if (StringUtils.equalsIgnoreCase(dataMediaSource.getEncode(), "utf8mb4")) {
                 dbcpDs.addConnectionProperty("characterEncoding", "utf8");
                 dbcpDs.setConnectionInitSqls(Arrays.asList("set names utf8mb4"));
             } else {
-                dbcpDs.addConnectionProperty("characterEncoding", mysqlMediaSource.getEncode());
+                dbcpDs.addConnectionProperty("characterEncoding", dataMediaSource.getEncode());
             }
         }
         dbcpDs.setValidationQuery("select 1");

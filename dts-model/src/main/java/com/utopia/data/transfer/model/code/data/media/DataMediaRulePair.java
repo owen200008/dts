@@ -17,7 +17,7 @@ import java.io.Serializable;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class DataMediaPair implements Serializable {
-    private DataMedia       source;
-    private DataMedia       target;
+public class DataMediaRulePair implements Serializable {
+    private DataMediaRuleSource source;
+    private DataMediaRuleTarget target;
 }

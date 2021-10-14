@@ -1,4 +1,4 @@
-package com.utopia.data.transfer.core.code.src.model;
+package com.utopia.data.transfer.model.code.entity;
 
 import lombok.Data;
 

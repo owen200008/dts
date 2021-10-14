@@ -1,5 +1,6 @@
 package com.utopia.data.transfer.core.code.service.impl.task;
 
+import com.alibaba.fastjson.JSON;
 import com.utopia.data.transfer.core.code.base.ErrorCode;
 import com.utopia.data.transfer.core.code.canal.CanalEmbedSelector;
 import com.utopia.data.transfer.core.code.model.EventData;
@@ -10,12 +11,14 @@ import com.utopia.data.transfer.model.code.pipeline.Pipeline;
 import com.utopia.data.transfer.model.code.pipeline.SelectParamter;
 import com.utopia.exception.UtopiaRunTimeException;
 import com.utopia.extension.UtopiaExtensionLoader;
+import com.utopia.model.rsp.UtopiaResponseModel;
 import com.utopia.utils.BooleanMutex;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ClassUtils;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -42,7 +45,6 @@ public class SelectTaskImpl extends TaskImpl {
 
     @Override
     public void startTask(Long pipelineId) {
-
         Pipeline pipeline = configService.getPipeline(pipelineId);
 
         SelectParamter selectParamter = pipeline.getParams().getSelectParamter();
@@ -57,14 +59,7 @@ public class SelectTaskImpl extends TaskImpl {
             log.error("SelectDispatchRule init fail {} {}", selectParamter.getDispatchRule(), selectParamter.getDispatchRuleParam());
             throw new UtopiaRunTimeException(ErrorCode.SELECT_RULE_INIT_FAIL);
         }
-
         super.startTask(pipelineId);
-        this.pipelineId = pipelineId;
-        this.pipeline = configService.getPipeline(pipelineId);
-
-        thread.setName(createTaskName(pipelineId, ClassUtils.getShortClassName(this.getClass())));
-
-        thread.start();
     }
 
     @Override
@@ -74,7 +69,7 @@ public class SelectTaskImpl extends TaskImpl {
             while (running) {
                 try {
                     if (isStart) {
-                        boolean working = arbitrateEventService.getPipelineEventService().checkResource(pipelineId);
+                        boolean working = arbitrateEventService.getPipelineEventService().checkSelectResource(pipelineId);
                         if (!working) {
                             stopup(false);
                         }
@@ -93,6 +88,10 @@ public class SelectTaskImpl extends TaskImpl {
                 } catch (Throwable e) {
                     if (isInterrupt(e)) {
                         log.info("select is interrupt", e);
+                        try {
+                            stopup(false);
+                        } catch (InterruptedException ex) {
+                        }
                         return;
                     } else {
                         log.warn("select is failed.", e);
@@ -114,7 +113,7 @@ public class SelectTaskImpl extends TaskImpl {
     private boolean startup() {
         //获取资源
         try {
-            arbitrateEventService.getPipelineEventService().waitResource(pipelineId);
+            arbitrateEventService.getPipelineEventService().waitSelectResource(pipelineId);
 
             // 启动两个线程
             executor = new ThreadPoolExecutor(1, 2,
@@ -132,7 +131,7 @@ public class SelectTaskImpl extends TaskImpl {
         } catch (Exception e) {
             log.error("startup waitResource exception {}", pipelineId, e);
             try {
-                arbitrateEventService.getPipelineEventService().releaseResource(pipelineId);
+                arbitrateEventService.getPipelineEventService().releaseSelectResource(pipelineId);
             } catch (ExecutionException ex) {
                 log.error("releaseResource exception {}", pipelineId, ex);
             }
@@ -148,6 +147,12 @@ public class SelectTaskImpl extends TaskImpl {
 
             if (canalSelector != null && canalSelector.isStart()) {
                 canalSelector.stop();
+            }
+
+            try {
+                arbitrateEventService.getPipelineEventService().releaseSelectResource(pipelineId);
+            } catch (ExecutionException e) {
+                log.error("releaseSelectResource error");
             }
 
             if (needInterrut) {
@@ -183,43 +188,46 @@ public class SelectTaskImpl extends TaskImpl {
                 }
 
                 Message<EventData> message = selector.get();
-
-                //开始select的时间
-                long startTime = System.currentTimeMillis();
-                //10s取一次一定执行完成
-                //多减少1s
-                if(this.lastUpdateTime + arbitrateEventService.getPipelineEventService().getResourceTimeout() * 1000
-                        - arbitrateEventService.getPipelineEventService().getProcessTimeout() * 1000
-                        - 1000 <= startTime){
-                    //等待1s后check
-                    Thread.sleep(1000);
-                    continue;
-                }
-
-                // 如果数据为空
-                if (!CollectionUtils.isEmpty(message.getDatas())) {
-                    //这边是串行的核心是提高并发，直接按规则打入队列并发处理
-                    BooleanMutex dispatch = this.selectDispatchRule.dispatch(message);
-
-                    //最多等待10s，如果10s还没回来，就回退吧
-                    if(!dispatch.get(10000)) {
-                        log.error("dispatch no complate {}", message.getId());
-                        sendRollbackTermin();
+                do{
+                    //开始select的时间
+                    long startTime = System.currentTimeMillis();
+                    //10s取一次一定执行完成
+                    //多减少1s
+                    if(this.lastUpdateTime + pipeline.getParams().getResourceTimeout() * 1000
+                            - pipeline.getParams().getProcessTimeout() * 1000
+                            - 1000 <= startTime){
+                        //等待1s后check
+                        Thread.sleep(1000);
                         continue;
                     }
-                }
 
-                long endTime = System.currentTimeMillis();
-                //执行时间超过一次的限制
-                if(endTime - startTime >= arbitrateEventService.getPipelineEventService().getProcessTimeout() * 1000) {
-                    log.warn("Select Process Timeout {}", endTime - startTime);
-                    if(checkResourceTimeout(endTime, message.getId())){
-                        continue;
+                    // 如果数据为空
+                    if (!CollectionUtils.isEmpty(message.getDatas())) {
+                        //这边是串行的核心是提高并发，直接按规则打入队列并发处理
+                        CompletableFuture<UtopiaResponseModel> completableFuture = this.selectDispatchRule.dispatch(pipeline, message);
+
+                        UtopiaResponseModel utopiaResponseModel = completableFuture.get(10, TimeUnit.SECONDS);
+                        if(utopiaResponseModel == null || utopiaResponseModel.getCode() != ErrorCode.CODE_SUCCESS.getCode()) {
+                            //如果是分发失败的话，可以重复分发
+                            log.error("dispatch no complate {} {}", message.getId(), JSON.toJSONString(utopiaResponseModel));
+                            //睡1s
+                            Thread.sleep(1000);
+                            continue;
+                        }
                     }
-                }
-
-                //确认
-                canalSelector.ack(message.getId());
+                    long endTime = System.currentTimeMillis();
+                    //执行时间超过一次的限制
+                    if(endTime - startTime >= pipeline.getParams().getProcessTimeout() * 1000) {
+                        log.warn("Select Process Timeout {}", endTime - startTime);
+                        if(checkResourceTimeout(endTime, message.getId())) {
+                            //rollback重新获取
+                            break;
+                        }
+                    }
+                    //确认
+                    canalSelector.ack(message.getId());
+                    break;
+                }while(running);
             } catch (Throwable e) {
                 if (!isInterrupt(e)) {
                     log.error(String.format("[%s] selectTask is error!", pipelineId), e);
@@ -244,7 +252,7 @@ public class SelectTaskImpl extends TaskImpl {
     protected boolean checkResourceTimeout(long endTime, Long batchId){
         //判断锁还是不是自己的，如果是的话可以ack
         //多减少1s
-        if(endTime >= this.lastUpdateTime + arbitrateEventService.getPipelineEventService().getResourceTimeout() * 1000 - 1000){
+        if(endTime >= this.lastUpdateTime + pipeline.getParams().getResourceTimeout() * 1000 - 1000){
             //时间过了
             log.error(String.format("checkResourceTimeout Timeout batchId {}", batchId));
             sendRollbackTermin();

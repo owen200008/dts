@@ -28,9 +28,9 @@ public interface ConfigService {
 
     /**
      * 获取canal配置
-     * @param entityName
+     * @param entityId
      * @return
      */
-    EntityDesc getEntityDesc(String entityName);
+    EntityDesc getEntityDesc(Long entityId);
 
 }

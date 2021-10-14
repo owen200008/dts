@@ -28,6 +28,18 @@ public class ErrorCode extends BaseErrorCode {
     public final static UtopiaErrorCodeClass GET_TABLE_ERROR = new UtopiaErrorCodeClass(24106, "");
 
 
+    public final static UtopiaErrorCodeClass LOAD_RUN_EXCEPTION = new UtopiaErrorCodeClass(24379, "");
+
+    public final static UtopiaErrorCodeClass LOAD_DML_RUN_ERROR = new UtopiaErrorCodeClass(24389, "");
+
+    public final static UtopiaErrorCodeClass LOAD_DDL_RUN_SQL_ERR = new UtopiaErrorCodeClass(24395, "");
+    public final static UtopiaErrorCodeClass LOAD_DDL_CHANGEDB_ERR = new UtopiaErrorCodeClass(24396, "");
+    public final static UtopiaErrorCodeClass LOAD_DDL_RUN_ERROR = new UtopiaErrorCodeClass(24397, "");
+    public final static UtopiaErrorCodeClass LOAD_DDL_DATA_ERROR = new UtopiaErrorCodeClass(24398, "");
+    public final static UtopiaErrorCodeClass LOAD_GET_EXTENSION_FAIL = new UtopiaErrorCodeClass(24399, "");
+
+    public final static UtopiaErrorCodeClass SELECT_DISPATH_EXCEPTION = new UtopiaErrorCodeClass(24495, "");
+    public final static UtopiaErrorCodeClass SELECT_DISPATH_FACADE_NOFIND = new UtopiaErrorCodeClass(24496, "");
     public final static UtopiaErrorCodeClass SELECT_RULE_INIT_FAIL = new UtopiaErrorCodeClass(24497, "");
     public final static UtopiaErrorCodeClass SELECT_RULE_NO_FIND = new UtopiaErrorCodeClass(24498, "");
     public final static UtopiaErrorCodeClass INIT_CONFIG_ERROR = new UtopiaErrorCodeClass(24499, "");

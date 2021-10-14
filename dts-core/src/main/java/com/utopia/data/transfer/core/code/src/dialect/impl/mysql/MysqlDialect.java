@@ -13,12 +13,10 @@ import org.springframework.jdbc.support.lob.LobHandler;
 public class MysqlDialect extends AbstractDbDialect {
     public MysqlDialect(JdbcTemplate jdbcTemplate, LobHandler lobHandler){
         super(jdbcTemplate, lobHandler);
-        sqlTemplate = new MysqlSqlTemplate();
     }
     public MysqlDialect(JdbcTemplate jdbcTemplate, LobHandler lobHandler, String name, String databaseVersion,
                         int majorVersion, int minorVersion){
         super(jdbcTemplate, lobHandler, name, majorVersion, minorVersion);
-        sqlTemplate = new MysqlSqlTemplate();
     }
 
     @Override

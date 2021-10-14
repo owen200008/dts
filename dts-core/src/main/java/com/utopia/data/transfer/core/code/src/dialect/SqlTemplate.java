@@ -24,11 +24,14 @@ package com.utopia.data.transfer.core.code.src.dialect;
  */
 public interface SqlTemplate {
 
+
+
+
     public String getSelectSql(String schemaName, String tableName, String[] pkNames, String[] columnNames);
 
-    public String getUpdateSql(String schemaName, String tableName, String[] pkNames, String[] columnNames, boolean updatePks, String shardColumn);
+    public String getUpdateSql(String schemaName, String tableName, String[] pkNames, String[] columnNames);
 
-    public String getDeleteSql(String schemaName, String tableName, String[] pkNames);
+    public String getDeleteSql(String schemaName, String tableName, String[] pkNames, String[] columnNames);
 
     public String getInsertSql(String schemaName, String tableName, String[] pkNames, String[] columnNames);
 

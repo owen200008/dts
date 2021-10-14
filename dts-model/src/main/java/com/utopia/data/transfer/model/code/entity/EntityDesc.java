@@ -2,6 +2,7 @@ package com.utopia.data.transfer.model.code.entity;
 
 import lombok.Data;
 
+import com.utopia.data.transfer.model.code.entity.mysql.MysqlProperty;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -57,4 +58,6 @@ public class EntityDesc implements Serializable {
     private String              username;
     private String              password;
     private String              driver;
+
+    private MysqlProperty       mysql;
 }

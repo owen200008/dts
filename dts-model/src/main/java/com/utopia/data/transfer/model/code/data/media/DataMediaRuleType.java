@@ -14,28 +14,12 @@
  * limitations under the License.
  */
 
-package com.utopia.data.transfer.core.code.utils;
-
-import com.utopia.data.transfer.model.code.entity.EventColumn;
-
-import java.util.Comparator;
+package com.utopia.data.transfer.model.code.data.media;
 
 /**
- * 按照EventColumn的index进行排序.
- * 
- * @author xiaoqing.zhouxq 2012-3-8 上午11:38:25
+ * @author jianghang 2011-9-2 上午11:36:21
  */
-public class EventColumnIndexComparable implements Comparator<EventColumn> {
-
-    @Override
-    public int compare(EventColumn o1, EventColumn o2) {
-        if (o1.getIndex() < o2.getIndex()) {
-            return -1;
-        } else if (o1.getIndex() == o2.getIndex()) {
-            return 0;
-        } else {
-            return 1;
-        }
-    }
-
+public enum DataMediaRuleType {
+    /** mysql DB */
+    DEFAULT,;
 }

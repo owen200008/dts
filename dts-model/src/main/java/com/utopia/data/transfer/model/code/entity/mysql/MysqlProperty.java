@@ -1,21 +1,21 @@
-package com.utopia.data.transfer.core.code.base.datasource.bean.db.mysql;
+package com.utopia.data.transfer.model.code.entity.mysql;
 
-import com.utopia.data.transfer.model.code.data.media.DataMediaSource;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.Properties;
 
 /**
  * @author owen.cai
- * @create_date 2021/9/16
+ * @create_date 2021/10/13
  * @alter_author
  * @alter_date
  */
-public class MysqlMediaSource extends DataMediaSource {
+public class MysqlProperty implements Serializable {
     @Getter
     @Setter
-    private Properties          properties;
+    private Properties properties;
 
     @Getter
     @Setter

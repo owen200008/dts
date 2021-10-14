@@ -5,8 +5,10 @@ import com.google.common.base.Joiner;
 import com.utopia.data.transfer.core.code.model.EventData;
 import com.utopia.data.transfer.core.code.model.Message;
 import com.utopia.data.transfer.core.code.service.impl.task.select.SelectDispatchRule;
-import com.utopia.data.transfer.core.code.src.model.EventColumn;
-import com.utopia.utils.BooleanMutex;
+import com.utopia.data.transfer.model.code.entity.EventColumn;
+import com.utopia.data.transfer.model.code.pipeline.Pipeline;
+import com.utopia.model.rsp.UtopiaResponseModel;
+import com.utopia.service.mgr.model.cons.ErrorCode;
 import com.utopia.utils.CollectionUtils;
 import groovy.lang.Closure;
 import groovy.lang.GroovyShell;
@@ -14,6 +16,7 @@ import groovy.lang.Script;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @author owen.cai
@@ -23,9 +26,6 @@ import java.util.List;
  */
 @Slf4j
 public class SelectDispatchRuleQueue implements SelectDispatchRule {
-
-    //同步单线程使用成员应该OK
-    private BooleanMutex booleanMutex = new BooleanMutex();
 
     private static final GroovyShell SHELL = new GroovyShell();
 
@@ -42,10 +42,7 @@ public class SelectDispatchRuleQueue implements SelectDispatchRule {
     }
 
     @Override
-    public BooleanMutex dispatch(Message<EventData> message) {
-        //初始化为false
-        booleanMutex.set(false);
-
+    public CompletableFuture<UtopiaResponseModel> dispatch(Pipeline pipeline, Message<EventData> message) {
         for (EventData data : message.getDatas()) {
             if(CollectionUtils.isEmpty(this.params)){
                 for (EventColumn key : data.getKeys()) {
@@ -59,8 +56,7 @@ public class SelectDispatchRuleQueue implements SelectDispatchRule {
             }
             log.info(closure.call().toString());
         }
-        booleanMutex.set(true);
-        return booleanMutex;
+        return CompletableFuture.completedFuture(UtopiaResponseModel.create(Math.random() > 0.5 ? ErrorCode.CODE_SUCCESS.getCode() : ErrorCode.UNKNOW_ERROR.getCode(),null, null));
     }
 
     public Closure<?> evaluateClosure(String inlineExpression) {

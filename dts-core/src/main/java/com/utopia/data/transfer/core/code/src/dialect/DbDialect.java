@@ -55,8 +55,6 @@ public interface DbDialect {
 
     public TransactionTemplate getTransactionTemplate();
 
-    public SqlTemplate getSqlTemplate();
-
     public Table findTable(String schema, String table);
 
     public Table findTable(String schema, String table, boolean useCache);

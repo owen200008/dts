@@ -11,10 +11,12 @@ import com.utopia.data.transfer.core.code.src.dialect.DbDialectFactory;
 import com.utopia.data.transfer.model.code.NodeTask;
 import com.utopia.data.transfer.model.code.bean.StageType;
 import com.utopia.data.transfer.model.code.DTSServiceConf;
-import com.utopia.data.transfer.model.code.data.media.DataMedia;
-import com.utopia.data.transfer.model.code.data.media.DataMediaPair;
+import com.utopia.data.transfer.model.code.data.media.DataMediaRuleSource;
+import com.utopia.data.transfer.model.code.data.media.DataMediaRulePair;
 import com.utopia.data.transfer.model.code.data.media.DataMediaSource;
+import com.utopia.data.transfer.model.code.data.media.DataMediaRuleTarget;
 import com.utopia.data.transfer.model.code.data.media.DataMediaType;
+import com.utopia.data.transfer.model.code.entity.mysql.MysqlProperty;
 import com.utopia.data.transfer.model.code.entity.EntityDesc;
 import com.utopia.data.transfer.model.code.pipeline.Pipeline;
 import com.utopia.data.transfer.model.code.pipeline.PipelineParameter;
@@ -150,74 +152,78 @@ public class DTSMgr implements UtopiaShutdownHook.ShutdownCallbackFunc, LocalCac
             //测试构建数据
             DTSServiceConf dtsServiceConf = new DTSServiceConf();
 
+            Long main_a_entityId = 11L;
             EntityDesc mainAEntity = new EntityDesc();
-            mainAEntity.setId(11L);
+            mainAEntity.setId(main_a_entityId);
             mainAEntity.setName("main-a-test");
-            mainAEntity.setZkClusterId(11L);
-            mainAEntity.setZkClusters(Arrays.asList("172.26.9.2:2181"));
-            mainAEntity.setUrl("jdbc:mysql://main-a-db.blurams.vip:3306/canary1?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC");
+            mainAEntity.setZkClusterId(main_a_entityId);
+            mainAEntity.setZkClusters(Arrays.asList("172.26.9.11:2181"));
+            mainAEntity.setUrl("jdbc:mysql://main-a-db.blurams.vip:3306/dts?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC");
             mainAEntity.setUsername("dev");
             mainAEntity.setPassword("dev");
             mainAEntity.setDriver("com.mysql.cj.jdbc.Driver");
+            mainAEntity.setMysql(new MysqlProperty());
 
+            Long main_b_entityId = 12L;
             EntityDesc mainBEntity = new EntityDesc();
-            mainBEntity.setId(12L);
+            mainBEntity.setId(main_b_entityId);
             mainBEntity.setName("main-b");
-            mainBEntity.setZkClusterId(11L);
-            mainBEntity.setZkClusters(Arrays.asList("172.26.9.2:2181"));
-            mainBEntity.setUrl("jdbc:mysql://main-b-db.blurams.vip:3306/canary1?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC");
+            mainBEntity.setZkClusterId(main_b_entityId);
+            mainBEntity.setZkClusters(Arrays.asList("172.26.9.21:2181"));
+            mainBEntity.setUrl("jdbc:mysql://main-b-db.blurams.vip:3306/dts?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC");
             mainBEntity.setUsername("dev");
             mainBEntity.setPassword("dev");
             mainBEntity.setDriver("com.mysql.cj.jdbc.Driver");
+            mainBEntity.setMysql(new MysqlProperty());
             dtsServiceConf.setEntityDescs(Arrays.asList(mainAEntity, mainBEntity));
 
 
             DataMediaSource dbMediaSourceMainA = new DataMediaSource();
-            dbMediaSourceMainA.setId(11L);
+            dbMediaSourceMainA.setId(main_a_entityId);
             dbMediaSourceMainA.setName("main-a-test");
             dbMediaSourceMainA.setType(DataMediaType.MYSQL);
+            dbMediaSourceMainA.setEntityId(main_a_entityId);
 
             DataMediaSource dbMediaSourceMainB = new DataMediaSource();
-            dbMediaSourceMainB.setId(12L);
+            dbMediaSourceMainB.setId(main_b_entityId);
             dbMediaSourceMainB.setName("main_b");
             dbMediaSourceMainB.setType(DataMediaType.MYSQL);
-
+            dbMediaSourceMainB.setEntityId(main_b_entityId);
 
             PipelineParameter pipelineParameter = new PipelineParameter();
             SelectParamter selectParamter = new SelectParamter();
-            selectParamter.setDispatchRule("QUEUE");
+            selectParamter.setDispatchRule("DUBBO");
 
             EvaluateClosureParam evaluateClosureParam = new EvaluateClosureParam();
             evaluateClosureParam.setQuery("$entity_id");
             evaluateClosureParam.setParams(Arrays.asList("entity_id"));
             selectParamter.setDispatchRuleParam(JSON.toJSONString(evaluateClosureParam));
             pipelineParameter.setSelectParamter(selectParamter);
-            pipelineParameter.setEntityName("main-a-test");
             //等于pipelineid
             pipelineParameter.setClientId((short) 1);
 
             dtsServiceConf.setList(Arrays.asList(Pipeline.builder()
                     .id(11L)
                     .name("a_to_b")
-                    .pairs(Arrays.asList(DataMediaPair.builder()
-                            .source(DataMedia.builder()
+                    .source(dbMediaSourceMainA)
+                    .target(dbMediaSourceMainB)
+                    .pairs(Arrays.asList(DataMediaRulePair.builder()
+                            .source(DataMediaRuleSource.builder()
                                     .id(11)
-                                    .namespace("canary1")
-                                    .value("setting_entity")
-                                    .source(dbMediaSourceMainA)
+                                    .namespace("dts")
+                                    .value("syncTable")
                                     .build())
-                            .target(DataMedia.builder()
+                            .target(DataMediaRuleTarget.builder()
                                     .id(12)
-                                    .namespace("canary2")
-                                    .value("setting_entity")
-                                    .source(dbMediaSourceMainB)
+                                    .namespace("dts")
+                                    .value("syncTable")
                                     .build())
                             .build()))
                     .params(pipelineParameter)
                     .build()));
             NodeTask nodeTask = NodeTask.builder()
                     .pipelineId(11L)
-                    .stage(Arrays.asList(StageType.SELECT, StageType.EXTRACT, StageType.TRANSFORM, StageType.LOAD))
+                    .stage(Arrays.asList(StageType.SELECT, StageType.LOAD))
                     .shutdown(false)
                     .build();
             dtsServiceConf.setTasks(Arrays.asList(nodeTask));
@@ -352,6 +358,8 @@ public class DTSMgr implements UtopiaShutdownHook.ShutdownCallbackFunc, LocalCac
                     try {
                         reloadDTSServiceConf(object);
                     } catch (ExecutionException e) {
+                        log.error("reloadDTSServiceConf error {}",  JSON.toJSONString(object), e);
+                    } catch(Throwable e){
                         log.error("reloadDTSServiceConf error {}",  JSON.toJSONString(object), e);
                     }
                 }

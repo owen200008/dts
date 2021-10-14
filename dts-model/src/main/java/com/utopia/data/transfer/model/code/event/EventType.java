@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.utopia.data.transfer.core.code.model;
+package com.utopia.data.transfer.model.code.event;
 
 /**
  * chang the eventtype num to I/U/D/C/A/E.

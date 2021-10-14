@@ -71,10 +71,6 @@
         <artifactId>service-mgr-serviceid-starter</artifactId>
         <version>${service-mgr.version}</version>
       </dependency>
-      <dependency>
-        <groupId>com.utopia</groupId>
-        <artifactId>utopia-apolicy-dubbo</artifactId>
-      </dependency>
       <!-- archetype define end *************************************************** -->
 
       <!-- project define begin *************************************************** -->

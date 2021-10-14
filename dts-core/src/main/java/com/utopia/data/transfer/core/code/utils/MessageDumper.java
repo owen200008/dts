@@ -18,7 +18,7 @@ package com.utopia.data.transfer.core.code.utils;
 
 import com.utopia.data.transfer.core.code.model.EventData;
 import com.utopia.data.transfer.core.code.model.Message;
-import com.utopia.data.transfer.core.code.src.model.EventColumn;
+import com.utopia.data.transfer.model.code.entity.EventColumn;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.springframework.util.CollectionUtils;
@@ -95,12 +95,14 @@ public class MessageDumper {
 
     private static String dumpEventColumn(List<EventColumn> columns) {
         StringBuilder builder = new StringBuilder(event_default_capacity);
-        int size = columns.size();
-        for (int i = 0; i < size; i++) {
-            EventColumn column = columns.get(i);
-            builder.append("\t").append(column.toString());
-            if (i < columns.size() - 1) {
-                builder.append(SEP);
+        if(columns != null){
+            int size = columns.size();
+            for (int i = 0; i < size; i++) {
+                EventColumn column = columns.get(i);
+                builder.append("\t").append(column.toString());
+                if (i < columns.size() - 1) {
+                    builder.append(SEP);
+                }
             }
         }
         return builder.toString();

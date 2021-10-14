@@ -2,8 +2,8 @@ package com.utopia.data.transfer.core.code.canal;
 
 import com.utopia.data.transfer.core.archetype.base.ServiceException;
 import com.utopia.data.transfer.core.code.base.ErrorCode;
-import com.utopia.data.transfer.model.code.data.media.DataMedia;
-import com.utopia.data.transfer.model.code.data.media.DataMediaPair;
+import com.utopia.data.transfer.model.code.data.media.DataMediaRuleSource;
+import com.utopia.data.transfer.model.code.data.media.DataMediaRulePair;
 import com.utopia.data.transfer.model.code.pipeline.Pipeline;
 
 import java.util.HashSet;
@@ -23,13 +23,13 @@ public class CanalFilterSupport {
      * 构建filter 表达式
      */
     public static String makeFilterExpression(Pipeline pipeline) {
-        List<DataMediaPair> dataMediaPairs = pipeline.getPairs();
+        List<DataMediaRulePair> dataMediaPairs = pipeline.getPairs();
         if (dataMediaPairs.isEmpty()) {
             throw new ServiceException(ErrorCode.DATAMEDIA_PAIRS_EMPTY.getCode(), "ERROR ## the pair is empty,the pipeline id = " + pipeline.getId());
         }
 
         Set<String> mediaNames = new HashSet();
-        for (DataMediaPair dataMediaPair : dataMediaPairs) {
+        for (DataMediaRulePair dataMediaPair : dataMediaPairs) {
             buildFilter(mediaNames, dataMediaPair.getSource());
         }
 
@@ -67,7 +67,7 @@ public class CanalFilterSupport {
         return result.toString();
     }
 
-    private static void buildFilter(Set<String> mediaNames, DataMedia dst) {
+    private static void buildFilter(Set<String> mediaNames, DataMediaRuleSource dst) {
         String splitChar = ".";
         mediaNames.add(dst.getNamespace() + splitChar + dst.getValue());
     }

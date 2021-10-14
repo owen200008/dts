@@ -19,12 +19,12 @@ import java.util.stream.Collectors;
 public class ConfigServiceImpl implements ConfigService {
 
     private Map<Long, Pipeline> mapPipeline;
-    private Map<String, EntityDesc> mapEntity;
+    private Map<Long, EntityDesc> mapEntity;
 
     @Override
     public void reloadConf(DTSServiceConf object) {
         this.mapPipeline = object.getList().stream().collect(Collectors.toMap(Pipeline::getId, item -> item));
-        this.mapEntity = object.getEntityDescs().stream().collect(Collectors.toMap(EntityDesc::getName, item -> item));
+        this.mapEntity = object.getEntityDescs().stream().collect(Collectors.toMap(EntityDesc::getId, item -> item));
     }
 
     @Override
@@ -33,7 +33,7 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     @Override
-    public EntityDesc getEntityDesc(String entityName) {
-        return mapEntity.get(entityName);
+    public EntityDesc getEntityDesc(Long entityId) {
+        return mapEntity.get(entityId);
     }
 }

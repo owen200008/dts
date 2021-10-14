@@ -1,6 +1,8 @@
 package com.utopia.data.transfer.model.code.data.media;
 
-import com.utopia.data.transfer.model.code.entity.EntityDesc;
+import com.utopia.data.transfer.model.code.entity.mysql.MysqlProperty;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 
@@ -22,7 +24,9 @@ public class DataMediaSource implements Serializable {
     /**
      * 实体信息
      */
-    private EntityDesc          entityDesc;
+    @Getter
+    @Setter
+    private Long                entityId;
 
     public Long getId() {
         return id;
@@ -54,13 +58,5 @@ public class DataMediaSource implements Serializable {
 
     public void setEncode(String encode) {
         this.encode = encode;
-    }
-
-    public EntityDesc getEntityDesc() {
-        return entityDesc;
-    }
-
-    public void setEntityDesc(EntityDesc entityDesc) {
-        this.entityDesc = entityDesc;
     }
 }

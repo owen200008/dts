@@ -2,8 +2,8 @@ package com.utopia.data.transfer.core.code.utils;
 
 import com.utopia.data.transfer.core.archetype.base.ServiceException;
 import com.utopia.data.transfer.core.code.base.ErrorCode;
-import com.utopia.data.transfer.model.code.data.media.DataMedia;
-import com.utopia.data.transfer.model.code.data.media.DataMediaPair;
+import com.utopia.data.transfer.model.code.data.media.DataMediaRuleSource;
+import com.utopia.data.transfer.model.code.data.media.DataMediaRulePair;
 import com.utopia.data.transfer.model.code.pipeline.Pipeline;
 import org.apache.commons.lang3.StringUtils;
 
@@ -18,17 +18,17 @@ public class ConfigHelper {
     /**
      * 根据NameSpace和Name得到对应的DataMedia.
      */
-    public static DataMedia findSourceDataMedia(Pipeline pipeline, String namespace,
-                                                String name) {
+    public static DataMediaRuleSource findSourceDataMedia(Pipeline pipeline, String namespace,
+                                                          String name) {
         return findSourceDataMedia(pipeline, namespace, name, false);
     }
 
     /**
      * 根据NameSpace和Name得到对应的DataMedia
      */
-    public static DataMedia findSourceDataMedia(Pipeline pipeline, String namespace,
-                                                                           String name, boolean notExistReturnNull) {
-        for (DataMediaPair pair : pipeline.getPairs()) {
+    public static DataMediaRuleSource findSourceDataMedia(Pipeline pipeline, String namespace,
+                                                          String name, boolean notExistReturnNull) {
+        for (DataMediaRulePair pair : pipeline.getPairs()) {
             if (isMatch(pair.getSource(), namespace, name)) {
                 return pair.getSource();
             }
@@ -44,16 +44,16 @@ public class ConfigHelper {
     /**
      * 根据NameSpace和Name得到对应的DataMediaPair.
      */
-    public static DataMediaPair findDataMediaPairBySourceName(Pipeline pipeline, String namespace, String name) {
+    public static DataMediaRulePair findDataMediaPairBySourceName(Pipeline pipeline, String namespace, String name) {
         return findDataMediaPairBySourceName(pipeline, namespace, name, false);
     }
 
     /**
      * 根据NameSpace和Name得到对应的DataMediaPair
      */
-    public static DataMediaPair findDataMediaPairBySourceName(Pipeline pipeline, String namespace, String name,
-                                                              boolean notExistReturnNull) {
-        for (DataMediaPair pair : pipeline.getPairs()) {
+    public static DataMediaRulePair findDataMediaPairBySourceName(Pipeline pipeline, String namespace, String name,
+                                                                  boolean notExistReturnNull) {
+        for (DataMediaRulePair pair : pipeline.getPairs()) {
             if (isMatch(pair.getSource(), namespace, name)) {
                 return pair;
             }
@@ -66,7 +66,7 @@ public class ConfigHelper {
         }
     }
 
-    private static boolean isMatch(DataMedia dataMedia, String namespace, String name) {
+    private static boolean isMatch(DataMediaRuleSource dataMedia, String namespace, String name) {
         boolean isMatch = true;
         if (StringUtils.isEmpty(namespace)) {
             isMatch &= StringUtils.isEmpty(dataMedia.getNamespace());

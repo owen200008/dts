@@ -7,21 +7,10 @@ package com.utopia.data.transfer.model.code.bean;
  * @alter_date
  */
 public enum StageType {
-    SELECT, EXTRACT, TRANSFORM, LOAD;
+    SELECT, LOAD;
 
     public boolean isSelect() {
         return this.equals(StageType.SELECT);
-    }
-
-    public boolean isExtract() {
-        return this.equals(StageType.EXTRACT);
-    }
-
-    /**
-     * transform和load一定会同时出现
-     */
-    public boolean isTransform() {
-        return this.equals(StageType.TRANSFORM);
     }
 
     /**
