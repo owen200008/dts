@@ -46,6 +46,8 @@
     <module>dts-api</module>
     <module>dts-web</module>
     <module>dts-model</module>
+	<module>dts-admin</module>
+    <module>dts-admin-dao</module>
   </modules>
 
   <dependencyManagement>
