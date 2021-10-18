@@ -47,6 +47,8 @@ public class LoadTaskImpl extends TaskImpl implements LoadTransferFacade {
 
     private LoadRun.LoadRunItem loadRun;
 
+    private LoadTaskPrometheus loadTaskPrometheus;
+
     // 运行调度控制
     private volatile boolean            isStart             = false;
     private volatile long               lastUpdateTime      = System.currentTimeMillis();
@@ -57,6 +59,12 @@ public class LoadTaskImpl extends TaskImpl implements LoadTransferFacade {
         super(configService, messageParser, arbitrateEventService);
         this.applicationContext = applicationContext;
         this.applicationEventPublisher = applicationEventPublisher;
+    }
+
+    @Override
+    public void startTask(Long pipelineId) {
+        super.startTask(pipelineId);
+        loadTaskPrometheus = new LoadTaskPrometheus(pipelineId);
     }
 
     @Override
@@ -204,11 +212,11 @@ public class LoadTaskImpl extends TaskImpl implements LoadTransferFacade {
         try{
             UtopiaErrorCodeClass load = loadRun.load(transferData);
             if(load.getCode() != ErrorCode.CODE_SUCCESS.getCode()){
+                loadTaskPrometheus.getLoadError().increment();
                 return CompletableFuture.completedFuture(UtopiaResponseModel.fail(load));
             }
-            //如果成功的话，记录下以免重复执行
-
         } catch(ServiceException e){
+            loadTaskPrometheus.getLoadException().increment();
             log.error("load exception {}", e.getCode(), e);
             return CompletableFuture.completedFuture(EXCEPTION);
         }

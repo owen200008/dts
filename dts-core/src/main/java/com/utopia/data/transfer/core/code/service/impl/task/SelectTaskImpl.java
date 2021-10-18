@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.utopia.data.transfer.core.code.base.ErrorCode;
 import com.utopia.data.transfer.core.code.canal.CanalEmbedSelector;
 import com.utopia.data.transfer.core.code.canal.CanalZKConfig;
-import com.utopia.data.transfer.core.code.model.EventData;
 import com.utopia.data.transfer.core.code.model.EventDataTransaction;
 import com.utopia.data.transfer.core.code.model.Message;
 import com.utopia.data.transfer.core.code.service.ArbitrateEventService;
@@ -16,19 +15,14 @@ import com.utopia.data.transfer.model.code.pipeline.Pipeline;
 import com.utopia.data.transfer.model.code.pipeline.SelectParamter;
 import com.utopia.exception.UtopiaRunTimeException;
 import com.utopia.extension.UtopiaExtensionLoader;
-import com.utopia.extension.UtopiaSPIInject;
 import com.utopia.model.rsp.UtopiaResponseModel;
-import com.utopia.utils.BooleanMutex;
+import io.micrometer.core.instrument.Metrics;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.ClassUtils;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.LockSupport;
 
@@ -43,12 +37,16 @@ public class SelectTaskImpl extends TaskImpl {
 
     private final CanalZKConfig canalZKConfig;
 
-    // 运行调度控制
+    /**
+     * 运行调度控制
+     */
     private volatile boolean            isStart             = false;
     private volatile long               lastUpdateTime      = System.currentTimeMillis();
 
     private CanalEmbedSelector canalSelector;
     private SelectDispatchRule selectDispatchRule;
+
+    private SelectTaskPrometheus selectTaskPrometheus;
 
     protected Thread processThread;
 
@@ -60,6 +58,7 @@ public class SelectTaskImpl extends TaskImpl {
 
     @Override
     public void startTask(Long pipelineId) {
+        selectTaskPrometheus = new SelectTaskPrometheus(pipelineId);
         Pipeline pipeline = configService.getPipeline(pipelineId);
 
         SelectParamter selectParamter = pipeline.getParams().getSelectParamter();
@@ -107,6 +106,7 @@ public class SelectTaskImpl extends TaskImpl {
                     } else {
                         log.warn("select is failed.", e);
                         sendRollbackTermin();
+
 
                         // sleep 10秒再进行重试
                         try {
@@ -188,8 +188,17 @@ public class SelectTaskImpl extends TaskImpl {
                     continue;
                 }
 
+                //获取到数据
+                selectTaskPrometheus.getSelectTimes().increment();
+
                 Message<EventDataTransaction> message = selector.get();
+                boolean existDatas = !CollectionUtils.isEmpty(message.getDatas());
+                if(existDatas){
+                    selectTaskPrometheus.getSelectTimes().increment();
+                }
                 do{
+                    selectTaskPrometheus.getCallCounter().increment();
+
                     //开始select的时间
                     long startTime = System.currentTimeMillis();
                     //10s取一次一定执行完成
@@ -197,18 +206,21 @@ public class SelectTaskImpl extends TaskImpl {
                     if(this.lastUpdateTime + pipeline.getParams().getResourceTimeout() * 1000
                             - pipeline.getParams().getProcessTimeout() * 1000
                             - 1000 <= startTime){
+                        selectTaskPrometheus.getTimerException().increment();
                         //等待1s后check
                         Thread.sleep(1000);
                         continue;
                     }
 
                     // 如果数据为空
-                    if (!CollectionUtils.isEmpty(message.getDatas())) {
+                    if (existDatas) {
                         //这边是串行的核心是提高并发，直接按规则打入队列并发处理
                         CompletableFuture<UtopiaResponseModel> completableFuture = this.selectDispatchRule.dispatch(pipeline, message);
 
                         UtopiaResponseModel utopiaResponseModel = completableFuture.get(10, TimeUnit.SECONDS);
                         if(utopiaResponseModel == null || utopiaResponseModel.getCode() != ErrorCode.CODE_SUCCESS.getCode()) {
+
+                            selectTaskPrometheus.getDispathException().increment();
                             //如果是分发失败的话，可以重复分发
                             log.error("dispatch no complate {} {}", message.getId(), JSON.toJSONString(utopiaResponseModel));
                             //睡1s
@@ -219,6 +231,7 @@ public class SelectTaskImpl extends TaskImpl {
                     long endTime = System.currentTimeMillis();
                     //执行时间超过一次的限制
                     if(endTime - startTime >= pipeline.getParams().getProcessTimeout() * 1000) {
+                        selectTaskPrometheus.getRunTimeException().increment();
                         log.warn("Select Process Timeout {}", endTime - startTime);
                         if(checkResourceTimeout(endTime, message.getId())) {
                             //rollback重新获取
@@ -242,6 +255,7 @@ public class SelectTaskImpl extends TaskImpl {
     }
 
     protected void sendRollbackTermin() {
+        selectTaskPrometheus.getRollbackException().increment();
         canalSelector.rollback();
         try {
             Thread.sleep(3000);

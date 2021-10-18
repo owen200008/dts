@@ -82,7 +82,7 @@ public class DbRuleMapping implements DbRuleTemplate {
             sql.append(" set ");
             appendColumnSet(false, sql, data.getColumns(), SQL_SPLITE, columns);
             if(existOldKeys && !CollectionUtils.isEmpty(data.getKeys())){
-                appendColumnSet(true, sql, data.getKeys(), SQL_SPLITE, columns);
+                appendColumnSet(data.getColumns().size() > 0, sql, data.getKeys(), SQL_SPLITE, columns);
             }
             sql.append(" where (");
             if(existOldKeys){

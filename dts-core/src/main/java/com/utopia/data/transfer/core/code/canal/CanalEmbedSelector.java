@@ -66,7 +66,9 @@ public class CanalEmbedSelector {
     private ClientIdentity          clientIdentity;
     private String                  filter;
 
-    // 是否处于运行中
+    /**
+     * 是否处于运行中
+     */
     private volatile boolean        running          = false;
 
     public CanalEmbedSelector(Long pipelineId, ConfigService configService, MessageParser messageParser, EntityDesc source, CanalZKConfig canalZKConfig){

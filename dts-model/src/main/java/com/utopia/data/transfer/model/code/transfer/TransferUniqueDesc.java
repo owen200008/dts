@@ -78,7 +78,7 @@ public class TransferUniqueDesc {
 
     private Pair isCombin(Pair<Long, Long> longLongPair, Pair<Long, Long> tmp) {
         if(tmp.getLeft() <= longLongPair.getRight() + 1){
-            return Pair.of(longLongPair.getLeft(), tmp.getRight());
+            return Pair.of(longLongPair.getLeft(), Math.max(tmp.getRight(), longLongPair.getRight()));
         }
         return null;
     }

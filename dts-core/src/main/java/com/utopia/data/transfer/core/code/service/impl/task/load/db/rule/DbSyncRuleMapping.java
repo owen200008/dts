@@ -7,14 +7,11 @@ import com.utopia.data.transfer.model.code.transfer.TransferUniqueDesc;
 import com.utopia.string.UtopiaStringUtil;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.StatementCreatorUtils;
-import org.springframework.util.CollectionUtils;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.List;
 
 /**
  * @author owen.cai
