@@ -4,6 +4,8 @@ import com.utopia.data.transfer.admin.dao.base.BaseDao;
 import com.utopia.data.transfer.admin.dao.entity.PipelineBean;
 import com.utopia.data.transfer.admin.dao.entity.PipelineBeanDal;
 import java.util.List;
+
+import com.utopia.data.transfer.model.code.pipeline.Pipeline;
 import org.apache.ibatis.annotations.Param;
 
 public interface PipelineBeanMapper extends BaseDao {
@@ -22,4 +24,5 @@ public interface PipelineBeanMapper extends BaseDao {
     int updateByExampleWithBLOBs(@Param("record") PipelineBean record, @Param("example") PipelineBeanDal example);
 
     int updateByExample(@Param("record") PipelineBean record, @Param("example") PipelineBeanDal example);
+
 }

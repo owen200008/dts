@@ -69,10 +69,31 @@
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.utopia</groupId>
+            <artifactId>utopia-log-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.utopia</groupId>
+            <artifactId>utopia-log-logback</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.utopia</groupId>
+            <artifactId>utopia-log-dubbo</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.utopia</groupId>
+            <artifactId>utopia-log-http</artifactId>
+        </dependency>
 <!--        <dependency>
             <groupId>com.utopia</groupId>
             <artifactId>utopia-apolicy-dubbo</artifactId>
-        </dependency>-->
+        </dependency> -->
 
         <!-- test -->
         <dependency>
