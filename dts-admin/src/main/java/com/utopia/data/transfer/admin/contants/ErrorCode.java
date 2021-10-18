@@ -17,9 +17,10 @@ public enum ErrorCode {
     DB_ERROR(10004,"db error"),
 
 
-
-
+    PARSE_PIPELINEPARAMS_FAIL(10007,"parse pipeline params fail"),
+    TASK_IS_NOT_HAVE(10006,"task not have!"),
     PARSE_OBJECT_FAIL(10005,"parse object error!");
+
 
     private int code;
     private String msg;
@@ -47,4 +48,6 @@ public enum ErrorCode {
     public void setMsg(String msg) {
         this.msg = msg;
     }
+
+
 }

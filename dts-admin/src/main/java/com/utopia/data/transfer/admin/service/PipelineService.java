@@ -22,6 +22,6 @@ public interface PipelineService {
 
     void pipelineRegionAdd(PipelineRegionAddVo pipelineRegionAddVo);
 
-
+    List<PipeDetailRes> pipelineDetailByTaskId(Integer id);
 
 }

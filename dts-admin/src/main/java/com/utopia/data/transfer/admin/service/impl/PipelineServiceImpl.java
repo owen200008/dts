@@ -186,4 +186,49 @@ public class PipelineServiceImpl implements PipelineService {
 
         regionBeanRepository.insert(targetRegionBean);
     }
+
+
+
+
+    @Override
+    public List<PipeDetailRes> pipelineDetailByTaskId(Integer id) {
+
+        List<PipeDetail> pipeDetails = pipelineBeanRepository.selectDetailByTaskId(id);
+        if (CollectionUtils.isEmpty(pipeDetails)) {
+            return null;
+        }
+        List<PipeDetailRes> pipeDetailResList = new ArrayList<>();
+        // 一个task只有两个pipeline可以循环获取
+        for (PipeDetail pipeDetail : pipeDetails) {
+            // 根据Id去获取region信息
+            List<RegionBean> regionBeans = regionBeanRepository.selectByPipelineId(pipeDetail.getId());
+            // 根据id获取pair列表
+            List<PairDetail> pairDetails = pairBeanRepository.selectByPipelineId(pipeDetail.getId());
+
+            PipeDetailRes finalPipeDetailRes = null;
+            try {
+                // 现将pipeDetail相同字段赋值
+                finalPipeDetailRes = CommonUtil.snakeObjectToUnderline(pipeDetail, PipeDetailRes.class);
+                finalPipeDetailRes.setPairList(pairDetails);
+                // 处理region信息 变为source和target
+                for (RegionBean re : regionBeans) {
+                    String mode = re.getMode();
+                    if (StringUtils.equals(SOURCE_MODE, mode)) {
+                        finalPipeDetailRes.setSourceRegion(re.getRegion());
+                        finalPipeDetailRes.setSourceRegionId(re.getId());
+                    } else {
+                        finalPipeDetailRes.setTargetRegion(re.getRegion());
+                        finalPipeDetailRes.setTargetRegionId(re.getId());
+                    }
+                }
+                pipeDetailResList.add(finalPipeDetailRes);
+            } catch (IOException e) {
+                log.error("parase object to new object fail");
+                throw new AdminException(ErrorCode.PARSE_OBJECT_FAIL);
+            }
+        }
+
+        return pipeDetailResList;
+    }
+
 }

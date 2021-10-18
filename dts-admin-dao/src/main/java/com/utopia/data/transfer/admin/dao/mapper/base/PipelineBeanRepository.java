@@ -14,4 +14,6 @@ public interface PipelineBeanRepository extends PipelineBeanMapper {
 
 
     PipeDetail selectDetailById(@Param("id") Integer id);
+
+    List<PipeDetail> selectDetailByTaskId(@Param("id")Integer id);
 }

@@ -2,6 +2,7 @@ package com.utopia.data.transfer.admin.service;
 
 import com.utopia.data.transfer.admin.dao.entity.EntityBean;
 import com.utopia.data.transfer.admin.vo.EntityAddVo;
+import com.utopia.data.transfer.admin.vo.PageRes;
 import com.utopia.data.transfer.admin.vo.QueryEntityVo;
 import com.utopia.data.transfer.admin.vo.res.EntityRes;
 
@@ -16,5 +17,5 @@ public interface EntityService {
 
     EntityRes getEntityById(Integer id);
 
-    List<EntityRes> getEntityList(QueryEntityVo queryEntityVo);
+    PageRes<List<EntityRes>> getEntityList(QueryEntityVo queryEntityVo);
 }

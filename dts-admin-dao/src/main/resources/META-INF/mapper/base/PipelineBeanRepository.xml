@@ -15,7 +15,7 @@
     </resultMap>
 
     <resultMap id="excludeResultMap" type="com.utopia.data.transfer.admin.dao.entity.PipeDetail">
-        <id column="id"  jdbcType="INTEGER" property="id"></id>
+        <id column="id" jdbcType="INTEGER" property="id"></id>
         <result column="name" jdbcType="VARCHAR" property="name"></result>
         <result column="sourceEntityName" jdbcType="VARCHAR" property="sourceEntityName"></result>
         <result column="sourceEntityId" jdbcType="INTEGER" property="sourceEntityId"></result>
@@ -82,21 +82,59 @@
     </sql>
     <sql id="Base_Column_List">
 
-            id, task_id, `name`, source_entity_id, target_entity_id, modify_time, create_time
+
+                    id, task_id, `name`, source_entity_id, target_entity_id, modify_time, create_time
+
 
     </sql>
     <sql id="Blob_Column_List">
 
-            pipeline_params
+
+                    pipeline_params
+
 
     </sql>
 
     <select id="selectDetailById" parameterType="java.lang.Integer" resultMap="excludeResultMap">
-           SELECT
-            *
+
+                   SELECT
+                    *
+                FROM
+                    (
+                    SELECT
+                        pi.id,
+                        pi.NAME,
+                        en.NAME AS sourceEntityName,
+                        en.id AS sourceEntityId
+                    FROM
+                        u_pipeline pi
+                        INNER JOIN u_entity en ON pi.source_entity_id = en.id
+                    WHERE
+                        pi.id = #{id}
+                    ) AS source,
+                    (
+                    SELECT
+                        en.NAME AS targetEntityName,
+                        en.id AS targetEntityId
+                    FROM
+                        u_pipeline pi
+                        INNER JOIN u_entity en ON pi.target_entity_id = en.id
+                    WHERE
+                        pi.id = #{id}
+                    ) AS target
+
+    </select>
+
+    <select id="selectDetailByTaskId" parameterType="int" resultMap="excludeResultMap">
+
+               SELECT
+            source.*,
+            target.targetEntityName,
+            target.targetEntityId
         FROM
             (
             SELECT
+                pi.pipeline_params as pipelineParams,
                 pi.id,
                 pi.NAME,
                 en.NAME AS sourceEntityName,
@@ -105,17 +143,20 @@
                 u_pipeline pi
                 INNER JOIN u_entity en ON pi.source_entity_id = en.id
             WHERE
-                pi.id = #{id}
-            ) AS source,
-            (
+                pi.task_id = #{id}
+            ) AS source
+            INNER JOIN (
             SELECT
+                pi.id,
                 en.NAME AS targetEntityName,
                 en.id AS targetEntityId
             FROM
                 u_pipeline pi
                 INNER JOIN u_entity en ON pi.target_entity_id = en.id
             WHERE
-                pi.id = #{id}
-            ) AS target
+            pi.task_id = #{id}
+            ) AS target ON source.id = target.id
+
+
     </select>
 </mapper>

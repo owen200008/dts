@@ -1,5 +1,6 @@
 package com.utopia.data.transfer.admin.vo.res;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.utopia.data.transfer.admin.dao.entity.PairDetail;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,7 +18,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PipeDetailRes {
-
 
     private Integer id;
 
@@ -41,4 +41,6 @@ public class PipeDetailRes {
 
     private List<PairDetail> pairList;
 
+    @JsonIgnore
+    private String pipelineParams;
 }

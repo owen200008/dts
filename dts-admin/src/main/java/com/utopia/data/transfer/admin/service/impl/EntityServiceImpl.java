@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.sun.javaws.exceptions.ErrorCodeResponseException;
 import com.utopia.data.transfer.admin.contants.CommonUtil;
@@ -14,6 +15,7 @@ import com.utopia.data.transfer.admin.dao.mapper.EntityBeanMapper;
 import com.utopia.data.transfer.admin.exception.AdminException;
 import com.utopia.data.transfer.admin.service.EntityService;
 import com.utopia.data.transfer.admin.vo.EntityAddVo;
+import com.utopia.data.transfer.admin.vo.PageRes;
 import com.utopia.data.transfer.admin.vo.QueryEntityVo;
 import com.utopia.data.transfer.admin.vo.res.EntityRes;
 import lombok.extern.slf4j.Slf4j;
@@ -85,8 +87,8 @@ public class EntityServiceImpl implements EntityService {
     }
 
     @Override
-    public List<EntityRes> getEntityList(QueryEntityVo queryEntityVo) {
-        PageHelper.startPage(queryEntityVo.getPageNum(),queryEntityVo.getPageSize());
+    public PageRes<List<EntityRes>> getEntityList(QueryEntityVo queryEntityVo) {
+        Page<Object> page = PageHelper.startPage(queryEntityVo.getPageNum(), queryEntityVo.getPageSize(), true);
         EntityBeanDal entityBeanDal = new EntityBeanDal();
         EntityBeanDal.Criteria criteria = entityBeanDal.createCriteria();
         if (Objects.nonNull(queryEntityVo.getName())){
@@ -106,7 +108,9 @@ public class EntityServiceImpl implements EntityService {
             }
             return entityRes;
         }).collect(Collectors.toList());
-        return collect;
+
+        PageRes<List<EntityRes>> pageRes = PageRes.getPage(page.getTotal(), page.getPageSize(), collect);
+        return pageRes;
     }
 
 

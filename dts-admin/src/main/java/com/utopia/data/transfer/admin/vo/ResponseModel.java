@@ -21,8 +21,8 @@ public class ResponseModel <T>{
     private String msg;
     private T data;
     private static final Integer SUCC_CODE = 200;
-    private static final Integer ERR_CODE = 200;
-
+    private static final Integer ERR_CODE = 400;
+    private static final String SUCCESS_STR = "success";
     public ResponseModel(Integer code) {
         this.code = code;
     }
@@ -32,11 +32,16 @@ public class ResponseModel <T>{
         this.data = data;
     }
 
+    public ResponseModel(Integer code, String msg) {
+        this.code = code;
+        this.msg = msg;
+    }
+
     public static<T> ResponseModel<T> success(){
-        return new ResponseModel(SUCC_CODE);
+        return new ResponseModel(SUCC_CODE,SUCCESS_STR);
     }
     public static<T> ResponseModel<T> success(T data){
-        return new ResponseModel(SUCC_CODE,data);
+        return new ResponseModel(SUCC_CODE,SUCCESS_STR,data);
     }
     public static <T>ResponseModel<T> error(String msg,T data){
         return new ResponseModel<>(ERR_CODE,msg,data);

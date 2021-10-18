@@ -1,6 +1,9 @@
 package com.utopia.data.transfer.admin.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
+import com.utopia.data.transfer.model.code.pipeline.PipelineParameter;
 import org.apache.commons.lang3.RandomUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -233,6 +236,23 @@ public class BaseController {
         ).andReturn();
         //CdeResponse<User> resp = JSON.parseObject(result,new TypeReference<CodeResponse<User>>(){});
         System.out.println(result.getResponse().getContentAsString());
+
+    }
+
+
+    @Test
+    public void testPipelineParams(){
+        PipelineParameter pipelineParameter = new PipelineParameter();
+
+        String testParams = "{\n" +
+                "  \"selectParamter\":{\n" +
+                "       \"dispatchRule\":\"123\",\n" +
+                "       \"dispatchRuleParam\":\"456\"\n" +
+                "   },\n" +
+                "  \"clientId\":22,\n" +
+                "  \"batchsize\":22\n" +
+                "}\n";
+        PipelineParameter pipelineParameters = JSONObject.parseObject(testParams, new TypeReference<PipelineParameter>() {});
 
     }
 

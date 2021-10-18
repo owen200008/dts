@@ -2,17 +2,20 @@ package com.utopia.data.transfer.admin.controller;
 
 import com.utopia.data.transfer.admin.contants.ErrorCode;
 import com.utopia.data.transfer.admin.dao.entity.EntityBean;
+import com.utopia.data.transfer.admin.dao.entity.TaskBean;
 import com.utopia.data.transfer.admin.exception.AdminException;
 import com.utopia.data.transfer.admin.service.EntityService;
 import com.utopia.data.transfer.admin.service.PipelineService;
 import com.utopia.data.transfer.admin.service.RegionService;
 import com.utopia.data.transfer.admin.service.TaskSevice;
 import com.utopia.data.transfer.admin.vo.EntityAddVo;
+import com.utopia.data.transfer.admin.vo.PageRes;
 import com.utopia.data.transfer.admin.vo.QueryEntityVo;
 import com.utopia.data.transfer.admin.vo.ResponseModel;
 import com.utopia.data.transfer.admin.vo.req.PipelineAddVo;
 import com.utopia.data.transfer.admin.vo.req.PipelinePairAddVo;
 import com.utopia.data.transfer.admin.vo.req.PipelineRegionAddVo;
+import com.utopia.data.transfer.admin.vo.req.QueryTaskVo;
 import com.utopia.data.transfer.admin.vo.res.EntityRes;
 import com.utopia.data.transfer.admin.vo.res.PipeDetailRes;
 import com.utopia.data.transfer.admin.vo.res.PipeParamsRes;
@@ -74,8 +77,8 @@ public class DtsAdminController {
     }
 
     @GetMapping("/entity/list")
-    public ResponseModel<List<EntityRes>> entityList(@Valid QueryEntityVo queryEntityVo){
-        List<EntityRes> entityById = entityService.getEntityList(queryEntityVo);
+    public ResponseModel<PageRes<List<EntityRes>>> entityList(@Valid QueryEntityVo queryEntityVo){
+        PageRes<List<EntityRes>> entityById = entityService.getEntityList(queryEntityVo);
         return ResponseModel.success(entityById);
     }
 
@@ -110,5 +113,27 @@ public class DtsAdminController {
         return ResponseModel.success();
     }
 
+    @GetMapping("/task/add")
+    public ResponseModel<Integer> taskAdd(@RequestParam("name")String name){
+        Integer taskId = taskSevice.taskAdd(name);
+        return ResponseModel.success(taskId);
+    }
 
+    @GetMapping("/task/delete")
+    public ResponseModel<Integer> taskDelete(@RequestParam("id")Integer id){
+        taskSevice.taskDelete(id);
+        return ResponseModel.success();
+    }
+
+    @GetMapping("/task/list")
+    public ResponseModel<PageRes<List<TaskBean>>> taskList(@Valid QueryTaskVo queryTaskVo){
+        PageRes<List<TaskBean>> listPageRes = taskSevice.taskList(queryTaskVo);
+        return ResponseModel.success(listPageRes);
+    }
+
+    @GetMapping("/task/switch")
+    public ResponseModel<Void> taskSwitch(@RequestParam("id")Integer id,@RequestParam("valid")Integer valid){
+        taskSevice.taskSwitch(id,valid);
+        return ResponseModel.success();
+    }
 }
