@@ -19,8 +19,6 @@ import com.utopia.data.transfer.admin.service.TaskSevice;
 import com.utopia.data.transfer.admin.vo.PageRes;
 import com.utopia.data.transfer.admin.vo.req.QueryTaskVo;
 import com.utopia.data.transfer.admin.vo.res.PipeDetailRes;
-import com.utopia.data.transfer.model.code.DTSServiceConf;
-import com.utopia.data.transfer.model.code.NodeTask;
 import com.utopia.data.transfer.model.code.bean.StageType;
 import com.utopia.data.transfer.model.code.data.media.DataMediaRulePair;
 import com.utopia.data.transfer.model.code.data.media.DataMediaRuleSource;
@@ -111,7 +109,6 @@ public class TaskServiceImpl implements TaskSevice {
 
 
         List<Pipeline> pipelineList = new ArrayList<>();
-        List<NodeTask> nodeTaskList = new ArrayList<>();
         List<EntityDesc> entityDescList = new ArrayList<>();
 
         pipeDetailResList.stream().forEach(pipe ->{
@@ -161,16 +158,6 @@ public class TaskServiceImpl implements TaskSevice {
 
             pipelineList.add(pipeline);
 
-
-            Map<StageType,String> map = new HashMap<>();
-            map.put(StageType.LOAD,pipe.getTargetRegion());
-            map.put(StageType.SELECT,pipe.getSourceRegion());
-
-            NodeTask nodeTask = NodeTask.builder()
-                    .pipelineId(pipe.getId().longValue())
-                    .stage(map)
-                    .build();
-            nodeTaskList.add(nodeTask);
 
 
             EntityDesc entityDesc = new EntityDesc();

@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.sun.javaws.exceptions.ErrorCodeResponseException;
 import com.utopia.data.transfer.admin.contants.CommonUtil;
 import com.utopia.data.transfer.admin.contants.ErrorCode;
 import com.utopia.data.transfer.admin.dao.entity.EntityBean;
