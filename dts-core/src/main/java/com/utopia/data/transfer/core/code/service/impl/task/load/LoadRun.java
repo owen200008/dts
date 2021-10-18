@@ -17,6 +17,8 @@ public interface LoadRun {
 
     public interface LoadRunItem{
         UtopiaErrorCodeClass load(TransferData transferData);
+
+        void close();
     }
     LoadRunItem createItem(Pipeline pipeline, EntityDesc sourceEntityDesc, EntityDesc targetEntityDesc);
 

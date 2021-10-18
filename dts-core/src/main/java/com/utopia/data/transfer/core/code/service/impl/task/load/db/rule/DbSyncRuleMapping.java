@@ -6,10 +6,13 @@ import com.utopia.data.transfer.model.code.data.media.SyncRuleTarget;
 import com.utopia.data.transfer.model.code.transfer.TransferUniqueDesc;
 import com.utopia.string.UtopiaStringUtil;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.StatementCreatorUtils;
 import org.springframework.util.CollectionUtils;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.List;
 
 /**
@@ -20,8 +23,6 @@ import java.util.List;
  */
 public class DbSyncRuleMapping implements SyncRuleTemplate {
 
-
-
     @Override
     public SyncRuleItem createSyncItem(Long pipelineId, DbDialect dbDialect, SyncRuleTarget syncRuleTarget) {
         DbSyncRuleMappingItem dbSyncRuleMappingItem = new DbSyncRuleMappingItem(pipelineId, dbDialect, syncRuleTarget);
@@ -29,11 +30,12 @@ public class DbSyncRuleMapping implements SyncRuleTemplate {
     }
 
     public static class DbSyncRuleMappingItem implements SyncRuleItem{
-
+        private final Long pipelineId;
         private final DbDialect dbDialect;
         private final SyncRuleTarget syncRuleTarget;
         private TransferUniqueDesc start = new TransferUniqueDesc();
         public DbSyncRuleMappingItem(Long pipelineId, DbDialect dbDialect, SyncRuleTarget syncRuleTarget) {
+            this.pipelineId = pipelineId;
             this.dbDialect = dbDialect;
             this.syncRuleTarget = syncRuleTarget;
             //解析gtid
@@ -68,7 +70,18 @@ public class DbSyncRuleMapping implements SyncRuleTemplate {
 
         @Override
         public void update(TransferUniqueDesc gtid) {
+            //合并
+            start.merge(gtid);
 
+            StringBuilder sql = new StringBuilder(1024);
+            sql.append("update ");
+            DbRuleMapping.appendFullName(sql, syncRuleTarget.getNamespace(), syncRuleTarget.getValue());
+            sql.append(" set gtid = ? where pipeline_id = ?");
+            //更新数据库
+            dbDialect.getJdbcTemplate().update(sql.toString(), ps->{
+                StatementCreatorUtils.setParameterValue(ps, 0, Types.VARCHAR, null, start.getWriteString());
+                StatementCreatorUtils.setParameterValue(ps, 1, Types.INTEGER, null, this.pipelineId.intValue());
+            });
         }
     }
 }

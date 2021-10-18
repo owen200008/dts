@@ -163,6 +163,10 @@ public class LoadTaskImpl extends TaskImpl implements LoadTransferFacade {
         if (isStart) {
             //先注销
             serviceBean.unexport();
+            serviceBean = null;
+
+            this.loadRun.close();
+            this.loadRun = null;
 
             //默认等待3s
             try {

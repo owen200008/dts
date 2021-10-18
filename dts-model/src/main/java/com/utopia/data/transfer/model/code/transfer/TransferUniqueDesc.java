@@ -1,5 +1,6 @@
 package com.utopia.data.transfer.model.code.transfer;
 
+import com.utopia.string.UtopiaStringUtil;
 import lombok.Data;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -16,12 +17,14 @@ import java.util.Objects;
  */
 @Data
 public class TransferUniqueDesc {
+    private static String SIGN_SPLITE = ":";
+
     private String key;
     private List<Pair<Long, Long>> seq = new ArrayList();
 
     public static TransferUniqueDesc parseGtid(String gtid) {
         TransferUniqueDesc ret = new TransferUniqueDesc();
-        String[] split = gtid.split(":");
+        String[] split = gtid.split(SIGN_SPLITE);
         int length = split.length;
         if(length < 2){
             return null;
@@ -45,6 +48,9 @@ public class TransferUniqueDesc {
     }
 
     public void merge(TransferUniqueDesc parseGtid) {
+        if(UtopiaStringUtil.isBlank(this.key)){
+            this.key = parseGtid.getKey();
+        }
         if(parseGtid.getSeq().size() == 0){
             return;
         }
@@ -53,6 +59,7 @@ public class TransferUniqueDesc {
         last.addAll(this.seq);
         last.sort(Comparator.comparing(Pair::getLeft));
         //合并
+        this.seq = new ArrayList();
         Pair<Long, Long> longLongPair = last.get(0);
         for (int i = 1; i < last.size(); i++) {
             //判断是否连续
@@ -95,5 +102,26 @@ public class TransferUniqueDesc {
             }
         }
         return true;
+    }
+
+    public String getWriteString(){
+        StringBuilder ret = new StringBuilder();
+        ret.append(this.key);
+        ret.append(SIGN_SPLITE);
+        for (int i = 0; i < seq.size(); i++) {
+            Pair<Long, Long> item = seq.get(i);
+            if(item.getLeft().equals(item.getRight())) {
+                ret.append(item.getLeft());
+            }
+            else {
+                ret.append(item.getLeft());
+                ret.append("-");
+                ret.append(item.getRight());
+            }
+            if(i != seq.size() - 1){
+                ret.append(SIGN_SPLITE);
+            }
+        }
+        return ret.toString();
     }
 }

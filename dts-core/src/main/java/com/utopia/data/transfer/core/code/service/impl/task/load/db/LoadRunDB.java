@@ -129,6 +129,11 @@ public class LoadRunDB implements LoadRun {
             return ErrorCode.CODE_SUCCESS;
         }
 
+        @Override
+        public void close() {
+            //不需要做什么事情
+        }
+
         private UtopiaErrorCodeClass doDml(TransferEventDataTransactionGroup transferEventData) {
             LobCreator lobCreator = dbDialect.getLobHandler().getLobCreator();
             try {
