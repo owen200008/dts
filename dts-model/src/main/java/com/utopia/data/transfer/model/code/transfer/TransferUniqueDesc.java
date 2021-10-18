@@ -75,4 +75,25 @@ public class TransferUniqueDesc {
         }
         return null;
     }
+
+    public boolean filter(TransferUniqueDesc gtid) {
+        List<Pair<Long, Long>> seq = gtid.getSeq();
+        //in才要过滤
+        for (int i = 0; i < seq.size(); i++) {
+            Pair<Long, Long> longLongPair = seq.get(i);
+            boolean in = false;
+            for (int j = 0; j < this.seq.size(); j++) {
+                if(longLongPair.getLeft() >= this.seq.get(j).getLeft() && longLongPair.getLeft() <= this.seq.get(j).getRight()){
+                    if(longLongPair.getRight() <= this.seq.get(j).getRight()){
+                        in = true;
+                        break;
+                    }
+                }
+            }
+            if(!in){
+                return false;
+            }
+        }
+        return true;
+    }
 }

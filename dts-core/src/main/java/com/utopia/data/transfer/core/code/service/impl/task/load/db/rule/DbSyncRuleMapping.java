@@ -53,21 +53,17 @@ public class DbSyncRuleMapping implements SyncRuleTemplate {
                 }
             });
             if(!CollectionUtils.isEmpty(query)) {
-                start.merge(TransferUniqueDesc.parseGtid(query.get(0)))
+                start.merge(TransferUniqueDesc.parseGtid(query.get(0)));
             }
 
             if(UtopiaStringUtil.isBlank(syncRuleTarget.getStartGtid())) {
-                TransferUniqueDesc configDesc = TransferUniqueDesc.parseGtid(syncRuleTarget.getStartGtid());
-
+                start.merge(TransferUniqueDesc.parseGtid(syncRuleTarget.getStartGtid()));
             }
-                if(UtopiaStringUtil.isBlank(syncRuleTarget.getStartGtid())){
-
-                }
-            }
+        }
 
         @Override
         public boolean filter(TransferUniqueDesc gtid) {
-            return false;
+            return start.filter(gtid);
         }
 
         @Override
