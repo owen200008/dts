@@ -38,6 +38,7 @@
     <dbcp_version>1.4</dbcp_version>
     <common_lang>2.6</common_lang>
     <groovy.version>2.4.19</groovy.version>
+    <pagehelper.version>5.1.11</pagehelper.version>
   </properties>
 
   <modules>
@@ -114,6 +115,14 @@
         <version>${groovy.version}</version>
         <classifier>indy</classifier>
       </dependency>
+
+      <dependency>
+        <groupId>com.github.pagehelper</groupId>
+        <artifactId>pagehelper</artifactId>
+        <version>${pagehelper.version}</version>
+      </dependency>
+
+
     </dependencies>
   </dependencyManagement>
 

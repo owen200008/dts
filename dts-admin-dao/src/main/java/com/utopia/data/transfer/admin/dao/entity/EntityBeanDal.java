@@ -1,5 +1,7 @@
 package com.utopia.data.transfer.admin.dao.entity;
 
+import lombok.Builder;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
