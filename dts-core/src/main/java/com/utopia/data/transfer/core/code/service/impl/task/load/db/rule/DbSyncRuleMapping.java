@@ -5,11 +5,12 @@ import com.utopia.data.transfer.core.code.src.dialect.DbDialect;
 import com.utopia.data.transfer.model.code.data.media.SyncRuleTarget;
 import com.utopia.data.transfer.model.code.transfer.TransferUniqueDesc;
 import com.utopia.string.UtopiaStringUtil;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.StatementCreatorUtils;
 import org.springframework.util.CollectionUtils;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
@@ -45,20 +46,31 @@ public class DbSyncRuleMapping implements SyncRuleTemplate {
             sql.append(" where pipeline_id = ");
             sql.append(pipelineId);
 
-            List<String> query = dbDialect.getJdbcTemplate().query(sql.toString(), new RowMapper<String>() {
+            String query = dbDialect.getJdbcTemplate().query(sql.toString(), new ResultSetExtractor<String>() {
+
                 @Override
-                public String mapRow(ResultSet rs, int rowNum) throws SQLException {
-                    if(rowNum > 0){
-                        return rs.getString(0);
+                public String extractData(ResultSet rs) throws SQLException, DataAccessException {
+                    while (rs.next()) {
+                        return rs.getString("gtid");
                     }
                     return null;
                 }
             });
-            if(!CollectionUtils.isEmpty(query)) {
-                start.merge(TransferUniqueDesc.parseGtid(query.get(0)));
+            if(UtopiaStringUtil.isNotBlank((query))){
+                start.merge(TransferUniqueDesc.parseGtid(query));
+            }
+            else if(query == null){
+                //如果不存在插入一条空的
+                StringBuilder insertSql = new StringBuilder(1024);
+                insertSql.append("insert into ");
+                DbRuleMapping.appendFullName(insertSql, syncRuleTarget.getNamespace(), syncRuleTarget.getValue());
+                insertSql.append("(pipeline_id, gtid) values(?, '')");
+                dbDialect.getJdbcTemplate().update(insertSql.toString(), ps->{
+                    StatementCreatorUtils.setParameterValue(ps, 1, Types.BIGINT, null, this.pipelineId.intValue());
+                });
             }
 
-            if(UtopiaStringUtil.isBlank(syncRuleTarget.getStartGtid())) {
+            if(!UtopiaStringUtil.isBlank(syncRuleTarget.getStartGtid())) {
                 start.merge(TransferUniqueDesc.parseGtid(syncRuleTarget.getStartGtid()));
             }
         }
@@ -79,8 +91,8 @@ public class DbSyncRuleMapping implements SyncRuleTemplate {
             sql.append(" set gtid = ? where pipeline_id = ?");
             //更新数据库
             dbDialect.getJdbcTemplate().update(sql.toString(), ps->{
-                StatementCreatorUtils.setParameterValue(ps, 0, Types.VARCHAR, null, start.getWriteString());
-                StatementCreatorUtils.setParameterValue(ps, 1, Types.INTEGER, null, this.pipelineId.intValue());
+                StatementCreatorUtils.setParameterValue(ps, 1, Types.VARCHAR, null, start.getWriteString());
+                StatementCreatorUtils.setParameterValue(ps, 2, Types.BIGINT, null, this.pipelineId.intValue());
             });
         }
     }

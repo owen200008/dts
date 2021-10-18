@@ -7,9 +7,9 @@ import com.google.common.cache.LoadingCache;
 import com.utopia.data.transfer.core.code.base.config.DTSConstants;
 import com.utopia.data.transfer.core.code.base.datasource.DataSourceService;
 import com.utopia.data.transfer.core.code.src.dialect.DbDialectFactory;
-import com.utopia.data.transfer.model.code.NodeTask;
 import com.utopia.data.transfer.model.code.bean.StageType;
 import com.utopia.data.transfer.model.code.DTSServiceConf;
+import com.utopia.data.transfer.model.code.pipeline.Pipeline;
 import com.utopia.extension.UtopiaExtensionFactory;
 import com.utopia.extension.UtopiaExtensionLoader;
 import com.utopia.register.center.instance.RegistrationInstance;
@@ -155,7 +155,7 @@ public class DTSMgr implements UtopiaShutdownHook.ShutdownCallbackFunc, LocalCac
         //配置先加载
         configService.reloadConf(object);
 
-        Map<Long, NodeTask> collect = object.getTasks().stream().collect(Collectors.toMap(NodeTask::getPipelineId, item -> item));
+        Map<Long, Pipeline> collect = object.getList().stream().collect(Collectors.toMap(Pipeline::getId, item -> item));
         //先查找不存在的
         tasks.asMap().forEach((pipelineId, item)->{
             if(!collect.containsKey(pipelineId)){
@@ -165,12 +165,12 @@ public class DTSMgr implements UtopiaShutdownHook.ShutdownCallbackFunc, LocalCac
         });
 
         //定时获取任务
-        for (NodeTask nodeTask : object.getTasks()) {
-            LoadingCache<StageType, Task> stageTypeTaskLoadingCache = tasks.get(nodeTask.getPipelineId());
+        for (Pipeline nodeTask : object.getList()) {
+            LoadingCache<StageType, Task> stageTypeTaskLoadingCache = tasks.get(nodeTask.getId());
             if(nodeTask.isShutdown()){
-                tasks.invalidate(nodeTask.getPipelineId());
+                tasks.invalidate(nodeTask.getId());
                 if (stageTypeTaskLoadingCache != null) {
-                    log.info("pipeline {} shutdown this pipeline sync tasks = {}", nodeTask.getPipelineId(),
+                    log.info("pipeline {} shutdown this pipeline sync tasks = {}", nodeTask.getId(),
                             stageTypeTaskLoadingCache.asMap().keySet());
 
                     ConcurrentMap<StageType, Task> stageTypeTaskConcurrentMap = stageTypeTaskLoadingCache.asMap();
@@ -182,30 +182,30 @@ public class DTSMgr implements UtopiaShutdownHook.ShutdownCallbackFunc, LocalCac
                         task.waitClose();
                     });
                 } else {
-                    log.info("pipeline {} is not start sync", nodeTask.getPipelineId());
+                    log.info("pipeline {} is not start sync", nodeTask.getId());
                 }
                 continue;
             }
             else if(stageTypeTaskLoadingCache.size() == 0){
-                dataSourceService.closePipeline(nodeTask.getPipelineId());
-                dbDialectFactory.closePipeline(nodeTask.getPipelineId());
-                arbitrateEventService.closePipeline(nodeTask.getPipelineId());
+                dataSourceService.closePipeline(nodeTask.getId());
+                dbDialectFactory.closePipeline(nodeTask.getId());
+                arbitrateEventService.closePipeline(nodeTask.getId());
 
-                LoadingCache<StageType, Task> loadingCacheTasks = this.tasks.get(nodeTask.getPipelineId());
+                LoadingCache<StageType, Task> loadingCacheTasks = this.tasks.get(nodeTask.getId());
 
                 for (Map.Entry<StageType, String> stageTypeStringEntry : nodeTask.getStage().entrySet()) {
                     //分配给自己的任务
                     if(stageTypeStringEntry.getValue().equals(selfRegion)) {
                         Task task = taskFactory.createTaskByType(stageTypeStringEntry.getKey());
-                        task.startTask(nodeTask.getPipelineId());
+                        task.startTask(nodeTask.getId());
                         loadingCacheTasks.put(stageTypeStringEntry.getKey(), task);
-                        log.info("pipeline {} start this task = {} success", nodeTask.getPipelineId(), stageTypeStringEntry.getKey().name());
+                        log.info("pipeline {} start this task = {} success", nodeTask.getId(), stageTypeStringEntry.getKey().name());
                     }
                 }
             }
             else{
                 //如果已经存在，则不做处理
-                log.info("pipeline {} same", nodeTask.getPipelineId());
+                log.info("pipeline {} same", nodeTask.getId());
             }
         }
     }

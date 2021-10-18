@@ -1,5 +1,6 @@
 package com.utopia.data.transfer.model.code.pipeline;
 
+import com.utopia.data.transfer.model.code.bean.StageType;
 import com.utopia.data.transfer.model.code.data.media.DataMediaRulePair;
 import com.utopia.data.transfer.model.code.data.media.SyncRuleTarget;
 import lombok.AllArgsConstructor;
@@ -8,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -34,6 +36,16 @@ public class Pipeline implements Serializable {
     private SyncRuleTarget syncRuleTarget;
 
     private PipelineParameter params;
+
+    /**
+     * 任务和region的关系
+     */
+    private Map<StageType, String> stage            = new HashMap<>();
+
+    /**
+     * 是否关闭
+     */
+    private boolean             shutdown         = false;
 
     //cache
     private Map<Long, DataMediaRulePair> sourcePaires;

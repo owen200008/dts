@@ -31,11 +31,10 @@ public class DTSServiceConf implements Serializable {
     private OperatorConfig operatorConfig;
 
     private List<Pipeline> list;
-    private List<NodeTask> tasks;
     private List<EntityDesc> entityDescs;
     private String md5Data;
 
     public boolean checkIsValid () {
-        return UtopiaStringUtil.isNotBlank(md5Data) && Objects.nonNull(list) && Objects.nonNull(tasks);
+        return UtopiaStringUtil.isNotBlank(md5Data) && Objects.nonNull(list);
     }
 }

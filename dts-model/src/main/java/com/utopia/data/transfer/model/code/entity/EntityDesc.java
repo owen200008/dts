@@ -6,7 +6,6 @@ import lombok.Data;
 import com.utopia.data.transfer.model.code.entity.mysql.MysqlProperty;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 /**
  * @author owen.cai
