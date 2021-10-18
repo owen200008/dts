@@ -26,12 +26,16 @@ import java.util.List;
 public class Message<T> {
 
     private Long    id;
-    private List<T> datas;
+    /**
+     * 数据层唯一id，保持自增用于过滤已经执行的
+     */
+    private List<T>         datas;
 
     public Message(Long id, List<T> datas){
         this.id = id;
         this.datas = datas;
     }
+
 
     public Long getId() {
         return id;

@@ -3,6 +3,7 @@ package com.utopia.data.transfer.core.code.service;
 import com.alibaba.otter.canal.protocol.CanalEntry;
 import com.utopia.data.transfer.core.archetype.base.ServiceException;
 import com.utopia.data.transfer.core.code.base.ErrorCode;
+import com.utopia.data.transfer.core.code.model.EventDataTransaction;
 import com.utopia.data.transfer.core.code.utils.ConfigHelper;
 import com.utopia.data.transfer.core.code.utils.EventColumnIndexComparable;
 import com.utopia.data.transfer.model.code.data.media.DataMediaRuleSource;
@@ -13,6 +14,7 @@ import com.utopia.data.transfer.model.code.pipeline.Pipeline;
 import com.utopia.data.transfer.core.code.src.dialect.DbDialect;
 import com.utopia.data.transfer.core.code.model.EventData;
 import com.utopia.data.transfer.core.code.src.dialect.DbDialectFactory;
+import com.utopia.data.transfer.model.code.transfer.TransferUniqueDesc;
 import com.utopia.utils.CollectionUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,8 +39,8 @@ public class MessageParser {
 
     private static final String compatibleMarkTable            = "retl_client";
 
-    public List<EventData> parse(Long pipelineId, List<CanalEntry.Entry> datas) throws ServiceException {
-        List<EventData> eventDatas = new ArrayList<EventData>();
+    public List<EventDataTransaction> parse(Long pipelineId, List<CanalEntry.Entry> datas) throws ServiceException {
+        List<EventDataTransaction> eventDatas = new ArrayList();
         Pipeline pipeline = configService.getPipeline(pipelineId);
         List<CanalEntry.Entry> transactionDataBuffer = new ArrayList<CanalEntry.Entry>();
         // hz为主站点，us->hz的数据，需要回环同步会us。并且需要开启回环补救算法
@@ -71,29 +73,19 @@ public class MessageParser {
         return eventDatas;
     }
 
-    protected void parseTransactionEnd(List<CanalEntry.Entry> transactionDataBuffer, Pipeline pipeline, List<EventData> eventDatas){
+    protected void parseTransactionEnd(List<CanalEntry.Entry> transactionDataBuffer, Pipeline pipeline, List<EventDataTransaction> eventDatas){
         for (CanalEntry.Entry bufferEntry : transactionDataBuffer) {
-            List<EventData> parseDatas = internParse(pipeline, bufferEntry);
-            if (CollectionUtils.isEmpty(parseDatas)) {
+            EventDataTransaction eventDataTransaction = internParse(pipeline, bufferEntry);
+            if (eventDataTransaction == null || CollectionUtils.isEmpty(eventDataTransaction.getDatas())) {
                 // 可能为空，针对ddl返回时就为null
                 continue;
             }
-
-            // 初步计算一下事件大小
-            long totalSize = bufferEntry.getHeader().getEventLength();
-            long eachSize = totalSize / parseDatas.size();
-            for (EventData eventData : parseDatas) {
-                if (eventData == null) {
-                    continue;
-                }
-                // 记录一下大小
-                eventData.setSize(eachSize);
-                eventDatas.add(eventData);
-            }
+            //
+            eventDatas.add(eventDataTransaction);
         }
     }
 
-    private List<EventData> internParse(Pipeline pipeline, CanalEntry.Entry entry) {
+    private EventDataTransaction internParse(Pipeline pipeline, CanalEntry.Entry entry) {
         CanalEntry.RowChange rowChange = null;
         try {
             rowChange = CanalEntry.RowChange.parseFrom(entry.getStoreValue());
@@ -114,6 +106,13 @@ public class MessageParser {
             // 直接忽略query事件
             return null;
         }
+
+        TransferUniqueDesc eventDataUniqueDesc = TransferUniqueDesc.parseGtid(entry.getHeader().getGtid());
+        if(Objects.isNull(eventDataUniqueDesc)){
+            throw new ServiceException(ErrorCode.CANAL_PARSE_GTID_ERROR.getCode(), "parser of canal-event has an error , data:" + entry.toString());
+        }
+
+        EventDataTransaction ret = new EventDataTransaction(eventDataUniqueDesc);
 
         if (eventType.isDdl()) {
             boolean notExistReturnNull = false;
@@ -142,7 +141,9 @@ public class MessageParser {
             eventData.setSql(rowChange.getSql());
             eventData.setDdlSchemaName(rowChange.getDdlSchemaName());
             eventData.setTableId(dataMedia.getId());
-            return Arrays.asList(eventData);
+
+            ret.setDatas(Arrays.asList(eventData));
+            return ret;
         }
 
         List<EventData> eventDatas = new ArrayList<EventData>();
@@ -153,7 +154,8 @@ public class MessageParser {
             }
         }
 
-        return eventDatas;
+        ret.setDatas(eventDatas);
+        return ret;
     }
 
     private EventData internParse(Pipeline pipeline, CanalEntry.Entry entry, CanalEntry.RowChange rowChange, CanalEntry.RowData rowData) {

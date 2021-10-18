@@ -21,12 +21,9 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 @Slf4j
 public abstract class TaskImpl implements Runnable, Task {
 
-    @UtopiaSPIInject
-    protected ConfigService configService;
-    @UtopiaSPIInject
-    protected MessageParser messageParser;
-    @UtopiaSPIInject
-    protected ArbitrateEventService arbitrateEventService;
+    protected final ConfigService configService;
+    protected final MessageParser messageParser;
+    protected final ArbitrateEventService arbitrateEventService;
 
     protected Thread                    thread = new Thread(this);
     @Getter
@@ -39,6 +36,12 @@ public abstract class TaskImpl implements Runnable, Task {
     protected EntityDesc                targetEntityDesc;
 
     protected volatile boolean          running = true;
+
+    public TaskImpl(ConfigService configService, MessageParser messageParser, ArbitrateEventService arbitrateEventService){
+        this.configService = configService;
+        this.messageParser = messageParser;
+        this.arbitrateEventService = arbitrateEventService;
+    }
 
     protected String createTaskName(long pipelineId, String taskName) {
         return new StringBuilder().append("pipelineId = ").append(pipelineId).append(",taskName = ").append(taskName).toString();
@@ -59,16 +62,16 @@ public abstract class TaskImpl implements Runnable, Task {
     @Override
     public void shutdown() {
         running = false;
-        thread.interrupt();
     }
 
     @Override
     public void waitClose() {
         try {
-            //最大等待5s
-            thread.join(5000);
+            //最大等待10s
+            thread.join(10000);
         } catch (InterruptedException e) {
-            log.error("thread exception", e);
+            thread.interrupt();
+            log.error("thread exception interrupt", e);
         }
     }
 

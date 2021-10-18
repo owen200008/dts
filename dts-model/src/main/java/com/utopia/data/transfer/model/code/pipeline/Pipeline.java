@@ -1,7 +1,7 @@
 package com.utopia.data.transfer.model.code.pipeline;
 
 import com.utopia.data.transfer.model.code.data.media.DataMediaRulePair;
-import com.utopia.data.transfer.model.code.data.media.DataMediaSource;
+import com.utopia.data.transfer.model.code.data.media.SyncRuleTarget;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,7 +28,10 @@ public class Pipeline implements Serializable {
 
     private List<DataMediaRulePair> pairs;
     private Long sourceEntityId;
+    private String sourceRegion;
     private Long targetEntityId;
+    private String targetRegion;
+    private SyncRuleTarget syncRuleTarget;
 
     private PipelineParameter params;
 

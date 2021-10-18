@@ -5,7 +5,11 @@ import com.utopia.data.transfer.core.code.base.ErrorCode;
 import com.utopia.data.transfer.core.code.canal.CanalEmbedSelector;
 import com.utopia.data.transfer.core.code.canal.CanalZKConfig;
 import com.utopia.data.transfer.core.code.model.EventData;
+import com.utopia.data.transfer.core.code.model.EventDataTransaction;
 import com.utopia.data.transfer.core.code.model.Message;
+import com.utopia.data.transfer.core.code.service.ArbitrateEventService;
+import com.utopia.data.transfer.core.code.service.ConfigService;
+import com.utopia.data.transfer.core.code.service.MessageParser;
 import com.utopia.data.transfer.core.code.service.impl.TaskImpl;
 import com.utopia.data.transfer.core.code.service.impl.task.select.SelectDispatchRule;
 import com.utopia.data.transfer.model.code.pipeline.Pipeline;
@@ -37,16 +41,22 @@ import java.util.concurrent.locks.LockSupport;
 @Slf4j
 public class SelectTaskImpl extends TaskImpl {
 
-    @UtopiaSPIInject
-    private CanalZKConfig canalZKConfig;
+    private final CanalZKConfig canalZKConfig;
 
     // 运行调度控制
     private volatile boolean            isStart             = false;
     private volatile long               lastUpdateTime      = System.currentTimeMillis();
 
-    private ExecutorService executor;
     private CanalEmbedSelector canalSelector;
     private SelectDispatchRule selectDispatchRule;
+
+    protected Thread processThread;
+
+    public SelectTaskImpl(ConfigService configService, MessageParser messageParser, ArbitrateEventService arbitrateEventService,
+                          CanalZKConfig canalZKConfig) {
+        super(configService, messageParser, arbitrateEventService);
+        this.canalZKConfig = canalZKConfig;
+    }
 
     @Override
     public void startTask(Long pipelineId) {
@@ -76,7 +86,7 @@ public class SelectTaskImpl extends TaskImpl {
                     if (isStart) {
                         boolean working = arbitrateEventService.getPipelineEventService().checkSelectResource(pipelineId);
                         if (!working) {
-                            stopup(false);
+                            stopup();
                         }
                         this.lastUpdateTime = System.currentTimeMillis();
                         // 5秒钟检查一次
@@ -93,10 +103,6 @@ public class SelectTaskImpl extends TaskImpl {
                 } catch (Throwable e) {
                     if (isInterrupt(e)) {
                         log.info("select is interrupt", e);
-                        try {
-                            stopup(false);
-                        } catch (InterruptedException ex) {
-                        }
                         return;
                     } else {
                         log.warn("select is failed.", e);
@@ -111,6 +117,7 @@ public class SelectTaskImpl extends TaskImpl {
                 }
             }
         } finally {
+            stopup();
             log.info("finish");
         }
     }
@@ -120,16 +127,21 @@ public class SelectTaskImpl extends TaskImpl {
         try {
             arbitrateEventService.getPipelineEventService().waitSelectResource(pipelineId);
 
-            // 启动两个线程
-            executor = new ThreadPoolExecutor(1, 2,
-                    0L, TimeUnit.MILLISECONDS,
-                    new LinkedBlockingQueue<Runnable>());
             // 启动selector
             // 获取对应的selector
             canalSelector = new CanalEmbedSelector(pipelineId, configService, messageParser, this.sourceEntityDesc, canalZKConfig);
             canalSelector.start();
 
-            startProcessSelect();
+            processThread = new Thread(() -> {
+                String currentName = Thread.currentThread().getName();
+                Thread.currentThread().setName(createTaskName(pipelineId, "ProcessSelect"));
+                try {
+                    processSelect();
+                } finally {
+                    Thread.currentThread().setName(currentName);
+                }
+            });
+            processThread.start();
 
             isStart = true;
             return true;
@@ -144,10 +156,14 @@ public class SelectTaskImpl extends TaskImpl {
         return false;
     }
 
-    private synchronized void stopup(boolean needInterrut) throws InterruptedException {
+    private synchronized void stopup() {
         if (isStart) {
-            if (executor != null) {
-                executor.shutdownNow();
+            //等待退出，最多等待10s
+            try {
+                processThread.join(10000);
+            } catch (InterruptedException e) {
+                log.error("processThread no stopup interrupt");
+                processThread.interrupt();
             }
 
             if (canalSelector != null && canalSelector.isStart()) {
@@ -159,40 +175,20 @@ public class SelectTaskImpl extends TaskImpl {
             } catch (ExecutionException e) {
                 log.error("releaseSelectResource error");
             }
-
-            if (needInterrut) {
-                // 抛异常，退出自己
-                throw new InterruptedException();
-            }
             isStart = false;
         }
-    }
-
-    /**
-     * 执行数据分发工作
-     */
-    private void startProcessSelect() {
-        executor.submit(() -> {
-            String currentName = Thread.currentThread().getName();
-            Thread.currentThread().setName(createTaskName(pipelineId, "ProcessSelect"));
-            try {
-                processSelect();
-            } finally {
-                Thread.currentThread().setName(currentName);
-            }
-        });
     }
 
     private void processSelect() {
         while (running) {
             try {
                 //获取数据
-                Optional<Message<EventData>> selector = canalSelector.selector();
+                Optional<Message<EventDataTransaction>> selector = canalSelector.selector();
                 if(!selector.isPresent()){
                     continue;
                 }
 
-                Message<EventData> message = selector.get();
+                Message<EventDataTransaction> message = selector.get();
                 do{
                     //开始select的时间
                     long startTime = System.currentTimeMillis();

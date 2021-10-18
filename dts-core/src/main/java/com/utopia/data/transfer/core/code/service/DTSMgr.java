@@ -6,21 +6,10 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.utopia.data.transfer.core.code.base.config.DTSConstants;
 import com.utopia.data.transfer.core.code.base.datasource.DataSourceService;
-import com.utopia.data.transfer.core.code.service.impl.task.select.dispatch.EvaluateClosureParam;
 import com.utopia.data.transfer.core.code.src.dialect.DbDialectFactory;
 import com.utopia.data.transfer.model.code.NodeTask;
 import com.utopia.data.transfer.model.code.bean.StageType;
 import com.utopia.data.transfer.model.code.DTSServiceConf;
-import com.utopia.data.transfer.model.code.data.media.DataMediaRuleSource;
-import com.utopia.data.transfer.model.code.data.media.DataMediaRulePair;
-import com.utopia.data.transfer.model.code.data.media.DataMediaSource;
-import com.utopia.data.transfer.model.code.data.media.DataMediaRuleTarget;
-import com.utopia.data.transfer.model.code.data.media.DataMediaType;
-import com.utopia.data.transfer.model.code.entity.mysql.MysqlProperty;
-import com.utopia.data.transfer.model.code.entity.EntityDesc;
-import com.utopia.data.transfer.model.code.pipeline.Pipeline;
-import com.utopia.data.transfer.model.code.pipeline.PipelineParameter;
-import com.utopia.data.transfer.model.code.pipeline.SelectParamter;
 import com.utopia.extension.UtopiaExtensionFactory;
 import com.utopia.extension.UtopiaExtensionLoader;
 import com.utopia.register.center.instance.RegistrationInstance;
@@ -35,12 +24,12 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.bootstrap.DubboBootstrap;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentMap;
@@ -60,6 +49,10 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class DTSMgr implements UtopiaShutdownHook.ShutdownCallbackFunc, LocalCacheManager.NotifyUpdate {
+
+    @Value("${spring.application.region}")
+    private String selfRegion;
+
     /**
      * 上下文模块
      */
@@ -84,6 +77,8 @@ public class DTSMgr implements UtopiaShutdownHook.ShutdownCallbackFunc, LocalCac
     private DbDialectFactory dbDialectFactory;
     @Autowired
     private ArbitrateEventService arbitrateEventService;
+    @Autowired
+    private TaskFactory taskFactory;
 
     @SuppressWarnings("AlibabaThreadPoolCreation")
     @Getter
@@ -148,83 +143,7 @@ public class DTSMgr implements UtopiaShutdownHook.ShutdownCallbackFunc, LocalCac
             //注册配置更新
             this.localCacheManager.registerNotifyConfig(DTSConstants.CONFIG_KEY, this);
 
-            //第一次获取
-            //测试构建数据
-            DTSServiceConf dtsServiceConf = new DTSServiceConf();
-
-            Long main_a_entityId = 11L;
-            EntityDesc mainAEntity = new EntityDesc();
-            mainAEntity.setId(main_a_entityId);
-            mainAEntity.setName("main-a-test");
-            mainAEntity.setType(DataMediaType.MYSQL);
-            mainAEntity.setUrl("jdbc:mysql://main-a-db.blurams.vip:3306/dts?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC");
-            mainAEntity.setUsername("root");
-            mainAEntity.setPassword("root");
-            mainAEntity.setDriver("com.mysql.cj.jdbc.Driver");
-            mainAEntity.setMysql(new MysqlProperty());
-
-            Long main_b_entityId = 12L;
-            EntityDesc mainBEntity = new EntityDesc();
-            mainBEntity.setId(main_b_entityId);
-            mainBEntity.setName("main-b");
-            mainBEntity.setType(DataMediaType.MYSQL);
-            mainBEntity.setUrl("jdbc:mysql://main-b-db.blurams.vip:3306/dts?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC");
-            mainBEntity.setUsername("root");
-            mainBEntity.setPassword("root");
-            mainBEntity.setDriver("com.mysql.cj.jdbc.Driver");
-            mainBEntity.setMysql(new MysqlProperty());
-            dtsServiceConf.setEntityDescs(Arrays.asList(mainAEntity, mainBEntity));
-
-            PipelineParameter pipelineParameter = new PipelineParameter();
-            SelectParamter selectParamter = new SelectParamter();
-            selectParamter.setDispatchRule("DUBBO");
-
-            EvaluateClosureParam evaluateClosureParam = new EvaluateClosureParam();
-            evaluateClosureParam.setQuery("$entity_id");
-            evaluateClosureParam.setParams(Arrays.asList("entity_id"));
-            selectParamter.setDispatchRuleParam(JSON.toJSONString(evaluateClosureParam));
-            pipelineParameter.setSelectParamter(selectParamter);
-            //等于pipelineid
-            pipelineParameter.setClientId((short) 1);
-
-            dtsServiceConf.setList(Arrays.asList(Pipeline.builder()
-                    .id(11L)
-                    .name("a_to_b")
-                    .sourceEntityId(main_a_entityId)
-                    .targetEntityId(main_b_entityId)
-                    .pairs(Arrays.asList(DataMediaRulePair.builder()
-                            .source(DataMediaRuleSource.builder()
-                                    .id(11)
-                                    .namespace("dts")
-                                    .value("syncTable")
-                                    .build())
-                            .target(DataMediaRuleTarget.builder()
-                                    .id(12)
-                                    .namespace("dts")
-                                    .value("syncTable")
-                                    .build())
-                            .build()))
-                    .params(pipelineParameter)
-                    .build()));
-            NodeTask nodeTask = NodeTask.builder()
-                    .pipelineId(11L)
-                    .stage(Arrays.asList(StageType.SELECT, StageType.LOAD))
-                    .shutdown(false)
-                    .build();
-            dtsServiceConf.setTasks(Arrays.asList(nodeTask));
-
-
-            dtsServiceConf.setMd5Data("1");
-
-            notify(DTSConstants.CONFIG_KEY, JSON.toJSONString(dtsServiceConf));
-//            reloadSchedule.schedule(()->{
-//                nodeTask.setShutdown(true);
-//                dtsServiceConf.setMd5Data("2");
-//                notify(DTSConstants.CONFIG_KEY, JSON.toJSONString(dtsServiceConf));
-//            }, 10, TimeUnit.SECONDS);
-
-
-            //notify(DTSConstants.CONFIG_KEY, this.localCacheManager.getConfig(DTSConstants.CONFIG_KEY));
+            notify(DTSConstants.CONFIG_KEY, this.localCacheManager.getConfig(DTSConstants.CONFIG_KEY));
 
             log.info("Init DTS Step 2 finish!");
             return;
@@ -274,12 +193,14 @@ public class DTSMgr implements UtopiaShutdownHook.ShutdownCallbackFunc, LocalCac
 
                 LoadingCache<StageType, Task> loadingCacheTasks = this.tasks.get(nodeTask.getPipelineId());
 
-                for (StageType stageType : nodeTask.getStage()) {
-                    Task task = UtopiaExtensionLoader.getExtensionLoader(Task.class)
-                            .getExtension(stageType.name());
-                    task.startTask(nodeTask.getPipelineId());
-                    loadingCacheTasks.put(stageType, task);
-                    log.info("pipeline {} start this task = {} success", nodeTask.getPipelineId(), stageType.name());
+                for (Map.Entry<StageType, String> stageTypeStringEntry : nodeTask.getStage().entrySet()) {
+                    //分配给自己的任务
+                    if(stageTypeStringEntry.getValue().equals(selfRegion)) {
+                        Task task = taskFactory.createTaskByType(stageTypeStringEntry.getKey());
+                        task.startTask(nodeTask.getPipelineId());
+                        loadingCacheTasks.put(stageTypeStringEntry.getKey(), task);
+                        log.info("pipeline {} start this task = {} success", nodeTask.getPipelineId(), stageTypeStringEntry.getKey().name());
+                    }
                 }
             }
             else{

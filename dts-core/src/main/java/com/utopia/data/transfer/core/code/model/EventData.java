@@ -58,11 +58,6 @@ public class EventData implements Serializable {
     private Map<String, EventColumn> allColumns;
     // ====================== 运行过程中对数据的附加属性 =============================
     /**
-     * 预计的size大小，基于binlog event的推算
-     */
-    private long              size             = 1024;
-
-    /**
      * 当eventType =
      * CREATE/ALTER/ERASE时，就是对应的sql语句，其他情况为动态生成的INSERT/UPDATE/DELETE sql
      */

@@ -18,6 +18,7 @@ public class ErrorCode extends BaseErrorCode {
     public final static UtopiaErrorCodeClass DTS_NOFIND_MEDIAPAIR = new UtopiaErrorCodeClass(24056, "");
     public final static UtopiaErrorCodeClass DTS_KEY_COLUMN_NOFIND = new UtopiaErrorCodeClass(24057, "");
     public final static UtopiaErrorCodeClass GET_DB_DIALECT_ERROR = new UtopiaErrorCodeClass(24058, "");
+    public final static UtopiaErrorCodeClass CANAL_PARSE_GTID_ERROR = new UtopiaErrorCodeClass(24059, "");
 
     public final static UtopiaErrorCodeClass NO_SUPPORT_DATASOURCE_TYPE = new UtopiaErrorCodeClass(24100, "");
     public final static UtopiaErrorCodeClass GET_DATASOURCE_ERROR = new UtopiaErrorCodeClass(24101, "");
@@ -28,12 +29,13 @@ public class ErrorCode extends BaseErrorCode {
     public final static UtopiaErrorCodeClass GET_TABLE_ERROR = new UtopiaErrorCodeClass(24106, "");
 
 
+    public final static UtopiaErrorCodeClass LOAD_RUN_CLOSED = new UtopiaErrorCodeClass(24378, "");
     public final static UtopiaErrorCodeClass LOAD_RUN_EXCEPTION = new UtopiaErrorCodeClass(24379, "");
 
     public final static UtopiaErrorCodeClass LOAD_DML_RUN_ERROR = new UtopiaErrorCodeClass(24389, "");
 
-    public final static UtopiaErrorCodeClass LOAD_DDL_RUN_SQL_ERR = new UtopiaErrorCodeClass(24395, "");
-    public final static UtopiaErrorCodeClass LOAD_DDL_CHANGEDB_ERR = new UtopiaErrorCodeClass(24396, "");
+    public final static UtopiaErrorCodeClass LOAD_CREATE_SYNCRULE_ERR = new UtopiaErrorCodeClass(24395, "");
+    public final static UtopiaErrorCodeClass LOAD_CREATE_ERR = new UtopiaErrorCodeClass(24396, "");
     public final static UtopiaErrorCodeClass LOAD_DDL_RUN_ERROR = new UtopiaErrorCodeClass(24397, "");
     public final static UtopiaErrorCodeClass LOAD_DDL_DATA_ERROR = new UtopiaErrorCodeClass(24398, "");
     public final static UtopiaErrorCodeClass LOAD_GET_EXTENSION_FAIL = new UtopiaErrorCodeClass(24399, "");

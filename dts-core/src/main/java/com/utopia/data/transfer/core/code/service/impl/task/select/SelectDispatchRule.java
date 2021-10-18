@@ -1,6 +1,6 @@
 package com.utopia.data.transfer.core.code.service.impl.task.select;
 
-import com.utopia.data.transfer.core.code.model.EventData;
+import com.utopia.data.transfer.core.code.model.EventDataTransaction;
 import com.utopia.data.transfer.core.code.model.Message;
 import com.utopia.data.transfer.model.code.pipeline.Pipeline;
 import com.utopia.extension.UtopiaSPI;
@@ -28,5 +28,5 @@ public interface SelectDispatchRule {
      * @param message
      * @return
      */
-    CompletableFuture<UtopiaResponseModel> dispatch(Pipeline pipeline, Message<EventData> message);
+    CompletableFuture<UtopiaResponseModel> dispatch(Pipeline pipeline, Message<EventDataTransaction> message);
 }

@@ -17,6 +17,7 @@
 package com.utopia.data.transfer.core.code.utils;
 
 import com.utopia.data.transfer.core.code.model.EventData;
+import com.utopia.data.transfer.core.code.model.EventDataTransaction;
 import com.utopia.data.transfer.core.code.model.Message;
 import com.utopia.data.transfer.model.code.entity.EventColumn;
 import org.apache.commons.lang.StringUtils;
@@ -62,7 +63,7 @@ public class MessageDumper {
 
     }
 
-    public static String dumpMessageInfo(Message<EventData> message, String startPosition, String endPosition, int total) {
+    public static String dumpMessageInfo(Message<EventDataTransaction> message, String startPosition, String endPosition, int total) {
         Date now = new Date();
         SimpleDateFormat format = new SimpleDateFormat(TIMESTAMP_FORMAT);
         int normal = message.getDatas().size();
@@ -70,15 +71,17 @@ public class MessageDumper {
                                     format.format(now), startPosition, endPosition);
     }
 
-    public static String dumpEventDatas(List<EventData> eventDatas) {
+    public static String dumpEventDatas(List<EventDataTransaction> eventDatas) {
         if (CollectionUtils.isEmpty(eventDatas)) {
             return StringUtils.EMPTY;
         }
 
         // 预先设定容量大小
         StringBuilder builder = new StringBuilder(event_default_capacity * eventDatas.size());
-        for (EventData data : eventDatas) {
-            builder.append(dumpEventData(data));
+        for (EventDataTransaction data : eventDatas) {
+            for (EventData dataData : data.getDatas()) {
+                builder.append(dumpEventData(dataData));
+            }
         }
         return builder.toString();
     }

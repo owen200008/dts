@@ -19,9 +19,9 @@ import com.mysql.cj.conf.ConnectionUrlParser;
 import com.utopia.data.transfer.core.archetype.base.ServiceException;
 import com.utopia.data.transfer.core.code.base.ErrorCode;
 import com.utopia.data.transfer.core.code.base.config.DTSConstants;
+import com.utopia.data.transfer.core.code.model.EventDataTransaction;
 import com.utopia.data.transfer.model.code.entity.EntityDesc;
 import com.utopia.data.transfer.model.code.pipeline.Pipeline;
-import com.utopia.data.transfer.core.code.model.EventData;
 import com.utopia.data.transfer.core.code.model.Message;
 import com.utopia.data.transfer.core.code.service.ConfigService;
 import com.utopia.data.transfer.core.code.utils.MessageDumper;
@@ -211,7 +211,7 @@ public class CanalEmbedSelector {
     }
 
 
-    public Optional<Message<EventData>> selector() throws InterruptedException {
+    public Optional<Message<EventDataTransaction>> selector() throws InterruptedException {
         com.alibaba.otter.canal.protocol.Message message = canalServer.getWithoutAck(clientIdentity, pipeline.getParams().getBatchsize(), pipeline.getParams().getBatchTimeout(), TimeUnit.MILLISECONDS);;
         if (message == null || message.getId() == -1L) {
             //no data
@@ -237,8 +237,9 @@ public class CanalEmbedSelector {
         }
 
         // 过滤事务头/尾和回环数据
-        List<EventData> eventDatas = messageParser.parse(pipeline.getId(), entries);
-        Message<EventData> result = new Message(message.getId(), eventDatas);
+        List<EventDataTransaction> eventDatas = messageParser.parse(pipeline.getId(), entries);
+        //
+        Message<EventDataTransaction> result = new Message(message.getId(), eventDatas);
 
         if (Boolean.TRUE.equals(pipeline.getParams().getDumpSelector()) && log.isInfoEnabled()) {
             String startPosition = null;
@@ -265,7 +266,7 @@ public class CanalEmbedSelector {
     /**
      * 记录一下message对象
      */
-    private synchronized void dumpMessages(Message message, String startPosition, String endPosition, int total) {
+    private synchronized void dumpMessages(Message<EventDataTransaction> message, String startPosition, String endPosition, int total) {
         try {
             MDC.put(DTSConstants.splitPipelineSelectLogFileKey, String.valueOf(pipeline.getId()));
             log.info(SEP + "****************************************************" + SEP);
@@ -284,7 +285,7 @@ public class CanalEmbedSelector {
     /**
      * 分批输出多个数据
      */
-    private void dumpEventDatas(List<EventData> eventDatas) {
+    private void dumpEventDatas(List<EventDataTransaction> eventDatas) {
         int size = eventDatas.size();
         // 开始输出每条记录
         int index = 0;

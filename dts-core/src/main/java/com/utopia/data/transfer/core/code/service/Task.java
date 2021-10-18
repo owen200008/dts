@@ -8,7 +8,6 @@ import com.utopia.extension.UtopiaSPI;
  * @alter_author
  * @alter_date
  */
-@UtopiaSPI
 public interface Task {
 
     /**

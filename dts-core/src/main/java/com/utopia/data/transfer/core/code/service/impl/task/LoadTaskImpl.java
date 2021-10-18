@@ -2,15 +2,15 @@ package com.utopia.data.transfer.core.code.service.impl.task;
 
 import com.utopia.data.transfer.core.archetype.base.ServiceException;
 import com.utopia.data.transfer.core.code.base.ErrorCode;
+import com.utopia.data.transfer.core.code.service.ArbitrateEventService;
 import com.utopia.data.transfer.core.code.service.ConfigService;
+import com.utopia.data.transfer.core.code.service.MessageParser;
 import com.utopia.data.transfer.core.code.service.impl.TaskImpl;
-import com.utopia.data.transfer.core.code.service.impl.task.load.LoadContext;
 import com.utopia.data.transfer.core.code.service.impl.task.load.LoadRun;
 import com.utopia.data.transfer.core.code.service.impl.task.load.LoadTransferFacade;
 import com.utopia.data.transfer.model.code.transfer.TransferData;
 import com.utopia.exception.UtopiaRunTimeException;
 import com.utopia.extension.UtopiaExtensionLoader;
-import com.utopia.extension.UtopiaSPIInject;
 import com.utopia.log.BasicLogUtil;
 import com.utopia.model.rsp.UtopiaErrorCodeClass;
 import com.utopia.model.rsp.UtopiaResponseModel;
@@ -32,28 +32,32 @@ import java.util.concurrent.locks.LockSupport;
  * @alter_date
  */
 @Slf4j
-public class LoadTaskImpl extends TaskImpl implements LoadContext, LoadTransferFacade {
+public class LoadTaskImpl extends TaskImpl implements LoadTransferFacade {
 
     private static UtopiaResponseModel SUCCESS = UtopiaResponseModel.success();
     private static UtopiaResponseModel EXCEPTION = UtopiaResponseModel.fail(ErrorCode.LOAD_RUN_EXCEPTION);
+    private static UtopiaResponseModel CLOSED = UtopiaResponseModel.fail(ErrorCode.LOAD_RUN_CLOSED);
 
     public static String TRANSFER_VERSION = "1.0.0";
 
-    @UtopiaSPIInject
-    private ApplicationContext applicationContext;
-    @UtopiaSPIInject
-    private ApplicationEventPublisher applicationEventPublisher;
-    @UtopiaSPIInject
-    private ConfigService configService;
-
+    private final ApplicationContext applicationContext;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     private ServiceBean<LoadTransferFacade> serviceBean;
 
-    private LoadRun loadRun;
+    private LoadRun.LoadRunItem loadRun;
 
     // 运行调度控制
     private volatile boolean            isStart             = false;
     private volatile long               lastUpdateTime      = System.currentTimeMillis();
+
+    public LoadTaskImpl(ConfigService configService, MessageParser messageParser, ArbitrateEventService arbitrateEventService,
+                        ApplicationContext applicationContext,
+                        ApplicationEventPublisher applicationEventPublisher) {
+        super(configService, messageParser, arbitrateEventService);
+        this.applicationContext = applicationContext;
+        this.applicationEventPublisher = applicationEventPublisher;
+    }
 
     @Override
     public void run() {
@@ -64,7 +68,7 @@ public class LoadTaskImpl extends TaskImpl implements LoadContext, LoadTransferF
                     if (isStart) {
                         boolean working = arbitrateEventService.getPipelineEventService().checkLoadResource(pipelineId);
                         if (!working) {
-                            stopup(false);
+                            stopup();
                         }
                         this.lastUpdateTime = System.currentTimeMillis();
                         // 5秒钟检查一次
@@ -81,14 +85,9 @@ public class LoadTaskImpl extends TaskImpl implements LoadContext, LoadTransferF
                 } catch (Throwable e) {
                     if (isInterrupt(e)) {
                         log.info("load is interrupt", e);
-                        try {
-                            stopup(false);
-                        } catch (InterruptedException ex) {
-                        }
                         return;
                     } else {
                         log.warn("load is failed.", e);
-
                         // sleep 10秒再进行重试
                         try {
                             Thread.sleep(10 * 1000);
@@ -98,6 +97,7 @@ public class LoadTaskImpl extends TaskImpl implements LoadContext, LoadTransferF
                 }
             }
         } finally {
+            stopup();
             log.info("finish");
         }
     }
@@ -134,7 +134,11 @@ public class LoadTaskImpl extends TaskImpl implements LoadContext, LoadTransferF
                 log.error("get load extension error {}", String.valueOf(this.targetEntityDesc.getType()));
                 throw new UtopiaRunTimeException(ErrorCode.LOAD_GET_EXTENSION_FAIL);
             }
-            this.loadRun = extension;
+            this.loadRun = extension.createItem(pipeline, sourceEntityDesc, targetEntityDesc);
+            if(this.loadRun == null){
+                log.error("get load extension createItem error {}", String.valueOf(this.targetEntityDesc.getType()));
+                throw new UtopiaRunTimeException(ErrorCode.LOAD_GET_EXTENSION_FAIL);
+            }
 
             //启动dubbo服务
             serviceBean = createGlobalService(applicationContext, applicationEventPublisher, LoadTransferFacade.class, TRANSFER_VERSION, String.valueOf(pipelineId));
@@ -155,18 +159,20 @@ public class LoadTaskImpl extends TaskImpl implements LoadContext, LoadTransferF
         return false;
     }
 
-    private void stopup(boolean needInterrut) throws InterruptedException {
+    private void stopup() {
         if (isStart) {
             //先注销
             serviceBean.unexport();
+
+            //默认等待3s
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+            }
             try {
                 arbitrateEventService.getPipelineEventService().releaseLoadResource(pipelineId);
             } catch (ExecutionException ex) {
                 log.error("releaseResource exception {}", pipelineId, ex);
-            }
-            if (needInterrut) {
-                // 抛异常，退出自己
-                throw new InterruptedException();
             }
             isStart = false;
         }
@@ -187,11 +193,17 @@ public class LoadTaskImpl extends TaskImpl implements LoadContext, LoadTransferF
 ////
 ////                    return null;
         Thread.currentThread().setName(createTaskName(pipelineId, "DubboWorker"));
+        if(!running){
+            return CompletableFuture.completedFuture(CLOSED);
+        }
+
         try{
-            UtopiaErrorCodeClass load = loadRun.load(this, transferData);
+            UtopiaErrorCodeClass load = loadRun.load(transferData);
             if(load.getCode() != ErrorCode.CODE_SUCCESS.getCode()){
                 return CompletableFuture.completedFuture(UtopiaResponseModel.fail(load));
             }
+            //如果成功的话，记录下以免重复执行
+
         } catch(ServiceException e){
             log.error("load exception {}", e.getCode(), e);
             return CompletableFuture.completedFuture(EXCEPTION);

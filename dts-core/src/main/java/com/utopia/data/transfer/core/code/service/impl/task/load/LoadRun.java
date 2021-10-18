@@ -1,5 +1,7 @@
 package com.utopia.data.transfer.core.code.service.impl.task.load;
 
+import com.utopia.data.transfer.model.code.entity.EntityDesc;
+import com.utopia.data.transfer.model.code.pipeline.Pipeline;
 import com.utopia.data.transfer.model.code.transfer.TransferData;
 import com.utopia.extension.UtopiaSPI;
 import com.utopia.model.rsp.UtopiaErrorCodeClass;
@@ -13,5 +15,9 @@ import com.utopia.model.rsp.UtopiaErrorCodeClass;
 @UtopiaSPI
 public interface LoadRun {
 
-    UtopiaErrorCodeClass load(LoadContext loadContext, TransferData transferData);
+    public interface LoadRunItem{
+        UtopiaErrorCodeClass load(TransferData transferData);
+    }
+    LoadRunItem createItem(Pipeline pipeline, EntityDesc sourceEntityDesc, EntityDesc targetEntityDesc);
+
 }

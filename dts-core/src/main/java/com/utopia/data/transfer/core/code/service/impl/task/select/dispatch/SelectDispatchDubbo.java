@@ -2,6 +2,7 @@ package com.utopia.data.transfer.core.code.service.impl.task.select.dispatch;
 
 import com.utopia.data.transfer.core.code.base.ErrorCode;
 import com.utopia.data.transfer.core.code.model.EventData;
+import com.utopia.data.transfer.core.code.model.EventDataTransaction;
 import com.utopia.data.transfer.core.code.model.Message;
 import com.utopia.data.transfer.core.code.service.impl.task.LoadTaskImpl;
 import com.utopia.data.transfer.core.code.service.impl.task.load.LoadTransferFacade;
@@ -9,10 +10,12 @@ import com.utopia.data.transfer.core.code.service.impl.task.select.SelectDispatc
 import com.utopia.data.transfer.model.code.pipeline.Pipeline;
 import com.utopia.data.transfer.model.code.transfer.TransferData;
 import com.utopia.data.transfer.model.code.transfer.TransferEventData;
+import com.utopia.data.transfer.model.code.transfer.TransferEventDataTransaction;
 import com.utopia.model.rsp.UtopiaResponseModel;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.ReferenceConfig;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
@@ -39,7 +42,7 @@ public class SelectDispatchDubbo implements SelectDispatchRule {
     }
 
     @Override
-    public CompletableFuture<UtopiaResponseModel> dispatch(Pipeline pipeline, Message<EventData> message) {
+    public CompletableFuture<UtopiaResponseModel> dispatch(Pipeline pipeline, Message<EventDataTransaction> message) {
         //根据pipeline获取服务
         try{
             LoadTransferFacade loadTransferFacade = mapTransfer.get(pipeline.getId());
@@ -53,7 +56,7 @@ public class SelectDispatchDubbo implements SelectDispatchRule {
             }
             if(loadTransferFacade != null){
                 //传递数据
-                List<EventData> datas = message.getDatas();
+                List<EventDataTransaction> datas = message.getDatas();
                 TransferData transferData = new TransferData();
                 transferData.setId(message.getId());
                 transferData.setTransferEventData(transferTransfer(datas));
@@ -66,20 +69,24 @@ public class SelectDispatchDubbo implements SelectDispatchRule {
         return CompletableFuture.completedFuture(DUBBO_EXCEPTION_ERROR);
     }
 
-    private List<TransferEventData> transferTransfer(List<EventData> datas) {
-        return datas.stream().map(item->{
-            TransferEventData transferEventData = new TransferEventData();
-            transferEventData.setTableId(item.getTableId());
-            transferEventData.setEventType(item.getEventType());
-            transferEventData.setExecuteTime(item.getExecuteTime());
+    private List<TransferEventDataTransaction> transferTransfer(List<EventDataTransaction> datas) {
+        return datas.stream().map(data->{
+            TransferEventDataTransaction transferEventData = new TransferEventDataTransaction();
+            transferEventData.setGtid(data.getGtid());
+            transferEventData.setDatas(data.getDatas().stream().map(item->{
+                TransferEventData tmp = new TransferEventData();
+                tmp.setTableId(item.getTableId());
+                tmp.setEventType(item.getEventType());
+                tmp.setExecuteTime(item.getExecuteTime());
 
-            transferEventData.setOldKeys(item.getOldKeys());
-            transferEventData.setKeys(item.getKeys());
-            transferEventData.setColumns(item.getColumns());
+                tmp.setOldKeys(item.getOldKeys());
+                tmp.setKeys(item.getKeys());
+                tmp.setColumns(item.getColumns());
 
-            transferEventData.setSql(item.getSql());
-            transferEventData.setDdlSchemaName(item.getDdlSchemaName());
-
+                tmp.setSql(item.getSql());
+                tmp.setDdlSchemaName(item.getDdlSchemaName());
+                return tmp;
+            }).collect(Collectors.toList()));
             return transferEventData;
         }).collect(Collectors.toList());
     }

@@ -8,7 +8,9 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author owen.cai
@@ -22,8 +24,13 @@ import java.util.List;
 @AllArgsConstructor
 public class NodeTask implements Serializable {
     private Long                pipelineId;
-    // 任务类型
-    private List<StageType>     stage            = new ArrayList();
-    // 是否关闭
+    /**
+     * 任务和region的关系
+     */
+    private Map<StageType, String> stage            = new HashMap<>();
+
+    /**
+     * 是否关闭
+     */
     private boolean             shutdown         = false;
 }

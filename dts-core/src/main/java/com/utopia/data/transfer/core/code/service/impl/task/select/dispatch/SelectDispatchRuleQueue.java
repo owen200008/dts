@@ -2,7 +2,7 @@ package com.utopia.data.transfer.core.code.service.impl.task.select.dispatch;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.base.Joiner;
-import com.utopia.data.transfer.core.code.model.EventData;
+import com.utopia.data.transfer.core.code.model.EventDataTransaction;
 import com.utopia.data.transfer.core.code.model.Message;
 import com.utopia.data.transfer.core.code.service.impl.task.select.SelectDispatchRule;
 import com.utopia.data.transfer.model.code.entity.EventColumn;
@@ -42,19 +42,19 @@ public class SelectDispatchRuleQueue implements SelectDispatchRule {
     }
 
     @Override
-    public CompletableFuture<UtopiaResponseModel> dispatch(Pipeline pipeline, Message<EventData> message) {
-        for (EventData data : message.getDatas()) {
-            if(CollectionUtils.isEmpty(this.params)){
-                for (EventColumn key : data.getKeys()) {
-                    closure.setProperty(key.getColumnName(), key.getColumnValue());
-                }
-            }
-            else{
-                for (String param : this.params) {
-                    closure.setProperty(param, data.getAllColumns().get(param).getColumnValue());
-                }
-            }
-            log.info(closure.call().toString());
+    public CompletableFuture<UtopiaResponseModel> dispatch(Pipeline pipeline, Message<EventDataTransaction> message) {
+        for (EventDataTransaction data : message.getDatas()) {
+//            if(CollectionUtils.isEmpty(this.params)){
+//                for (EventColumn key : data.getKeys()) {
+//                    closure.setProperty(key.getColumnName(), key.getColumnValue());
+//                }
+//            }
+//            else{
+//                for (String param : this.params) {
+//                    closure.setProperty(param, data.getAllColumns().get(param).getColumnValue());
+//                }
+//            }
+//            log.info(closure.call().toString());
         }
         return CompletableFuture.completedFuture(UtopiaResponseModel.create(Math.random() > 0.5 ? ErrorCode.CODE_SUCCESS.getCode() : ErrorCode.UNKNOW_ERROR.getCode(),null, null));
     }

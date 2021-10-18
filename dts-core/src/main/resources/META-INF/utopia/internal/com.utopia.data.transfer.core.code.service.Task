@@ -1,2 +1,0 @@
-SELECT=com.utopia.data.transfer.core.code.service.impl.task.SelectTaskImpl
-LOAD=com.utopia.data.transfer.core.code.service.impl.task.LoadTaskImpl

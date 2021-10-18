@@ -12,7 +12,7 @@ import java.util.List;
  * @alter_date
  */
 @Data
-public class TransferData implements Serializable {
-    private Long    id;
-    private List<TransferEventDataTransaction> transferEventData;
+public class TransferEventDataTransaction implements Serializable {
+    private TransferUniqueDesc          gtid;
+    private List<TransferEventData>     datas;
 }

@@ -5,6 +5,7 @@ import com.utopia.data.transfer.core.code.service.impl.task.load.db.SqlRunTempla
 import com.utopia.data.transfer.model.code.data.media.DataMediaRulePair;
 import com.utopia.data.transfer.model.code.entity.EventColumn;
 import com.utopia.data.transfer.model.code.transfer.TransferEventData;
+import com.utopia.string.UtopiaStringUtil;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -101,10 +102,14 @@ public class DbRuleMapping implements DbRuleTemplate {
     }
 
     protected void appendFullName(StringBuilder sql, DataMediaRulePair pair){
-        if (pair.getTarget().getNamespace() != null) {
-            sql.append(pair.getTarget().getNamespace()).append(DOT);
+        appendFullName(sql, pair.getTarget().getNamespace(), pair.getTarget().getValue());
+    }
+
+    public static void appendFullName(StringBuilder sql, String namespace, String value){
+        if(UtopiaStringUtil.isNotBlank(namespace)){
+            sql.append(namespace).append(DOT);
         }
-        sql.append(pair.getTarget().getValue());
+        sql.append(value);
     }
 
 
