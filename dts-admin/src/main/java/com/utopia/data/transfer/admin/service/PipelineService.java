@@ -1,7 +1,7 @@
 package com.utopia.data.transfer.admin.service;
 
 import com.utopia.data.transfer.admin.dao.entity.PipelineBean;
-import com.utopia.data.transfer.admin.dao.entity.SyncRule;
+import com.utopia.data.transfer.admin.dao.entity.SyncRuleBean;
 import com.utopia.data.transfer.admin.vo.req.PipelineAddVo;
 import com.utopia.data.transfer.admin.vo.req.PipelinePairAddVo;
 import com.utopia.data.transfer.admin.vo.req.PipelineRegionAddVo;
@@ -41,6 +41,6 @@ public interface PipelineService {
 
     PipelineBean pipelineGet(Long id);
 
-    Long pipelineSyncRuleAdd(SyncRule syncRule);
+    Long pipelineSyncRuleAdd(SyncRuleBean syncRule);
 
 }

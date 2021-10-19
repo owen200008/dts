@@ -1,7 +1,7 @@
 package com.utopia.data.transfer.admin.controller;
 
 import com.utopia.data.transfer.admin.dao.entity.TaskBean;
-import com.utopia.data.transfer.admin.service.TaskSevice;
+import com.utopia.data.transfer.admin.service.TaskService;
 import com.utopia.data.transfer.admin.vo.PageRes;
 import com.utopia.data.transfer.admin.vo.ResponseModel;
 import com.utopia.data.transfer.admin.vo.req.QueryTaskVo;
@@ -26,7 +26,7 @@ import java.util.List;
 public class DtsTaskController {
 
     @Resource
-    TaskSevice taskSevice;
+    TaskService taskSevice;
 
     @PostMapping("/task/add")
     public UtopiaResponseModel taskAdd(@RequestParam("name")String name){

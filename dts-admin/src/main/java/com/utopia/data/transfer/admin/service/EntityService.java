@@ -13,7 +13,7 @@ public interface EntityService {
      * @param entityBean
      * @return
      */
-    void addEntity(EntityBean entityBean);
+    Long addEntity(EntityAddVo entityBean);
 
     /**
      * 根据主键删除
@@ -28,10 +28,4 @@ public interface EntityService {
 
     List<EntityBean> getAll();
 
-    /**
-     *
-     * @param sourceEntityId
-     * @return
-     */
-    EntityBean getById(Long sourceEntityId);
 }

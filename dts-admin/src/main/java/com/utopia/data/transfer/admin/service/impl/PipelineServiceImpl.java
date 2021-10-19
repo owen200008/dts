@@ -4,12 +4,12 @@ import com.utopia.data.transfer.admin.contants.CommonUtil;
 import com.utopia.data.transfer.admin.dao.entity.*;
 import com.utopia.data.transfer.admin.dao.mapper.PipelineBeanMapper;
 import com.utopia.data.transfer.admin.dao.mapper.SourceDataMediaBeanMapper;
-import com.utopia.data.transfer.admin.dao.mapper.SyncRuleMapper;
+import com.utopia.data.transfer.admin.dao.mapper.SyncRuleBeanMapper;
 import com.utopia.data.transfer.admin.dao.mapper.TargetDataMediaBeanMapper;
 import com.utopia.data.transfer.admin.dao.mapper.base.PairBeanRepository;
 import com.utopia.data.transfer.admin.dao.mapper.base.PipelineBeanRepository;
 import com.utopia.data.transfer.admin.dao.mapper.base.RegionBeanRepository;
-import com.utopia.data.transfer.admin.service.PairSevice;
+import com.utopia.data.transfer.admin.service.PairService;
 import com.utopia.data.transfer.admin.service.PipelineService;
 import com.utopia.data.transfer.admin.service.RegionService;
 import com.utopia.data.transfer.admin.vo.req.PipelineAddVo;
@@ -46,7 +46,7 @@ public class PipelineServiceImpl implements PipelineService {
     @Autowired
     RegionService regionService;
     @Autowired
-    PairSevice pairSevice;
+    PairService pairSevice;
 
 
     @Autowired
@@ -65,7 +65,7 @@ public class PipelineServiceImpl implements PipelineService {
     TargetDataMediaBeanMapper targetDataMediaBeanMapper;
 
     @Autowired
-    SyncRuleMapper syncRuleMapper;
+    SyncRuleBeanMapper syncRuleMapper;
 
     @Override
     public Long pipelineAdd(PipelineAddVo pipelineAddVo) {
@@ -170,7 +170,7 @@ public class PipelineServiceImpl implements PipelineService {
     }
 
     @Override
-    public Long pipelineSyncRuleAdd(SyncRule syncRule) {
+    public Long pipelineSyncRuleAdd(SyncRuleBean syncRule) {
          syncRuleMapper.insert(syncRule);
          return syncRule.getId();
     }

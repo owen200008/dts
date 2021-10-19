@@ -3,7 +3,7 @@ package com.utopia.data.transfer.admin.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.utopia.data.transfer.admin.contants.PathConstants;
 import com.utopia.data.transfer.admin.dao.entity.PipelineBean;
-import com.utopia.data.transfer.admin.dao.entity.SyncRule;
+import com.utopia.data.transfer.admin.dao.entity.SyncRuleBean;
 import com.utopia.data.transfer.admin.service.PipelineService;
 import com.utopia.data.transfer.admin.vo.ResponseModel;
 import com.utopia.data.transfer.admin.vo.req.PipelineAddVo;
@@ -56,7 +56,7 @@ public class DtsPipelineController {
     }
 
     @PostMapping("/pipeline/syncRule/add")
-    public UtopiaResponseModel pipelineSyncRuleAdd(SyncRule syncRule){
+    public UtopiaResponseModel pipelineSyncRuleAdd(SyncRuleBean syncRule){
         if (Objects.isNull(syncRule)){
             UtopiaResponseModel.fail(ErrorCode.CANAL_PARSE_ERROR);
         }
