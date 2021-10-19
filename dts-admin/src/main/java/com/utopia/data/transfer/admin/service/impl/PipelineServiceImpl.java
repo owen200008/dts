@@ -1,19 +1,16 @@
 package com.utopia.data.transfer.admin.service.impl;
 
-import com.utopia.data.transfer.admin.contants.CommonUtil;
 import com.utopia.data.transfer.admin.dao.entity.*;
 import com.utopia.data.transfer.admin.dao.mapper.PipelineBeanMapper;
 import com.utopia.data.transfer.admin.dao.mapper.SourceDataMediaBeanMapper;
 import com.utopia.data.transfer.admin.dao.mapper.TargetDataMediaBeanMapper;
 import com.utopia.data.transfer.admin.dao.mapper.base.PairBeanRepository;
-import com.utopia.data.transfer.admin.dao.mapper.base.PipelineBeanRepository;
 import com.utopia.data.transfer.admin.dao.mapper.base.RegionBeanRepository;
 import com.utopia.data.transfer.admin.service.EntityService;
 import com.utopia.data.transfer.admin.service.PairService;
 import com.utopia.data.transfer.admin.service.PipelineService;
 import com.utopia.data.transfer.admin.service.RegionService;
 import com.utopia.data.transfer.admin.service.SyncRuleService;
-import com.utopia.data.transfer.admin.vo.req.PipelineAddVo;
 import com.utopia.data.transfer.model.archetype.ErrorCode;
 import com.utopia.exception.UtopiaRunTimeException;
 import lombok.extern.slf4j.Slf4j;
@@ -21,8 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -49,7 +44,7 @@ public class PipelineServiceImpl implements PipelineService {
     EntityService entityService;
 
     @Autowired
-    PipelineBeanRepository pipelineBeanRepository;
+    PipelineBeanMapper pipelineBeanRepository;
 
     @Autowired
     PairBeanRepository pairBeanRepository;
