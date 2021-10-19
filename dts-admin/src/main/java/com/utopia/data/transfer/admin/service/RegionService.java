@@ -7,6 +7,13 @@ import com.utopia.data.transfer.admin.vo.req.QueryRegionVo;
 import java.util.List;
 
 public interface RegionService {
+
+    /**
+     *
+     * @param regionBean
+     */
+    void add(RegionBean regionBean);
+
     /**
      * 获取所有
      * @return

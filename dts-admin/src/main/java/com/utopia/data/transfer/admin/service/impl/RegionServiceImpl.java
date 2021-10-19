@@ -26,6 +26,11 @@ public class RegionServiceImpl implements RegionService {
     RegionBeanMapper regionBeanMapper;
 
     @Override
+    public void add(RegionBean regionBean) {
+        regionBeanMapper.insertSelective(regionBean);
+    }
+
+    @Override
     public List<RegionBean> getAll() {
         return regionBeanMapper.selectByExample(new RegionBeanDal());
     }

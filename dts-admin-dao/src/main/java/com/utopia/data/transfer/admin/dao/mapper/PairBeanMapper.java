@@ -9,6 +9,8 @@ import org.apache.ibatis.annotations.Param;
 public interface PairBeanMapper extends BaseDao {
     int deleteByExample(PairBeanDal example);
 
+    int deleteByPrimaryKey(Long id);
+
     int insert(PairBean record);
 
     int insertSelective(PairBean record);

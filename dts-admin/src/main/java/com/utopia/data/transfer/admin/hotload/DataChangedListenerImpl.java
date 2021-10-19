@@ -18,7 +18,7 @@ import com.utopia.data.transfer.admin.dao.entity.TaskBean;
 import com.utopia.data.transfer.admin.service.EntityService;
 import com.utopia.data.transfer.admin.service.PipelineService;
 import com.utopia.data.transfer.admin.service.RegionService;
-import com.utopia.data.transfer.admin.service.TaskSevice;
+import com.utopia.data.transfer.admin.service.TaskService;
 import com.utopia.data.transfer.model.code.DTSServiceConf;
 import com.utopia.data.transfer.model.code.bean.StageType;
 import com.utopia.data.transfer.model.code.data.media.DataMediaType;
@@ -52,7 +52,7 @@ public class DataChangedListenerImpl implements DataChangedListener, Initializin
     @Autowired
     EntityService entityService;
     @Autowired
-    TaskSevice taskSevice;
+    TaskService taskSevice;
     @Autowired
     RegionService regionService;
     @Autowired

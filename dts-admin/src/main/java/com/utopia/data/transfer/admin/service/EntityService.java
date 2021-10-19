@@ -8,9 +8,17 @@ import com.utopia.data.transfer.admin.vo.QueryEntityVo;
 import java.util.List;
 
 public interface EntityService {
-    Long addEntity(EntityAddVo entityAddVo);
+    /**
+     * 添加
+     * @param entityBean
+     * @return
+     */
+    void addEntity(EntityBean entityBean);
 
-
+    /**
+     * 根据主键删除
+     * @param id
+     */
     void deleteEntity(Long id);
 
 
@@ -19,4 +27,11 @@ public interface EntityService {
     PageRes<List<EntityBean>> getEntityList(QueryEntityVo queryEntityVo);
 
     List<EntityBean> getAll();
+
+    /**
+     *
+     * @param sourceEntityId
+     * @return
+     */
+    EntityBean getById(Long sourceEntityId);
 }

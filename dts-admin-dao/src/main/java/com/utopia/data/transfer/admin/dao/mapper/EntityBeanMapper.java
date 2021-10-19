@@ -9,6 +9,8 @@ import org.apache.ibatis.annotations.Param;
 public interface EntityBeanMapper extends BaseDao {
     int deleteByExample(EntityBeanDal example);
 
+    int deleteByPrimaryKey(Long id);
+
     int insert(EntityBean record);
 
     int insertSelective(EntityBean record);

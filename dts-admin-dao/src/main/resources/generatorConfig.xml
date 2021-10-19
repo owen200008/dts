@@ -102,18 +102,19 @@
     </table>
     <table schema="u_dts" tableName="u_region" domainObjectName="RegionBean"
            enableInsert="true"
-           enableDeleteByPrimaryKey="false"
+           enableDeleteByPrimaryKey="true"
            enableSelectByPrimaryKey="false"
            enableUpdateByPrimaryKey="false"
            enableCountByExample="false"
            enableDeleteByExample="true"
            enableSelectByExample="true"
            enableUpdateByExample="true">
+      <generatedKey column="id" sqlStatement="MySql" identity="true"></generatedKey>
     </table>
 
     <table schema="u_dts" tableName="u_pair" domainObjectName="PairBean"
            enableInsert="true"
-           enableDeleteByPrimaryKey="false"
+           enableDeleteByPrimaryKey="true"
            enableSelectByPrimaryKey="false"
            enableUpdateByPrimaryKey="false"
            enableCountByExample="false"
@@ -123,38 +124,41 @@
     </table>
     <table schema="u_dts" tableName="u_entity" domainObjectName="EntityBean"
            enableInsert="true"
-           enableDeleteByPrimaryKey="false"
+           enableDeleteByPrimaryKey="true"
            enableSelectByPrimaryKey="false"
            enableUpdateByPrimaryKey="false"
            enableCountByExample="false"
            enableDeleteByExample="true"
            enableSelectByExample="true"
            enableUpdateByExample="true">
+      <generatedKey column="id" sqlStatement="MySql" identity="true"></generatedKey>
     </table>
 
     <table schema="u_dts" tableName="u_source_datamedia" domainObjectName="SourceDataMediaBean"
            enableInsert="true"
-           enableDeleteByPrimaryKey="false"
-           enableSelectByPrimaryKey="false"
-           enableUpdateByPrimaryKey="false"
+           enableDeleteByPrimaryKey="true"
+           enableSelectByPrimaryKey="true"
+           enableUpdateByPrimaryKey="true"
            enableCountByExample="false"
            enableDeleteByExample="true"
            enableSelectByExample="true"
            enableUpdateByExample="true">
+      <generatedKey column="id" sqlStatement="MySql" identity="true"></generatedKey>
     </table>
     <table schema="u_dts" tableName="u_target_datamedia" domainObjectName="TargetDataMediaBean"
            enableInsert="true"
-           enableDeleteByPrimaryKey="false"
-           enableSelectByPrimaryKey="false"
-           enableUpdateByPrimaryKey="false"
+           enableDeleteByPrimaryKey="true"
+           enableSelectByPrimaryKey="true"
+           enableUpdateByPrimaryKey="true"
            enableCountByExample="false"
            enableDeleteByExample="true"
            enableSelectByExample="true"
            enableUpdateByExample="true">
+      <generatedKey column="id" sqlStatement="MySql" identity="true"></generatedKey>
     </table>
-    <table schema="u_dts" tableName="u_sync_rule" domainObjectName="SyncRule"
+    <table schema="u_dts" tableName="u_sync_rule" domainObjectName="SyncRuleBean"
            enableInsert="true"
-           enableDeleteByPrimaryKey="false"
+           enableDeleteByPrimaryKey="true"
            enableSelectByPrimaryKey="false"
            enableUpdateByPrimaryKey="false"
            enableCountByExample="false"

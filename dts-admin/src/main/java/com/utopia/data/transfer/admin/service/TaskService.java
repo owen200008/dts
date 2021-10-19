@@ -6,7 +6,7 @@ import com.utopia.data.transfer.admin.vo.req.QueryTaskVo;
 
 import java.util.List;
 
-public interface TaskSevice {
+public interface TaskService {
     /**
      * 创建任务
      * @param name

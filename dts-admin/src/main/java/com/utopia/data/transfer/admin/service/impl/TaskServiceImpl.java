@@ -9,7 +9,7 @@ import com.utopia.data.transfer.admin.dao.entity.TaskBean;
 import com.utopia.data.transfer.admin.dao.entity.TaskBeanDal;
 import com.utopia.data.transfer.admin.dao.mapper.TaskBeanMapper;
 import com.utopia.data.transfer.admin.service.PipelineService;
-import com.utopia.data.transfer.admin.service.TaskSevice;
+import com.utopia.data.transfer.admin.service.TaskService;
 import com.utopia.data.transfer.admin.vo.PageRes;
 import com.utopia.data.transfer.admin.vo.req.QueryTaskVo;
 import com.utopia.data.transfer.model.archetype.ErrorCode;
@@ -30,7 +30,7 @@ import java.util.List;
  */
 @Component
 @Slf4j
-public class TaskServiceImpl implements TaskSevice {
+public class TaskServiceImpl implements TaskService {
 
     @Autowired
     TaskBeanMapper taskBeanMapper;
