@@ -10,13 +10,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import com.alibaba.fastjson.JSON;
-import com.google.common.collect.Lists;
 import com.utopia.algorithm.UtopiaAlgorithm;
-import com.utopia.channel.admin.dao.dataobject.UtopiaInterfaceSupplyDao;
-import com.utopia.channel.admin.entity.response.UtopiaInterfaceProxyResponse;
-import com.utopia.channel.kernel.config.api.conf.*;
-import com.utopia.channel.model.constants.PathConstants;
-import com.utopia.channel.model.utils.Md5Utils;
 import com.utopia.data.transfer.admin.contants.PathConstants;
 import com.utopia.data.transfer.admin.dao.entity.PipelineBean;
 import com.utopia.data.transfer.admin.dao.entity.RegionBean;
@@ -25,7 +19,6 @@ import com.utopia.data.transfer.admin.service.EntityService;
 import com.utopia.data.transfer.admin.service.PipelineService;
 import com.utopia.data.transfer.admin.service.RegionService;
 import com.utopia.data.transfer.admin.service.TaskSevice;
-import com.utopia.data.transfer.admin.vo.res.PipeDetailRes;
 import com.utopia.data.transfer.model.code.DTSServiceConf;
 import com.utopia.data.transfer.model.code.bean.StageType;
 import com.utopia.data.transfer.model.code.data.media.DataMediaType;
@@ -33,7 +26,6 @@ import com.utopia.data.transfer.model.code.entity.EntityDesc;
 import com.utopia.data.transfer.model.code.entity.mysql.MysqlProperty;
 import com.utopia.data.transfer.model.code.pipeline.Pipeline;
 import com.utopia.data.transfer.model.code.pipeline.PipelineParameter;
-import com.utopia.log.BasicLogUtil;
 import com.utopia.register.center.instance.Registration;
 import com.utopia.register.center.sync.LocalCacheManager;
 import com.utopia.string.UtopiaStringUtil;
@@ -42,12 +34,6 @@ import lombok.var;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.alibaba.fastjson.JSONObject;
-import com.utopia.channel.admin.entity.response.UtopiaRegionResponse;
-import com.utopia.channel.admin.service.HystrixConfigService;
-import com.utopia.channel.admin.service.InterfaceService;
-import com.utopia.channel.admin.service.InterfaceSupportService;
-import com.utopia.channel.admin.service.RegionService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -139,7 +125,7 @@ public class DataChangedListenerImpl implements DataChangedListener, Initializin
     public DTSServiceConf getKernelConfig() {
         try {
             //全量获取
-            Map<Integer, TaskBean> mapTasks = taskSevice.getAll().stream().collect(Collectors.toMap(TaskBean::getId, item -> item));
+            Map<Long, TaskBean> mapTasks = taskSevice.getAll().stream().collect(Collectors.toMap(TaskBean::getId, item -> item));
             List<PipelineBean> ayPipeline = pipelineService.getAll();
             Map<Long, List<RegionBean>> mapRegion = regionService.getAll().stream().collect(Collectors.groupingBy(RegionBean::getPipelineId));
             List<EntityDesc> ayEntity = entityService.getAll().stream().map(item -> {

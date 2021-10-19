@@ -115,52 +115,52 @@ public class PipelineBeanDal {
             return (Criteria) this;
         }
 
-        public Criteria andIdEqualTo(Integer value) {
+        public Criteria andIdEqualTo(Long value) {
             addCriterion("id =", value, "id");
             return (Criteria) this;
         }
 
-        public Criteria andIdNotEqualTo(Integer value) {
+        public Criteria andIdNotEqualTo(Long value) {
             addCriterion("id <>", value, "id");
             return (Criteria) this;
         }
 
-        public Criteria andIdGreaterThan(Integer value) {
+        public Criteria andIdGreaterThan(Long value) {
             addCriterion("id >", value, "id");
             return (Criteria) this;
         }
 
-        public Criteria andIdGreaterThanOrEqualTo(Integer value) {
+        public Criteria andIdGreaterThanOrEqualTo(Long value) {
             addCriterion("id >=", value, "id");
             return (Criteria) this;
         }
 
-        public Criteria andIdLessThan(Integer value) {
+        public Criteria andIdLessThan(Long value) {
             addCriterion("id <", value, "id");
             return (Criteria) this;
         }
 
-        public Criteria andIdLessThanOrEqualTo(Integer value) {
+        public Criteria andIdLessThanOrEqualTo(Long value) {
             addCriterion("id <=", value, "id");
             return (Criteria) this;
         }
 
-        public Criteria andIdIn(List<Integer> values) {
+        public Criteria andIdIn(List<Long> values) {
             addCriterion("id in", values, "id");
             return (Criteria) this;
         }
 
-        public Criteria andIdNotIn(List<Integer> values) {
+        public Criteria andIdNotIn(List<Long> values) {
             addCriterion("id not in", values, "id");
             return (Criteria) this;
         }
 
-        public Criteria andIdBetween(Integer value1, Integer value2) {
+        public Criteria andIdBetween(Long value1, Long value2) {
             addCriterion("id between", value1, value2, "id");
             return (Criteria) this;
         }
 
-        public Criteria andIdNotBetween(Integer value1, Integer value2) {
+        public Criteria andIdNotBetween(Long value1, Long value2) {
             addCriterion("id not between", value1, value2, "id");
             return (Criteria) this;
         }
@@ -175,52 +175,52 @@ public class PipelineBeanDal {
             return (Criteria) this;
         }
 
-        public Criteria andTaskIdEqualTo(Integer value) {
+        public Criteria andTaskIdEqualTo(Long value) {
             addCriterion("task_id =", value, "taskId");
             return (Criteria) this;
         }
 
-        public Criteria andTaskIdNotEqualTo(Integer value) {
+        public Criteria andTaskIdNotEqualTo(Long value) {
             addCriterion("task_id <>", value, "taskId");
             return (Criteria) this;
         }
 
-        public Criteria andTaskIdGreaterThan(Integer value) {
+        public Criteria andTaskIdGreaterThan(Long value) {
             addCriterion("task_id >", value, "taskId");
             return (Criteria) this;
         }
 
-        public Criteria andTaskIdGreaterThanOrEqualTo(Integer value) {
+        public Criteria andTaskIdGreaterThanOrEqualTo(Long value) {
             addCriterion("task_id >=", value, "taskId");
             return (Criteria) this;
         }
 
-        public Criteria andTaskIdLessThan(Integer value) {
+        public Criteria andTaskIdLessThan(Long value) {
             addCriterion("task_id <", value, "taskId");
             return (Criteria) this;
         }
 
-        public Criteria andTaskIdLessThanOrEqualTo(Integer value) {
+        public Criteria andTaskIdLessThanOrEqualTo(Long value) {
             addCriterion("task_id <=", value, "taskId");
             return (Criteria) this;
         }
 
-        public Criteria andTaskIdIn(List<Integer> values) {
+        public Criteria andTaskIdIn(List<Long> values) {
             addCriterion("task_id in", values, "taskId");
             return (Criteria) this;
         }
 
-        public Criteria andTaskIdNotIn(List<Integer> values) {
+        public Criteria andTaskIdNotIn(List<Long> values) {
             addCriterion("task_id not in", values, "taskId");
             return (Criteria) this;
         }
 
-        public Criteria andTaskIdBetween(Integer value1, Integer value2) {
+        public Criteria andTaskIdBetween(Long value1, Long value2) {
             addCriterion("task_id between", value1, value2, "taskId");
             return (Criteria) this;
         }
 
-        public Criteria andTaskIdNotBetween(Integer value1, Integer value2) {
+        public Criteria andTaskIdNotBetween(Long value1, Long value2) {
             addCriterion("task_id not between", value1, value2, "taskId");
             return (Criteria) this;
         }
@@ -305,52 +305,52 @@ public class PipelineBeanDal {
             return (Criteria) this;
         }
 
-        public Criteria andSourceEntityIdEqualTo(Integer value) {
+        public Criteria andSourceEntityIdEqualTo(Long value) {
             addCriterion("source_entity_id =", value, "sourceEntityId");
             return (Criteria) this;
         }
 
-        public Criteria andSourceEntityIdNotEqualTo(Integer value) {
+        public Criteria andSourceEntityIdNotEqualTo(Long value) {
             addCriterion("source_entity_id <>", value, "sourceEntityId");
             return (Criteria) this;
         }
 
-        public Criteria andSourceEntityIdGreaterThan(Integer value) {
+        public Criteria andSourceEntityIdGreaterThan(Long value) {
             addCriterion("source_entity_id >", value, "sourceEntityId");
             return (Criteria) this;
         }
 
-        public Criteria andSourceEntityIdGreaterThanOrEqualTo(Integer value) {
+        public Criteria andSourceEntityIdGreaterThanOrEqualTo(Long value) {
             addCriterion("source_entity_id >=", value, "sourceEntityId");
             return (Criteria) this;
         }
 
-        public Criteria andSourceEntityIdLessThan(Integer value) {
+        public Criteria andSourceEntityIdLessThan(Long value) {
             addCriterion("source_entity_id <", value, "sourceEntityId");
             return (Criteria) this;
         }
 
-        public Criteria andSourceEntityIdLessThanOrEqualTo(Integer value) {
+        public Criteria andSourceEntityIdLessThanOrEqualTo(Long value) {
             addCriterion("source_entity_id <=", value, "sourceEntityId");
             return (Criteria) this;
         }
 
-        public Criteria andSourceEntityIdIn(List<Integer> values) {
+        public Criteria andSourceEntityIdIn(List<Long> values) {
             addCriterion("source_entity_id in", values, "sourceEntityId");
             return (Criteria) this;
         }
 
-        public Criteria andSourceEntityIdNotIn(List<Integer> values) {
+        public Criteria andSourceEntityIdNotIn(List<Long> values) {
             addCriterion("source_entity_id not in", values, "sourceEntityId");
             return (Criteria) this;
         }
 
-        public Criteria andSourceEntityIdBetween(Integer value1, Integer value2) {
+        public Criteria andSourceEntityIdBetween(Long value1, Long value2) {
             addCriterion("source_entity_id between", value1, value2, "sourceEntityId");
             return (Criteria) this;
         }
 
-        public Criteria andSourceEntityIdNotBetween(Integer value1, Integer value2) {
+        public Criteria andSourceEntityIdNotBetween(Long value1, Long value2) {
             addCriterion("source_entity_id not between", value1, value2, "sourceEntityId");
             return (Criteria) this;
         }
@@ -365,52 +365,52 @@ public class PipelineBeanDal {
             return (Criteria) this;
         }
 
-        public Criteria andTargetEntityIdEqualTo(Integer value) {
+        public Criteria andTargetEntityIdEqualTo(Long value) {
             addCriterion("target_entity_id =", value, "targetEntityId");
             return (Criteria) this;
         }
 
-        public Criteria andTargetEntityIdNotEqualTo(Integer value) {
+        public Criteria andTargetEntityIdNotEqualTo(Long value) {
             addCriterion("target_entity_id <>", value, "targetEntityId");
             return (Criteria) this;
         }
 
-        public Criteria andTargetEntityIdGreaterThan(Integer value) {
+        public Criteria andTargetEntityIdGreaterThan(Long value) {
             addCriterion("target_entity_id >", value, "targetEntityId");
             return (Criteria) this;
         }
 
-        public Criteria andTargetEntityIdGreaterThanOrEqualTo(Integer value) {
+        public Criteria andTargetEntityIdGreaterThanOrEqualTo(Long value) {
             addCriterion("target_entity_id >=", value, "targetEntityId");
             return (Criteria) this;
         }
 
-        public Criteria andTargetEntityIdLessThan(Integer value) {
+        public Criteria andTargetEntityIdLessThan(Long value) {
             addCriterion("target_entity_id <", value, "targetEntityId");
             return (Criteria) this;
         }
 
-        public Criteria andTargetEntityIdLessThanOrEqualTo(Integer value) {
+        public Criteria andTargetEntityIdLessThanOrEqualTo(Long value) {
             addCriterion("target_entity_id <=", value, "targetEntityId");
             return (Criteria) this;
         }
 
-        public Criteria andTargetEntityIdIn(List<Integer> values) {
+        public Criteria andTargetEntityIdIn(List<Long> values) {
             addCriterion("target_entity_id in", values, "targetEntityId");
             return (Criteria) this;
         }
 
-        public Criteria andTargetEntityIdNotIn(List<Integer> values) {
+        public Criteria andTargetEntityIdNotIn(List<Long> values) {
             addCriterion("target_entity_id not in", values, "targetEntityId");
             return (Criteria) this;
         }
 
-        public Criteria andTargetEntityIdBetween(Integer value1, Integer value2) {
+        public Criteria andTargetEntityIdBetween(Long value1, Long value2) {
             addCriterion("target_entity_id between", value1, value2, "targetEntityId");
             return (Criteria) this;
         }
 
-        public Criteria andTargetEntityIdNotBetween(Integer value1, Integer value2) {
+        public Criteria andTargetEntityIdNotBetween(Long value1, Long value2) {
             addCriterion("target_entity_id not between", value1, value2, "targetEntityId");
             return (Criteria) this;
         }

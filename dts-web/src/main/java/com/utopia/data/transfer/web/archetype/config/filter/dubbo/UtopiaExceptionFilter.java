@@ -4,8 +4,8 @@ import static org.apache.dubbo.common.constants.CommonConstants.PROVIDER;
 
 import com.utopia.exception.UtopiaException;
 import com.utopia.model.rsp.UtopiaResponseModel;
-import com.utopia.data.transfer.core.archetype.base.ServiceException;
-import com.utopia.data.transfer.core.code.base.ErrorCode;
+import com.utopia.data.transfer.model.archetype.ServiceException;
+import com.utopia.data.transfer.model.archetype.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.common.extension.Activate;
 import org.apache.dubbo.rpc.Filter;

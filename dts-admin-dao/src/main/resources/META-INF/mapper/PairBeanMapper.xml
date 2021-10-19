@@ -3,9 +3,9 @@
 <mapper namespace="com.utopia.data.transfer.admin.dao.mapper.PairBeanMapper">
   <resultMap id="BaseResultMap" type="com.utopia.data.transfer.admin.dao.entity.PairBean">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="pipeline_id" jdbcType="INTEGER" property="pipelineId" />
-    <result column="source_datamedia_id" jdbcType="INTEGER" property="sourceDatamediaId" />
-    <result column="target_datamedia_id" jdbcType="INTEGER" property="targetDatamediaId" />
+    <result column="pipeline_id" jdbcType="BIGINT" property="pipelineId" />
+    <result column="source_datamedia_id" jdbcType="BIGINT" property="sourceDatamediaId" />
+    <result column="target_datamedia_id" jdbcType="BIGINT" property="targetDatamediaId" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -91,8 +91,8 @@
   <insert id="insert" parameterType="com.utopia.data.transfer.admin.dao.entity.PairBean">
     insert into u_pair (id, pipeline_id, source_datamedia_id, 
       target_datamedia_id)
-    values (#{id,jdbcType=INTEGER}, #{pipelineId,jdbcType=INTEGER}, #{sourceDatamediaId,jdbcType=INTEGER}, 
-      #{targetDatamediaId,jdbcType=INTEGER})
+    values (#{id,jdbcType=INTEGER}, #{pipelineId,jdbcType=BIGINT}, #{sourceDatamediaId,jdbcType=BIGINT}, 
+      #{targetDatamediaId,jdbcType=BIGINT})
   </insert>
   <insert id="insertSelective" parameterType="com.utopia.data.transfer.admin.dao.entity.PairBean">
     insert into u_pair
@@ -115,13 +115,13 @@
         #{id,jdbcType=INTEGER},
       </if>
       <if test="pipelineId != null">
-        #{pipelineId,jdbcType=INTEGER},
+        #{pipelineId,jdbcType=BIGINT},
       </if>
       <if test="sourceDatamediaId != null">
-        #{sourceDatamediaId,jdbcType=INTEGER},
+        #{sourceDatamediaId,jdbcType=BIGINT},
       </if>
       <if test="targetDatamediaId != null">
-        #{targetDatamediaId,jdbcType=INTEGER},
+        #{targetDatamediaId,jdbcType=BIGINT},
       </if>
     </trim>
   </insert>
@@ -132,13 +132,13 @@
         id = #{record.id,jdbcType=INTEGER},
       </if>
       <if test="record.pipelineId != null">
-        pipeline_id = #{record.pipelineId,jdbcType=INTEGER},
+        pipeline_id = #{record.pipelineId,jdbcType=BIGINT},
       </if>
       <if test="record.sourceDatamediaId != null">
-        source_datamedia_id = #{record.sourceDatamediaId,jdbcType=INTEGER},
+        source_datamedia_id = #{record.sourceDatamediaId,jdbcType=BIGINT},
       </if>
       <if test="record.targetDatamediaId != null">
-        target_datamedia_id = #{record.targetDatamediaId,jdbcType=INTEGER},
+        target_datamedia_id = #{record.targetDatamediaId,jdbcType=BIGINT},
       </if>
     </set>
     <if test="_parameter != null">
@@ -148,9 +148,9 @@
   <update id="updateByExample" parameterType="map">
     update u_pair
     set id = #{record.id,jdbcType=INTEGER},
-      pipeline_id = #{record.pipelineId,jdbcType=INTEGER},
-      source_datamedia_id = #{record.sourceDatamediaId,jdbcType=INTEGER},
-      target_datamedia_id = #{record.targetDatamediaId,jdbcType=INTEGER}
+      pipeline_id = #{record.pipelineId,jdbcType=BIGINT},
+      source_datamedia_id = #{record.sourceDatamediaId,jdbcType=BIGINT},
+      target_datamedia_id = #{record.targetDatamediaId,jdbcType=BIGINT}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>

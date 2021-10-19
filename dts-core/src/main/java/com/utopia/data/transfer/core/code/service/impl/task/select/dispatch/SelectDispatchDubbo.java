@@ -1,7 +1,6 @@
 package com.utopia.data.transfer.core.code.service.impl.task.select.dispatch;
 
-import com.utopia.data.transfer.core.code.base.ErrorCode;
-import com.utopia.data.transfer.core.code.model.EventData;
+import com.utopia.data.transfer.model.archetype.ErrorCode;
 import com.utopia.data.transfer.core.code.model.EventDataTransaction;
 import com.utopia.data.transfer.core.code.model.Message;
 import com.utopia.data.transfer.core.code.service.impl.task.LoadTaskImpl;
@@ -15,7 +14,6 @@ import com.utopia.model.rsp.UtopiaResponseModel;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.ReferenceConfig;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;

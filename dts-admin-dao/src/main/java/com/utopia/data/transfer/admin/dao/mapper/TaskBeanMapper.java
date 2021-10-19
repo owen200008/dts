@@ -9,6 +9,8 @@ import org.apache.ibatis.annotations.Param;
 public interface TaskBeanMapper extends BaseDao {
     int deleteByExample(TaskBeanDal example);
 
+    int deleteByPrimaryKey(Long id);
+
     int insert(TaskBean record);
 
     int insertSelective(TaskBean record);

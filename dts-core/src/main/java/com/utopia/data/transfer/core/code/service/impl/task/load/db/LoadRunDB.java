@@ -1,8 +1,8 @@
 package com.utopia.data.transfer.core.code.service.impl.task.load.db;
 
 import com.alibaba.fastjson.JSON;
-import com.utopia.data.transfer.core.archetype.base.ServiceException;
-import com.utopia.data.transfer.core.code.base.ErrorCode;
+import com.utopia.data.transfer.model.archetype.ServiceException;
+import com.utopia.data.transfer.model.archetype.ErrorCode;
 import com.utopia.data.transfer.core.code.service.impl.task.load.LoadRun;
 import com.utopia.data.transfer.core.code.src.dialect.DbDialect;
 import com.utopia.data.transfer.core.code.src.dialect.DbDialectFactory;

@@ -1,8 +1,8 @@
 package com.utopia.data.transfer.web.archetype.config;
 
-import com.utopia.data.transfer.core.archetype.base.BaseErrorCode;
-import com.utopia.data.transfer.core.code.base.ErrorCode;
-import com.utopia.data.transfer.core.archetype.base.ServiceException;
+import com.utopia.data.transfer.model.archetype.BaseErrorCode;
+import com.utopia.data.transfer.model.archetype.ErrorCode;
+import com.utopia.data.transfer.model.archetype.ServiceException;
 import com.utopia.model.rsp.UtopiaResponseModel;
 import java.util.List;
 import javax.servlet.ServletException;

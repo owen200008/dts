@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.utopia.data.transfer.admin.dao.mapper.RegionBeanMapper">
-  <resultMap id="BaseResultMap" type="com.utopia.data.transfer.admin.dao.entity.RegionBean">
-    <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="region" jdbcType="VARCHAR" property="region" />
-    <result column="mode" jdbcType="VARCHAR" property="mode" />
+<mapper namespace="com.utopia.data.transfer.admin.dao.mapper.SyncRuleMapper">
+  <resultMap id="BaseResultMap" type="com.utopia.data.transfer.admin.dao.entity.SyncRule">
+    <id column="id" jdbcType="BIGINT" property="id" />
     <result column="pipeline_id" jdbcType="BIGINT" property="pipelineId" />
+    <result column="sync_rule_type" jdbcType="VARCHAR" property="syncRuleType" />
+    <result column="namespace" jdbcType="VARCHAR" property="namespace" />
+    <result column="table" jdbcType="VARCHAR" property="table" />
+    <result column="start_gtid" jdbcType="VARCHAR" property="startGtid" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -66,15 +68,15 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, region, `mode`, pipeline_id
+    id, pipeline_id, sync_rule_type, namespace, `table`, start_gtid
   </sql>
-  <select id="selectByExample" parameterType="com.utopia.data.transfer.admin.dao.entity.RegionBeanDal" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.utopia.data.transfer.admin.dao.entity.SyncRuleDal" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from u_region
+    from u_sync_rule
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -82,63 +84,83 @@
       order by ${orderByClause}
     </if>
   </select>
-  <delete id="deleteByExample" parameterType="com.utopia.data.transfer.admin.dao.entity.RegionBeanDal">
-    delete from u_region
+  <delete id="deleteByExample" parameterType="com.utopia.data.transfer.admin.dao.entity.SyncRuleDal">
+    delete from u_sync_rule
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.utopia.data.transfer.admin.dao.entity.RegionBean">
-    insert into u_region (id, region, `mode`, 
-      pipeline_id)
-    values (#{id,jdbcType=INTEGER}, #{region,jdbcType=VARCHAR}, #{mode,jdbcType=VARCHAR}, 
-      #{pipelineId,jdbcType=BIGINT})
+  <insert id="insert" parameterType="com.utopia.data.transfer.admin.dao.entity.SyncRule">
+    insert into u_sync_rule (id, pipeline_id, sync_rule_type, 
+      namespace, `table`, start_gtid
+      )
+    values (#{id,jdbcType=BIGINT}, #{pipelineId,jdbcType=BIGINT}, #{syncRuleType,jdbcType=VARCHAR}, 
+      #{namespace,jdbcType=VARCHAR}, #{table,jdbcType=VARCHAR}, #{startGtid,jdbcType=VARCHAR}
+      )
   </insert>
-  <insert id="insertSelective" parameterType="com.utopia.data.transfer.admin.dao.entity.RegionBean">
-    insert into u_region
+  <insert id="insertSelective" parameterType="com.utopia.data.transfer.admin.dao.entity.SyncRule">
+    insert into u_sync_rule
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
       </if>
-      <if test="region != null">
-        region,
-      </if>
-      <if test="mode != null">
-        `mode`,
-      </if>
       <if test="pipelineId != null">
         pipeline_id,
+      </if>
+      <if test="syncRuleType != null">
+        sync_rule_type,
+      </if>
+      <if test="namespace != null">
+        namespace,
+      </if>
+      <if test="table != null">
+        `table`,
+      </if>
+      <if test="startGtid != null">
+        start_gtid,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
-        #{id,jdbcType=INTEGER},
-      </if>
-      <if test="region != null">
-        #{region,jdbcType=VARCHAR},
-      </if>
-      <if test="mode != null">
-        #{mode,jdbcType=VARCHAR},
+        #{id,jdbcType=BIGINT},
       </if>
       <if test="pipelineId != null">
         #{pipelineId,jdbcType=BIGINT},
       </if>
+      <if test="syncRuleType != null">
+        #{syncRuleType,jdbcType=VARCHAR},
+      </if>
+      <if test="namespace != null">
+        #{namespace,jdbcType=VARCHAR},
+      </if>
+      <if test="table != null">
+        #{table,jdbcType=VARCHAR},
+      </if>
+      <if test="startGtid != null">
+        #{startGtid,jdbcType=VARCHAR},
+      </if>
     </trim>
   </insert>
   <update id="updateByExampleSelective" parameterType="map">
-    update u_region
+    update u_sync_rule
     <set>
       <if test="record.id != null">
-        id = #{record.id,jdbcType=INTEGER},
-      </if>
-      <if test="record.region != null">
-        region = #{record.region,jdbcType=VARCHAR},
-      </if>
-      <if test="record.mode != null">
-        `mode` = #{record.mode,jdbcType=VARCHAR},
+        id = #{record.id,jdbcType=BIGINT},
       </if>
       <if test="record.pipelineId != null">
         pipeline_id = #{record.pipelineId,jdbcType=BIGINT},
+      </if>
+      <if test="record.syncRuleType != null">
+        sync_rule_type = #{record.syncRuleType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.namespace != null">
+        namespace = #{record.namespace,jdbcType=VARCHAR},
+      </if>
+      <if test="record.table != null">
+        `table` = #{record.table,jdbcType=VARCHAR},
+      </if>
+      <if test="record.startGtid != null">
+        start_gtid = #{record.startGtid,jdbcType=VARCHAR},
       </if>
     </set>
     <if test="_parameter != null">
@@ -146,11 +168,13 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update u_region
-    set id = #{record.id,jdbcType=INTEGER},
-      region = #{record.region,jdbcType=VARCHAR},
-      `mode` = #{record.mode,jdbcType=VARCHAR},
-      pipeline_id = #{record.pipelineId,jdbcType=BIGINT}
+    update u_sync_rule
+    set id = #{record.id,jdbcType=BIGINT},
+      pipeline_id = #{record.pipelineId,jdbcType=BIGINT},
+      sync_rule_type = #{record.syncRuleType,jdbcType=VARCHAR},
+      namespace = #{record.namespace,jdbcType=VARCHAR},
+      `table` = #{record.table,jdbcType=VARCHAR},
+      start_gtid = #{record.startGtid,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>

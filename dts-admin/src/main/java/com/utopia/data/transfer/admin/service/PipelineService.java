@@ -4,30 +4,45 @@ import com.utopia.data.transfer.admin.dao.entity.PipelineBean;
 import com.utopia.data.transfer.admin.vo.req.PipelineAddVo;
 import com.utopia.data.transfer.admin.vo.req.PipelinePairAddVo;
 import com.utopia.data.transfer.admin.vo.req.PipelineRegionAddVo;
-import com.utopia.data.transfer.admin.vo.res.PipeDetailRes;
-import com.utopia.data.transfer.admin.vo.res.PipeParamsRes;
-import com.utopia.data.transfer.model.code.pipeline.Pipeline;
 
 import java.util.List;
 
 public interface PipelineService {
 
-    Integer pipelineAdd(PipelineAddVo pipelineAddVo);
+    /**
+     * 增加pipeline
+     * @param pipelineAddVo
+     */
+    void pipelineAdd(PipelineAddVo pipelineAddVo);
 
-    PipeDetailRes pipelineDetail(Integer id);
+    /**
+     * 删除
+     * @param pipelineId
+     */
+    void pipelineDelete(Long pipelineId);
 
-    List<PipeParamsRes> pipelineParamsList(Integer taskId);
-
-    void pipelinePairAdd(PipelinePairAddVo pipelinePairAddVo);
-
-
-    void pipelineRegionAdd(PipelineRegionAddVo pipelineRegionAddVo);
-
-    List<PipeDetailRes> pipelineDetailByTaskId(Integer id);
+    /**
+     * 列表
+     * @param taskId
+     * @return
+     */
+    List<PipelineBean> pipelineParamsList(Long taskId);
 
     /**
      * 获取所有的pipeline
      * @return
      */
     List<PipelineBean> getAll();
+
+
+
+
+    void pipelinePairAdd(PipelinePairAddVo pipelinePairAddVo);
+
+
+    void pipelineRegionAdd(PipelineRegionAddVo pipelineRegionAddVo);
+
+    List<PipeDetailRes> pipelineDetailByTaskId(Long id);
+
+
 }

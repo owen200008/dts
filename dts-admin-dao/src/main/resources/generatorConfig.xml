@@ -80,56 +80,58 @@
     </javaClientGenerator>
 
     <!--这里包含SQL通配符，表示匹配所有demo开头的表 -->
-<!--    <table schema="u_dts" tableName="u_region" domainObjectName="RegionBean"-->
-<!--           enableInsert="true"-->
-<!--           enableDeleteByPrimaryKey="false"-->
-<!--           enableSelectByPrimaryKey="false"-->
-<!--           enableUpdateByPrimaryKey="false"-->
-<!--           enableCountByExample="false"-->
-<!--           enableDeleteByExample="true"-->
-<!--           enableSelectByExample="true"-->
-<!--           enableUpdateByExample="true">-->
-<!--    </table>-->
-<!--    <table schema="u_dts" tableName="u_pipeline" domainObjectName="PipelineBean"-->
-<!--           enableInsert="true"-->
-<!--           enableDeleteByPrimaryKey="false"-->
-<!--           enableSelectByPrimaryKey="false"-->
-<!--           enableUpdateByPrimaryKey="false"-->
-<!--           enableCountByExample="false"-->
-<!--           enableDeleteByExample="true"-->
-<!--           enableSelectByExample="true"-->
-<!--           enableUpdateByExample="true">-->
-<!--    </table>-->
-<!--    <table schema="u_dts" tableName="u_pair" domainObjectName="PairBean"-->
-<!--           enableInsert="true"-->
-<!--           enableDeleteByPrimaryKey="false"-->
-<!--           enableSelectByPrimaryKey="false"-->
-<!--           enableUpdateByPrimaryKey="false"-->
-<!--           enableCountByExample="false"-->
-<!--           enableDeleteByExample="true"-->
-<!--           enableSelectByExample="true"-->
-<!--           enableUpdateByExample="true">-->
-<!--    </table>-->
-<!--    <table schema="u_dts" tableName="u_entity" domainObjectName="EntityBean"-->
-<!--           enableInsert="true"-->
-<!--           enableDeleteByPrimaryKey="false"-->
-<!--           enableSelectByPrimaryKey="false"-->
-<!--           enableUpdateByPrimaryKey="false"-->
-<!--           enableCountByExample="false"-->
-<!--           enableDeleteByExample="true"-->
-<!--           enableSelectByExample="true"-->
-<!--           enableUpdateByExample="true">-->
-<!--    </table>-->
-<!--    <table schema="u_dts" tableName="u_task" domainObjectName="TaskBean"-->
-<!--           enableInsert="true"-->
-<!--           enableDeleteByPrimaryKey="false"-->
-<!--           enableSelectByPrimaryKey="false"-->
-<!--           enableUpdateByPrimaryKey="false"-->
-<!--           enableCountByExample="false"-->
-<!--           enableDeleteByExample="true"-->
-<!--           enableSelectByExample="true"-->
-<!--           enableUpdateByExample="true">-->
-<!--    </table>-->
+    <table schema="u_dts" tableName="u_task" domainObjectName="TaskBean"
+           enableInsert="true"
+           enableDeleteByPrimaryKey="true"
+           enableSelectByPrimaryKey="false"
+           enableUpdateByPrimaryKey="false"
+           enableCountByExample="false"
+           enableDeleteByExample="true"
+           enableSelectByExample="true"
+           enableUpdateByExample="true">
+    </table>
+    <table schema="u_dts" tableName="u_pipeline" domainObjectName="PipelineBean"
+           enableInsert="true"
+           enableDeleteByPrimaryKey="true"
+           enableSelectByPrimaryKey="false"
+           enableUpdateByPrimaryKey="false"
+           enableCountByExample="false"
+           enableDeleteByExample="true"
+           enableSelectByExample="true"
+           enableUpdateByExample="true">
+    </table>
+    <table schema="u_dts" tableName="u_region" domainObjectName="RegionBean"
+           enableInsert="true"
+           enableDeleteByPrimaryKey="false"
+           enableSelectByPrimaryKey="false"
+           enableUpdateByPrimaryKey="false"
+           enableCountByExample="false"
+           enableDeleteByExample="true"
+           enableSelectByExample="true"
+           enableUpdateByExample="true">
+    </table>
+
+    <table schema="u_dts" tableName="u_pair" domainObjectName="PairBean"
+           enableInsert="true"
+           enableDeleteByPrimaryKey="false"
+           enableSelectByPrimaryKey="false"
+           enableUpdateByPrimaryKey="false"
+           enableCountByExample="false"
+           enableDeleteByExample="true"
+           enableSelectByExample="true"
+           enableUpdateByExample="true">
+    </table>
+    <table schema="u_dts" tableName="u_entity" domainObjectName="EntityBean"
+           enableInsert="true"
+           enableDeleteByPrimaryKey="false"
+           enableSelectByPrimaryKey="false"
+           enableUpdateByPrimaryKey="false"
+           enableCountByExample="false"
+           enableDeleteByExample="true"
+           enableSelectByExample="true"
+           enableUpdateByExample="true">
+    </table>
+
     <table schema="u_dts" tableName="u_source_datamedia" domainObjectName="SourceDataMediaBean"
            enableInsert="true"
            enableDeleteByPrimaryKey="false"
@@ -141,6 +143,16 @@
            enableUpdateByExample="true">
     </table>
     <table schema="u_dts" tableName="u_target_datamedia" domainObjectName="TargetDataMediaBean"
+           enableInsert="true"
+           enableDeleteByPrimaryKey="false"
+           enableSelectByPrimaryKey="false"
+           enableUpdateByPrimaryKey="false"
+           enableCountByExample="false"
+           enableDeleteByExample="true"
+           enableSelectByExample="true"
+           enableUpdateByExample="true">
+    </table>
+    <table schema="u_dts" tableName="u_sync_rule" domainObjectName="SyncRule"
            enableInsert="true"
            enableDeleteByPrimaryKey="false"
            enableSelectByPrimaryKey="false"

@@ -1,8 +1,8 @@
 package com.utopia.data.transfer.core.code.service;
 
 import com.alibaba.otter.canal.protocol.CanalEntry;
-import com.utopia.data.transfer.core.archetype.base.ServiceException;
-import com.utopia.data.transfer.core.code.base.ErrorCode;
+import com.utopia.data.transfer.model.archetype.ServiceException;
+import com.utopia.data.transfer.model.archetype.ErrorCode;
 import com.utopia.data.transfer.core.code.model.EventDataTransaction;
 import com.utopia.data.transfer.core.code.utils.ConfigHelper;
 import com.utopia.data.transfer.core.code.utils.EventColumnIndexComparable;

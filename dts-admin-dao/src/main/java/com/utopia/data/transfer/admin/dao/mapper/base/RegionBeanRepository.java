@@ -11,5 +11,5 @@ import java.util.List;
 public interface RegionBeanRepository extends RegionBeanMapper {
 
 
-    List<RegionBean> selectByPipelineId(@Param("id") Integer pipelineId);
+    List<RegionBean> selectByPipelineId(@Param("id") Long pipelineId);
 }

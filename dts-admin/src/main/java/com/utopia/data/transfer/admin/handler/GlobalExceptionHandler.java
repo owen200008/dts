@@ -1,25 +1,22 @@
 package com.utopia.data.transfer.admin.handler;
 
-import com.alibaba.fastjson.JSON;
-import com.utopia.data.transfer.admin.contants.ErrorCode;
-import com.utopia.data.transfer.admin.exception.AdminException;
+import com.utopia.data.transfer.model.archetype.ErrorCode;
+import com.utopia.data.transfer.model.archetype.ServiceException;
+import com.utopia.exception.UtopiaRunTimeException;
 import com.utopia.model.rsp.UtopiaErrorCode;
 import com.utopia.model.rsp.UtopiaResponseModel;
-import com.utopia.string.UtopiaStringUtil;
 import org.springframework.dao.DataAccessException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.Objects;
-
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
 
-	@ExceptionHandler(value = Exception.class)
+	@ExceptionHandler(value = Throwable.class)
 	@ResponseBody
-	public Object exceptionHandler(Exception e) {
+	public Object exceptionHandler(Throwable e) {
 		UtopiaResponseModel<Object> rm = new UtopiaResponseModel<>();
 		if (e instanceof AdminException) {
 			AdminException ae = (AdminException) e;
@@ -32,11 +29,19 @@ public class GlobalExceptionHandler {
 
 		} else if (e instanceof DataAccessException) {
 			//数据库异常处理
-			rm .setCode(ErrorCode.DB_ERROR.getCode());
-			rm.setMsg(ErrorCode.DB_ERROR.getMsg());
-
+			rm.setCode(ErrorCode.DB_ERROR.getCode());
+		} else if (e instanceof UtopiaRunTimeException) {
+			UtopiaRunTimeException exception = ((UtopiaRunTimeException) e);
+			//数据库异常处理
+			rm.setCode(exception.getUtopiaErrorCodeClass().getCode());
+			rm.setMsg(exception.getUtopiaErrorCodeClass().getMessage());
+		} else if (e instanceof ServiceException) {
+			ServiceException exception = ((ServiceException) e);
+			//数据库异常处理
+			rm.setCode(exception.getCode());
+			rm.setMsg(exception.getMsg());
 		} else {
-			rm.setCode(ErrorCode.SYS_ERROR.getCode());
+			rm.setCode(ErrorCode.UNKNOW_ERROR.getCode());
 			rm.setMsg("system error, please contact developer");
 		}
 		return rm;

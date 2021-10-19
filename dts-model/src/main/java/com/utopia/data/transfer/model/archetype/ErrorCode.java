@@ -1,7 +1,7 @@
-package com.utopia.data.transfer.core.code.base;
+package com.utopia.data.transfer.model.archetype;
 
 import com.utopia.model.rsp.UtopiaErrorCodeClass;
-import com.utopia.data.transfer.core.archetype.base.BaseErrorCode;
+import com.utopia.data.transfer.model.archetype.BaseErrorCode;
 
 /**
  * Created by czq on 2019/6/27.
@@ -28,6 +28,9 @@ public class ErrorCode extends BaseErrorCode {
     public final static UtopiaErrorCodeClass FIND_TABLE_ERROR = new UtopiaErrorCodeClass(24105, "");
     public final static UtopiaErrorCodeClass GET_TABLE_ERROR = new UtopiaErrorCodeClass(24106, "");
 
+
+    public final static UtopiaErrorCodeClass CHILD_NEED_DELETE_FIRST = new UtopiaErrorCodeClass(24201, "");
+    public final static UtopiaErrorCodeClass JSON_PARSE_ERROR = new UtopiaErrorCodeClass(24202, "");
 
     public final static UtopiaErrorCodeClass LOAD_RUN_CLOSED = new UtopiaErrorCodeClass(24378, "");
     public final static UtopiaErrorCodeClass LOAD_RUN_EXCEPTION = new UtopiaErrorCodeClass(24379, "");

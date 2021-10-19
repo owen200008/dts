@@ -115,52 +115,52 @@ public class TargetDataMediaBeanDal {
             return (Criteria) this;
         }
 
-        public Criteria andIdEqualTo(Integer value) {
+        public Criteria andIdEqualTo(Long value) {
             addCriterion("id =", value, "id");
             return (Criteria) this;
         }
 
-        public Criteria andIdNotEqualTo(Integer value) {
+        public Criteria andIdNotEqualTo(Long value) {
             addCriterion("id <>", value, "id");
             return (Criteria) this;
         }
 
-        public Criteria andIdGreaterThan(Integer value) {
+        public Criteria andIdGreaterThan(Long value) {
             addCriterion("id >", value, "id");
             return (Criteria) this;
         }
 
-        public Criteria andIdGreaterThanOrEqualTo(Integer value) {
+        public Criteria andIdGreaterThanOrEqualTo(Long value) {
             addCriterion("id >=", value, "id");
             return (Criteria) this;
         }
 
-        public Criteria andIdLessThan(Integer value) {
+        public Criteria andIdLessThan(Long value) {
             addCriterion("id <", value, "id");
             return (Criteria) this;
         }
 
-        public Criteria andIdLessThanOrEqualTo(Integer value) {
+        public Criteria andIdLessThanOrEqualTo(Long value) {
             addCriterion("id <=", value, "id");
             return (Criteria) this;
         }
 
-        public Criteria andIdIn(List<Integer> values) {
+        public Criteria andIdIn(List<Long> values) {
             addCriterion("id in", values, "id");
             return (Criteria) this;
         }
 
-        public Criteria andIdNotIn(List<Integer> values) {
+        public Criteria andIdNotIn(List<Long> values) {
             addCriterion("id not in", values, "id");
             return (Criteria) this;
         }
 
-        public Criteria andIdBetween(Integer value1, Integer value2) {
+        public Criteria andIdBetween(Long value1, Long value2) {
             addCriterion("id between", value1, value2, "id");
             return (Criteria) this;
         }
 
-        public Criteria andIdNotBetween(Integer value1, Integer value2) {
+        public Criteria andIdNotBetween(Long value1, Long value2) {
             addCriterion("id not between", value1, value2, "id");
             return (Criteria) this;
         }
@@ -375,76 +375,6 @@ public class TargetDataMediaBeanDal {
             return (Criteria) this;
         }
 
-        public Criteria andRuleIsNull() {
-            addCriterion("`rule` is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andRuleIsNotNull() {
-            addCriterion("`rule` is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andRuleEqualTo(String value) {
-            addCriterion("`rule` =", value, "rule");
-            return (Criteria) this;
-        }
-
-        public Criteria andRuleNotEqualTo(String value) {
-            addCriterion("`rule` <>", value, "rule");
-            return (Criteria) this;
-        }
-
-        public Criteria andRuleGreaterThan(String value) {
-            addCriterion("`rule` >", value, "rule");
-            return (Criteria) this;
-        }
-
-        public Criteria andRuleGreaterThanOrEqualTo(String value) {
-            addCriterion("`rule` >=", value, "rule");
-            return (Criteria) this;
-        }
-
-        public Criteria andRuleLessThan(String value) {
-            addCriterion("`rule` <", value, "rule");
-            return (Criteria) this;
-        }
-
-        public Criteria andRuleLessThanOrEqualTo(String value) {
-            addCriterion("`rule` <=", value, "rule");
-            return (Criteria) this;
-        }
-
-        public Criteria andRuleLike(String value) {
-            addCriterion("`rule` like", value, "rule");
-            return (Criteria) this;
-        }
-
-        public Criteria andRuleNotLike(String value) {
-            addCriterion("`rule` not like", value, "rule");
-            return (Criteria) this;
-        }
-
-        public Criteria andRuleIn(List<String> values) {
-            addCriterion("`rule` in", values, "rule");
-            return (Criteria) this;
-        }
-
-        public Criteria andRuleNotIn(List<String> values) {
-            addCriterion("`rule` not in", values, "rule");
-            return (Criteria) this;
-        }
-
-        public Criteria andRuleBetween(String value1, String value2) {
-            addCriterion("`rule` between", value1, value2, "rule");
-            return (Criteria) this;
-        }
-
-        public Criteria andRuleNotBetween(String value1, String value2) {
-            addCriterion("`rule` not between", value1, value2, "rule");
-            return (Criteria) this;
-        }
-
         public Criteria andCreateTimeIsNull() {
             addCriterion("create_time is null");
             return (Criteria) this;
@@ -577,11 +507,6 @@ public class TargetDataMediaBeanDal {
 
         public Criteria andTableLikeInsensitive(String value) {
             addCriterion("upper(`table`) like", value.toUpperCase(), "table");
-            return (Criteria) this;
-        }
-
-        public Criteria andRuleLikeInsensitive(String value) {
-            addCriterion("upper(`rule`) like", value.toUpperCase(), "rule");
             return (Criteria) this;
         }
     }

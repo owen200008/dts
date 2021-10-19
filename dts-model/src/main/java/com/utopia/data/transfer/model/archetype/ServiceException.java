@@ -1,4 +1,4 @@
-package com.utopia.data.transfer.core.archetype.base;
+package com.utopia.data.transfer.model.archetype;
 
 import com.utopia.model.rsp.UtopiaErrorCodeClass;
 

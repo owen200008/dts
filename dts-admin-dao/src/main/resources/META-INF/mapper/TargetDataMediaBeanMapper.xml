@@ -2,11 +2,10 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.utopia.data.transfer.admin.dao.mapper.TargetDataMediaBeanMapper">
   <resultMap id="BaseResultMap" type="com.utopia.data.transfer.admin.dao.entity.TargetDataMediaBean">
-    <id column="id" jdbcType="INTEGER" property="id" />
+    <id column="id" jdbcType="BIGINT" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="namespace" jdbcType="VARCHAR" property="namespace" />
     <result column="table" jdbcType="VARCHAR" property="table" />
-    <result column="rule" jdbcType="VARCHAR" property="rule" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
   </resultMap>
@@ -69,7 +68,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, `name`, namespace, `table`, `rule`, create_time, modify_time
+    id, `name`, namespace, `table`, create_time, modify_time
   </sql>
   <select id="selectByExample" parameterType="com.utopia.data.transfer.admin.dao.entity.TargetDataMediaBeanDal" resultMap="BaseResultMap">
     select
@@ -92,15 +91,12 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.utopia.data.transfer.admin.dao.entity.TargetDataMediaBean">
-    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
-      SELECT LAST_INSERT_ID()
-    </selectKey>
     insert into u_target_datamedia (id, `name`, namespace, 
-      `table`, `rule`, create_time, 
-      modify_time)
-    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{namespace,jdbcType=VARCHAR}, 
-      #{table,jdbcType=VARCHAR}, #{rule,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{modifyTime,jdbcType=TIMESTAMP})
+      `table`, create_time, modify_time
+      )
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{namespace,jdbcType=VARCHAR}, 
+      #{table,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{modifyTime,jdbcType=TIMESTAMP}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.utopia.data.transfer.admin.dao.entity.TargetDataMediaBean">
     insert into u_target_datamedia
@@ -117,9 +113,6 @@
       <if test="table != null">
         `table`,
       </if>
-      <if test="rule != null">
-        `rule`,
-      </if>
       <if test="createTime != null">
         create_time,
       </if>
@@ -129,7 +122,7 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
-        #{id,jdbcType=INTEGER},
+        #{id,jdbcType=BIGINT},
       </if>
       <if test="name != null">
         #{name,jdbcType=VARCHAR},
@@ -139,9 +132,6 @@
       </if>
       <if test="table != null">
         #{table,jdbcType=VARCHAR},
-      </if>
-      <if test="rule != null">
-        #{rule,jdbcType=VARCHAR},
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
@@ -155,7 +145,7 @@
     update u_target_datamedia
     <set>
       <if test="record.id != null">
-        id = #{record.id,jdbcType=INTEGER},
+        id = #{record.id,jdbcType=BIGINT},
       </if>
       <if test="record.name != null">
         `name` = #{record.name,jdbcType=VARCHAR},
@@ -165,9 +155,6 @@
       </if>
       <if test="record.table != null">
         `table` = #{record.table,jdbcType=VARCHAR},
-      </if>
-      <if test="record.rule != null">
-        `rule` = #{record.rule,jdbcType=VARCHAR},
       </if>
       <if test="record.createTime != null">
         create_time = #{record.createTime,jdbcType=TIMESTAMP},
@@ -182,11 +169,10 @@
   </update>
   <update id="updateByExample" parameterType="map">
     update u_target_datamedia
-    set id = #{record.id,jdbcType=INTEGER},
+    set id = #{record.id,jdbcType=BIGINT},
       `name` = #{record.name,jdbcType=VARCHAR},
       namespace = #{record.namespace,jdbcType=VARCHAR},
       `table` = #{record.table,jdbcType=VARCHAR},
-      `rule` = #{record.rule,jdbcType=VARCHAR},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       modify_time = #{record.modifyTime,jdbcType=TIMESTAMP}
     <if test="_parameter != null">

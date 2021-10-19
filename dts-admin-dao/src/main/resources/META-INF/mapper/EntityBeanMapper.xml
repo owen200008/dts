@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.utopia.data.transfer.admin.dao.mapper.EntityBeanMapper">
   <resultMap id="BaseResultMap" type="com.utopia.data.transfer.admin.dao.entity.EntityBean">
-    <id column="id" jdbcType="INTEGER" property="id" />
+    <id column="id" jdbcType="BIGINT" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="type" jdbcType="VARCHAR" property="type" />
     <result column="encode" jdbcType="VARCHAR" property="encode" />
@@ -119,15 +119,12 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.utopia.data.transfer.admin.dao.entity.EntityBean">
-    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
-      SELECT LAST_INSERT_ID()
-    </selectKey>
     insert into u_entity (id, `name`, `type`, 
       encode, slave_id, url, 
       driver, username, `password`, 
       modify_time, create_time, mysql
       )
-    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, 
       #{encode,jdbcType=VARCHAR}, #{slaveId,jdbcType=BIGINT}, #{url,jdbcType=VARCHAR}, 
       #{driver,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
       #{modifyTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, #{mysql,jdbcType=LONGVARCHAR}
@@ -175,7 +172,7 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
-        #{id,jdbcType=INTEGER},
+        #{id,jdbcType=BIGINT},
       </if>
       <if test="name != null">
         #{name,jdbcType=VARCHAR},
@@ -216,7 +213,7 @@
     update u_entity
     <set>
       <if test="record.id != null">
-        id = #{record.id,jdbcType=INTEGER},
+        id = #{record.id,jdbcType=BIGINT},
       </if>
       <if test="record.name != null">
         `name` = #{record.name,jdbcType=VARCHAR},
@@ -258,7 +255,7 @@
   </update>
   <update id="updateByExampleWithBLOBs" parameterType="map">
     update u_entity
-    set id = #{record.id,jdbcType=INTEGER},
+    set id = #{record.id,jdbcType=BIGINT},
       `name` = #{record.name,jdbcType=VARCHAR},
       `type` = #{record.type,jdbcType=VARCHAR},
       encode = #{record.encode,jdbcType=VARCHAR},
@@ -276,7 +273,7 @@
   </update>
   <update id="updateByExample" parameterType="map">
     update u_entity
-    set id = #{record.id,jdbcType=INTEGER},
+    set id = #{record.id,jdbcType=BIGINT},
       `name` = #{record.name,jdbcType=VARCHAR},
       `type` = #{record.type,jdbcType=VARCHAR},
       encode = #{record.encode,jdbcType=VARCHAR},

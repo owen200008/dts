@@ -314,52 +314,52 @@ public class RegionBeanDal {
             return (Criteria) this;
         }
 
-        public Criteria andPipelineIdEqualTo(Integer value) {
+        public Criteria andPipelineIdEqualTo(Long value) {
             addCriterion("pipeline_id =", value, "pipelineId");
             return (Criteria) this;
         }
 
-        public Criteria andPipelineIdNotEqualTo(Integer value) {
+        public Criteria andPipelineIdNotEqualTo(Long value) {
             addCriterion("pipeline_id <>", value, "pipelineId");
             return (Criteria) this;
         }
 
-        public Criteria andPipelineIdGreaterThan(Integer value) {
+        public Criteria andPipelineIdGreaterThan(Long value) {
             addCriterion("pipeline_id >", value, "pipelineId");
             return (Criteria) this;
         }
 
-        public Criteria andPipelineIdGreaterThanOrEqualTo(Integer value) {
+        public Criteria andPipelineIdGreaterThanOrEqualTo(Long value) {
             addCriterion("pipeline_id >=", value, "pipelineId");
             return (Criteria) this;
         }
 
-        public Criteria andPipelineIdLessThan(Integer value) {
+        public Criteria andPipelineIdLessThan(Long value) {
             addCriterion("pipeline_id <", value, "pipelineId");
             return (Criteria) this;
         }
 
-        public Criteria andPipelineIdLessThanOrEqualTo(Integer value) {
+        public Criteria andPipelineIdLessThanOrEqualTo(Long value) {
             addCriterion("pipeline_id <=", value, "pipelineId");
             return (Criteria) this;
         }
 
-        public Criteria andPipelineIdIn(List<Integer> values) {
+        public Criteria andPipelineIdIn(List<Long> values) {
             addCriterion("pipeline_id in", values, "pipelineId");
             return (Criteria) this;
         }
 
-        public Criteria andPipelineIdNotIn(List<Integer> values) {
+        public Criteria andPipelineIdNotIn(List<Long> values) {
             addCriterion("pipeline_id not in", values, "pipelineId");
             return (Criteria) this;
         }
 
-        public Criteria andPipelineIdBetween(Integer value1, Integer value2) {
+        public Criteria andPipelineIdBetween(Long value1, Long value2) {
             addCriterion("pipeline_id between", value1, value2, "pipelineId");
             return (Criteria) this;
         }
 
-        public Criteria andPipelineIdNotBetween(Integer value1, Integer value2) {
+        public Criteria andPipelineIdNotBetween(Long value1, Long value2) {
             addCriterion("pipeline_id not between", value1, value2, "pipelineId");
             return (Criteria) this;
         }

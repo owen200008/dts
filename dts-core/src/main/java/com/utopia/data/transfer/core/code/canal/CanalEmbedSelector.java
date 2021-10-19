@@ -16,8 +16,8 @@ import com.alibaba.otter.canal.sink.CanalEventSink;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.mysql.cj.conf.ConnectionUrlParser;
-import com.utopia.data.transfer.core.archetype.base.ServiceException;
-import com.utopia.data.transfer.core.code.base.ErrorCode;
+import com.utopia.data.transfer.model.archetype.ServiceException;
+import com.utopia.data.transfer.model.archetype.ErrorCode;
 import com.utopia.data.transfer.core.code.base.config.DTSConstants;
 import com.utopia.data.transfer.core.code.model.EventDataTransaction;
 import com.utopia.data.transfer.model.code.entity.EntityDesc;
@@ -34,6 +34,7 @@ import org.slf4j.MDC;
 
 import java.net.InetSocketAddress;
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -206,8 +207,8 @@ public class CanalEmbedSelector {
         canalParameter.setGtidEnable(true);
 
         canal.setCanalParameter(canalParameter);
-        canal.setGmtCreate(entityDesc.getGmtCreate());
-        canal.setGmtModified(entityDesc.getGmtModified());
+        canal.setGmtCreate(Date.from(entityDesc.getCreateTime().atZone(ZoneId.of("GMT")).toInstant()));
+        canal.setGmtModified(Date.from(entityDesc.getModifyTime().atZone(ZoneId.of("GMT")).toInstant()));
 
         return canal;
     }

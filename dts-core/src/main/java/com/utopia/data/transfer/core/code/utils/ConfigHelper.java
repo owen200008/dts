@@ -1,7 +1,7 @@
 package com.utopia.data.transfer.core.code.utils;
 
-import com.utopia.data.transfer.core.archetype.base.ServiceException;
-import com.utopia.data.transfer.core.code.base.ErrorCode;
+import com.utopia.data.transfer.model.archetype.ServiceException;
+import com.utopia.data.transfer.model.archetype.ErrorCode;
 import com.utopia.data.transfer.model.code.data.media.DataMediaRuleSource;
 import com.utopia.data.transfer.model.code.data.media.DataMediaRulePair;
 import com.utopia.data.transfer.model.code.pipeline.Pipeline;

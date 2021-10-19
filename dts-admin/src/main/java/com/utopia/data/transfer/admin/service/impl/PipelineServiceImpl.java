@@ -1,7 +1,6 @@
 package com.utopia.data.transfer.admin.service.impl;
 
 import com.utopia.data.transfer.admin.contants.CommonUtil;
-import com.utopia.data.transfer.admin.contants.ErrorCode;
 import com.utopia.data.transfer.admin.dao.entity.*;
 import com.utopia.data.transfer.admin.dao.mapper.PipelineBeanMapper;
 import com.utopia.data.transfer.admin.dao.mapper.SourceDataMediaBeanMapper;
@@ -9,20 +8,18 @@ import com.utopia.data.transfer.admin.dao.mapper.TargetDataMediaBeanMapper;
 import com.utopia.data.transfer.admin.dao.mapper.base.PairBeanRepository;
 import com.utopia.data.transfer.admin.dao.mapper.base.PipelineBeanRepository;
 import com.utopia.data.transfer.admin.dao.mapper.base.RegionBeanRepository;
-import com.utopia.data.transfer.admin.exception.AdminException;
-import com.utopia.data.transfer.admin.service.EntityService;
+import com.utopia.data.transfer.admin.service.PairSevice;
 import com.utopia.data.transfer.admin.service.PipelineService;
+import com.utopia.data.transfer.admin.service.RegionService;
 import com.utopia.data.transfer.admin.vo.req.PipelineAddVo;
 import com.utopia.data.transfer.admin.vo.req.PipelinePairAddVo;
 import com.utopia.data.transfer.admin.vo.req.PipelineRegionAddVo;
-import com.utopia.data.transfer.admin.vo.res.EntityRes;
-import com.utopia.data.transfer.admin.vo.res.PipeDetailRes;
-import com.utopia.data.transfer.admin.vo.res.PipeParamsRes;
+import com.utopia.data.transfer.model.archetype.ErrorCode;
+import com.utopia.exception.UtopiaRunTimeException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 
@@ -30,7 +27,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * describe:
@@ -42,9 +38,14 @@ import java.util.Objects;
 @Slf4j
 public class PipelineServiceImpl implements PipelineService {
 
-
     @Autowired
     PipelineBeanMapper pipelineBeanMapper;
+
+    @Autowired
+    RegionService regionService;
+    @Autowired
+    PairSevice pairSevice;
+
 
     @Autowired
     PipelineBeanRepository pipelineBeanRepository;
@@ -61,83 +62,47 @@ public class PipelineServiceImpl implements PipelineService {
     @Autowired
     TargetDataMediaBeanMapper targetDataMediaBeanMapper;
 
-
-    public static final String SOURCE_MODE = "source";
-    public static final String TARGET_MODE = "target";
-
     @Override
-    public Integer pipelineAdd(PipelineAddVo pipelineAddVo) {
+    public void pipelineAdd(PipelineAddVo pipelineAddVo) {
         PipelineBean pipelineBean = null;
         try {
             pipelineBean = CommonUtil.snakeObjectToUnderline(pipelineAddVo, PipelineBean.class);
         } catch (IOException e) {
             log.error("parase object to new object fail");
-            throw new AdminException(ErrorCode.PARSE_OBJECT_FAIL);
+            throw new UtopiaRunTimeException(ErrorCode.JSON_PARSE_ERROR);
         }
         pipelineBean.setCreateTime(LocalDateTime.now());
         pipelineBean.setModifyTime(LocalDateTime.now());
         pipelineBeanMapper.insert(pipelineBean);
-        return pipelineBean.getId();
     }
 
     @Override
-    public PipeDetailRes pipelineDetail(Integer id) {
-
-        PipeDetail pipeDetail = pipelineBeanRepository.selectDetailById(id);
-        // 根据Id去获取region信息
-        List<RegionBean> regionBeans = regionBeanRepository.selectByPipelineId(id);
-        // 根据id获取pair列表
-        List<PairDetail> pairDetails = pairBeanRepository.selectByPipelineId(id);
-
-        if (Objects.isNull(pipeDetail)) {
-            return null;
-        }
-        PipeDetailRes finalPipeDetailRes = null;
-        try {
-            // 现将pipeDetail相同字段赋值
-            finalPipeDetailRes = CommonUtil.snakeObjectToUnderline(pipeDetail, PipeDetailRes.class);
-            finalPipeDetailRes.setPairList(pairDetails);
-            // 处理region信息 变为source和target
-            for (RegionBean re : regionBeans) {
-                String mode = re.getMode();
-                if (StringUtils.equals(SOURCE_MODE, mode)) {
-                    finalPipeDetailRes.setSourceRegion(re.getRegion());
-                    finalPipeDetailRes.setSourceRegionId(re.getId());
-                } else {
-                    finalPipeDetailRes.setTargetRegion(re.getRegion());
-                    finalPipeDetailRes.setTargetRegionId(re.getId());
-                }
+    public void pipelineDelete(Long pipelineId) {
+        //搜索下数据是否存在
+        {
+            List<RegionBean> byPipelineId = regionService.getByPipelineId(pipelineId);
+            if(!CollectionUtils.isEmpty(byPipelineId)){
+                throw new UtopiaRunTimeException(ErrorCode.CHILD_NEED_DELETE_FIRST);
             }
-        } catch (IOException e) {
-            log.error("parase object to new object fail");
-            throw new AdminException(ErrorCode.PARSE_OBJECT_FAIL);
         }
-        return finalPipeDetailRes;
+        {
+            List<PairBean> byPipelineId = pairSevice.getByPipelineId(pipelineId);
+            if(!CollectionUtils.isEmpty(byPipelineId)){
+                throw new UtopiaRunTimeException(ErrorCode.CHILD_NEED_DELETE_FIRST);
+            }
+        }
 
+
+
+
+        pipelineBeanMapper.deleteByPrimaryKey(pipelineId);
     }
 
     @Override
-    public List<PipeParamsRes> pipelineParamsList(Integer taskId) {
+    public List<PipelineBean> pipelineParamsList(Long taskId) {
         PipelineBeanDal pipelineBeanDal = new PipelineBeanDal();
         pipelineBeanDal.createCriteria().andTaskIdEqualTo(taskId);
-        List<PipelineBean> pipelineBeans = pipelineBeanRepository.selectByExample(pipelineBeanDal);
-
-        if (CollectionUtils.isEmpty(pipelineBeans)){
-            return null;
-        }
-        List<PipeParamsRes> pipeParamsRes = new ArrayList<>();
-        try {
-            for (PipelineBean pipelineBean : pipelineBeans) {
-                PipeParamsRes paramsRes = null;
-                paramsRes = CommonUtil.snakeObjectToUnderline(pipelineBean, PipeParamsRes.class);
-                pipeParamsRes.add(paramsRes);
-            }
-        } catch (IOException e) {
-            log.error("parase object to new object fail");
-            throw new AdminException(ErrorCode.PARSE_OBJECT_FAIL);
-        }
-
-        return pipeParamsRes;
+        return pipelineBeanRepository.selectByExample(pipelineBeanDal);
     }
 
     @Override
@@ -191,8 +156,7 @@ public class PipelineServiceImpl implements PipelineService {
 
 
     @Override
-    public List<PipeDetailRes> pipelineDetailByTaskId(Integer id) {
-
+    public List<PipeDetailRes> pipelineDetailByTaskId(Long id) {
         List<PipeDetail> pipeDetails = pipelineBeanRepository.selectDetailByTaskId(id);
         if (CollectionUtils.isEmpty(pipeDetails)) {
             return null;

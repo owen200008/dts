@@ -4,18 +4,17 @@ import com.utopia.data.transfer.admin.dao.entity.EntityBean;
 import com.utopia.data.transfer.admin.vo.EntityAddVo;
 import com.utopia.data.transfer.admin.vo.PageRes;
 import com.utopia.data.transfer.admin.vo.QueryEntityVo;
-import com.utopia.data.transfer.admin.vo.res.EntityRes;
 
 import java.util.List;
 
 public interface EntityService {
-    Integer addEntity(EntityAddVo entityAddVo);
+    Long addEntity(EntityAddVo entityAddVo);
 
 
-    void deleteEntity(Integer id);
+    void deleteEntity(Long id);
 
 
-    EntityRes getEntityById(Integer id);
+    EntityRes getEntityById(Long id);
 
     PageRes<List<EntityRes>> getEntityList(QueryEntityVo queryEntityVo);
 

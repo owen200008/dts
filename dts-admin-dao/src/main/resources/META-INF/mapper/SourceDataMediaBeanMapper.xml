@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.utopia.data.transfer.admin.dao.mapper.SourceDataMediaBeanMapper">
   <resultMap id="BaseResultMap" type="com.utopia.data.transfer.admin.dao.entity.SourceDataMediaBean">
-    <id column="id" jdbcType="INTEGER" property="id" />
+    <id column="id" jdbcType="BIGINT" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="namespace" jdbcType="VARCHAR" property="namespace" />
     <result column="table" jdbcType="VARCHAR" property="table" />
@@ -91,13 +91,10 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.utopia.data.transfer.admin.dao.entity.SourceDataMediaBean">
-    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
-      SELECT LAST_INSERT_ID()
-    </selectKey>
     insert into u_source_datamedia (id, `name`, namespace, 
       `table`, create_time, modify_time
       )
-    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{namespace,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{namespace,jdbcType=VARCHAR}, 
       #{table,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{modifyTime,jdbcType=TIMESTAMP}
       )
   </insert>
@@ -125,7 +122,7 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
-        #{id,jdbcType=INTEGER},
+        #{id,jdbcType=BIGINT},
       </if>
       <if test="name != null">
         #{name,jdbcType=VARCHAR},
@@ -148,7 +145,7 @@
     update u_source_datamedia
     <set>
       <if test="record.id != null">
-        id = #{record.id,jdbcType=INTEGER},
+        id = #{record.id,jdbcType=BIGINT},
       </if>
       <if test="record.name != null">
         `name` = #{record.name,jdbcType=VARCHAR},
@@ -172,7 +169,7 @@
   </update>
   <update id="updateByExample" parameterType="map">
     update u_source_datamedia
-    set id = #{record.id,jdbcType=INTEGER},
+    set id = #{record.id,jdbcType=BIGINT},
       `name` = #{record.name,jdbcType=VARCHAR},
       namespace = #{record.namespace,jdbcType=VARCHAR},
       `table` = #{record.table,jdbcType=VARCHAR},

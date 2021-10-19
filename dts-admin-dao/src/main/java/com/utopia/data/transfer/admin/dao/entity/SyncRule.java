@@ -2,20 +2,19 @@ package com.utopia.data.transfer.admin.dao.entity;
 
 import com.utopia.data.transfer.admin.dao.base.BaseModel;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
-public class TargetDataMediaBean extends BaseModel implements Serializable {
+public class SyncRule extends BaseModel implements Serializable {
     private Long id;
 
-    private String name;
+    private Long pipelineId;
+
+    private String syncRuleType;
 
     private String namespace;
 
     private String table;
 
-    private LocalDateTime createTime;
-
-    private LocalDateTime modifyTime;
+    private String startGtid;
 
     private static final long serialVersionUID = 1L;
 
@@ -27,12 +26,20 @@ public class TargetDataMediaBean extends BaseModel implements Serializable {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public Long getPipelineId() {
+        return pipelineId;
     }
 
-    public void setName(String name) {
-        this.name = name == null ? null : name.trim();
+    public void setPipelineId(Long pipelineId) {
+        this.pipelineId = pipelineId;
+    }
+
+    public String getSyncRuleType() {
+        return syncRuleType;
+    }
+
+    public void setSyncRuleType(String syncRuleType) {
+        this.syncRuleType = syncRuleType == null ? null : syncRuleType.trim();
     }
 
     public String getNamespace() {
@@ -51,20 +58,12 @@ public class TargetDataMediaBean extends BaseModel implements Serializable {
         this.table = table == null ? null : table.trim();
     }
 
-    public LocalDateTime getCreateTime() {
-        return createTime;
+    public String getStartGtid() {
+        return startGtid;
     }
 
-    public void setCreateTime(LocalDateTime createTime) {
-        this.createTime = createTime;
-    }
-
-    public LocalDateTime getModifyTime() {
-        return modifyTime;
-    }
-
-    public void setModifyTime(LocalDateTime modifyTime) {
-        this.modifyTime = modifyTime;
+    public void setStartGtid(String startGtid) {
+        this.startGtid = startGtid == null ? null : startGtid.trim();
     }
 
     @Override
@@ -74,11 +73,11 @@ public class TargetDataMediaBean extends BaseModel implements Serializable {
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
-        sb.append(", name=").append(name);
+        sb.append(", pipelineId=").append(pipelineId);
+        sb.append(", syncRuleType=").append(syncRuleType);
         sb.append(", namespace=").append(namespace);
         sb.append(", table=").append(table);
-        sb.append(", createTime=").append(createTime);
-        sb.append(", modifyTime=").append(modifyTime);
+        sb.append(", startGtid=").append(startGtid);
         sb.append("]");
         return sb.toString();
     }
@@ -94,13 +93,13 @@ public class TargetDataMediaBean extends BaseModel implements Serializable {
         if (getClass() != that.getClass()) {
             return false;
         }
-        TargetDataMediaBean other = (TargetDataMediaBean) that;
+        SyncRule other = (SyncRule) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-            && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
+            && (this.getPipelineId() == null ? other.getPipelineId() == null : this.getPipelineId().equals(other.getPipelineId()))
+            && (this.getSyncRuleType() == null ? other.getSyncRuleType() == null : this.getSyncRuleType().equals(other.getSyncRuleType()))
             && (this.getNamespace() == null ? other.getNamespace() == null : this.getNamespace().equals(other.getNamespace()))
             && (this.getTable() == null ? other.getTable() == null : this.getTable().equals(other.getTable()))
-            && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
-            && (this.getModifyTime() == null ? other.getModifyTime() == null : this.getModifyTime().equals(other.getModifyTime()));
+            && (this.getStartGtid() == null ? other.getStartGtid() == null : this.getStartGtid().equals(other.getStartGtid()));
     }
 
     @Override
@@ -108,11 +107,11 @@ public class TargetDataMediaBean extends BaseModel implements Serializable {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
-        result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
+        result = prime * result + ((getPipelineId() == null) ? 0 : getPipelineId().hashCode());
+        result = prime * result + ((getSyncRuleType() == null) ? 0 : getSyncRuleType().hashCode());
         result = prime * result + ((getNamespace() == null) ? 0 : getNamespace().hashCode());
         result = prime * result + ((getTable() == null) ? 0 : getTable().hashCode());
-        result = prime * result + ((getCreateTime() == null) ? 0 : getCreateTime().hashCode());
-        result = prime * result + ((getModifyTime() == null) ? 0 : getModifyTime().hashCode());
+        result = prime * result + ((getStartGtid() == null) ? 0 : getStartGtid().hashCode());
         return result;
     }
 }

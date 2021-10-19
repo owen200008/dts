@@ -1,9 +1,6 @@
 package com.utopia.data.transfer.admin.controller;
 
-import com.utopia.data.transfer.admin.contants.ErrorCode;
-import com.utopia.data.transfer.admin.dao.entity.EntityBean;
 import com.utopia.data.transfer.admin.dao.entity.TaskBean;
-import com.utopia.data.transfer.admin.exception.AdminException;
 import com.utopia.data.transfer.admin.service.EntityService;
 import com.utopia.data.transfer.admin.service.PipelineService;
 import com.utopia.data.transfer.admin.service.RegionService;
@@ -16,25 +13,15 @@ import com.utopia.data.transfer.admin.vo.req.PipelineAddVo;
 import com.utopia.data.transfer.admin.vo.req.PipelinePairAddVo;
 import com.utopia.data.transfer.admin.vo.req.PipelineRegionAddVo;
 import com.utopia.data.transfer.admin.vo.req.QueryTaskVo;
-import com.utopia.data.transfer.admin.vo.res.EntityRes;
-import com.utopia.data.transfer.admin.vo.res.PipeDetailRes;
-import com.utopia.data.transfer.admin.vo.res.PipeParamsRes;
 import lombok.extern.slf4j.Slf4j;
-import org.omg.PortableInterceptor.INACTIVE;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import javax.swing.plaf.SpinnerUI;
-import javax.swing.text.html.parser.Entity;
 import javax.validation.Valid;
-import javax.xml.ws.Response;
-import java.sql.ResultSet;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * describe:
@@ -58,7 +45,7 @@ public class DtsAdminController {
 
 
     @GetMapping("/entity/add")
-    public ResponseModel<Integer>  entityAdd(@Valid EntityAddVo entityAddVo){
+    public ResponseModel<Integer> entityAdd(@Valid EntityAddVo entityAddVo){
         Integer entityId = entityService.addEntity(entityAddVo);
         return ResponseModel.success(entityId);
     }
@@ -84,15 +71,9 @@ public class DtsAdminController {
 
 
     @GetMapping("/pipeline/add")
-    public ResponseModel<Integer> pipelineAdd(@Valid PipelineAddVo pipelineAddVo){
-        Integer pipelineId = pipelineService.pipelineAdd(pipelineAddVo);
-        return ResponseModel.success(pipelineId);
-    }
-
-    @GetMapping("/pipeline/detail")
-    public ResponseModel<PipeDetailRes> pipelineDetail(@RequestParam(value = "pipelineId",required = true) Integer id){
-        PipeDetailRes pipeDetailRes = pipelineService.pipelineDetail(id);
-        return ResponseModel.success(pipeDetailRes);
+    public ResponseModel pipelineAdd(@Valid PipelineAddVo pipelineAddVo){
+        pipelineService.pipelineAdd(pipelineAddVo);
+        return ResponseModel.success();
     }
 
     @GetMapping("/pipeline/list")
@@ -114,13 +95,13 @@ public class DtsAdminController {
     }
 
     @GetMapping("/task/add")
-    public ResponseModel<Integer> taskAdd(@RequestParam("name")String name){
-        Integer taskId = taskSevice.taskAdd(name);
-        return ResponseModel.success(taskId);
+    public ResponseModel taskAdd(@RequestParam("name")String name){
+        taskSevice.taskAdd(name);
+        return ResponseModel.success();
     }
 
     @GetMapping("/task/delete")
-    public ResponseModel<Integer> taskDelete(@RequestParam("id")Integer id){
+    public ResponseModel<Integer> taskDelete(@RequestParam("id")Long id){
         taskSevice.taskDelete(id);
         return ResponseModel.success();
     }

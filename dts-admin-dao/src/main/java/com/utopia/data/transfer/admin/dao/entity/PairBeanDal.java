@@ -174,52 +174,52 @@ public class PairBeanDal {
             return (Criteria) this;
         }
 
-        public Criteria andPipelineIdEqualTo(Integer value) {
+        public Criteria andPipelineIdEqualTo(Long value) {
             addCriterion("pipeline_id =", value, "pipelineId");
             return (Criteria) this;
         }
 
-        public Criteria andPipelineIdNotEqualTo(Integer value) {
+        public Criteria andPipelineIdNotEqualTo(Long value) {
             addCriterion("pipeline_id <>", value, "pipelineId");
             return (Criteria) this;
         }
 
-        public Criteria andPipelineIdGreaterThan(Integer value) {
+        public Criteria andPipelineIdGreaterThan(Long value) {
             addCriterion("pipeline_id >", value, "pipelineId");
             return (Criteria) this;
         }
 
-        public Criteria andPipelineIdGreaterThanOrEqualTo(Integer value) {
+        public Criteria andPipelineIdGreaterThanOrEqualTo(Long value) {
             addCriterion("pipeline_id >=", value, "pipelineId");
             return (Criteria) this;
         }
 
-        public Criteria andPipelineIdLessThan(Integer value) {
+        public Criteria andPipelineIdLessThan(Long value) {
             addCriterion("pipeline_id <", value, "pipelineId");
             return (Criteria) this;
         }
 
-        public Criteria andPipelineIdLessThanOrEqualTo(Integer value) {
+        public Criteria andPipelineIdLessThanOrEqualTo(Long value) {
             addCriterion("pipeline_id <=", value, "pipelineId");
             return (Criteria) this;
         }
 
-        public Criteria andPipelineIdIn(List<Integer> values) {
+        public Criteria andPipelineIdIn(List<Long> values) {
             addCriterion("pipeline_id in", values, "pipelineId");
             return (Criteria) this;
         }
 
-        public Criteria andPipelineIdNotIn(List<Integer> values) {
+        public Criteria andPipelineIdNotIn(List<Long> values) {
             addCriterion("pipeline_id not in", values, "pipelineId");
             return (Criteria) this;
         }
 
-        public Criteria andPipelineIdBetween(Integer value1, Integer value2) {
+        public Criteria andPipelineIdBetween(Long value1, Long value2) {
             addCriterion("pipeline_id between", value1, value2, "pipelineId");
             return (Criteria) this;
         }
 
-        public Criteria andPipelineIdNotBetween(Integer value1, Integer value2) {
+        public Criteria andPipelineIdNotBetween(Long value1, Long value2) {
             addCriterion("pipeline_id not between", value1, value2, "pipelineId");
             return (Criteria) this;
         }
@@ -234,52 +234,52 @@ public class PairBeanDal {
             return (Criteria) this;
         }
 
-        public Criteria andSourceDatamediaIdEqualTo(Integer value) {
+        public Criteria andSourceDatamediaIdEqualTo(Long value) {
             addCriterion("source_datamedia_id =", value, "sourceDatamediaId");
             return (Criteria) this;
         }
 
-        public Criteria andSourceDatamediaIdNotEqualTo(Integer value) {
+        public Criteria andSourceDatamediaIdNotEqualTo(Long value) {
             addCriterion("source_datamedia_id <>", value, "sourceDatamediaId");
             return (Criteria) this;
         }
 
-        public Criteria andSourceDatamediaIdGreaterThan(Integer value) {
+        public Criteria andSourceDatamediaIdGreaterThan(Long value) {
             addCriterion("source_datamedia_id >", value, "sourceDatamediaId");
             return (Criteria) this;
         }
 
-        public Criteria andSourceDatamediaIdGreaterThanOrEqualTo(Integer value) {
+        public Criteria andSourceDatamediaIdGreaterThanOrEqualTo(Long value) {
             addCriterion("source_datamedia_id >=", value, "sourceDatamediaId");
             return (Criteria) this;
         }
 
-        public Criteria andSourceDatamediaIdLessThan(Integer value) {
+        public Criteria andSourceDatamediaIdLessThan(Long value) {
             addCriterion("source_datamedia_id <", value, "sourceDatamediaId");
             return (Criteria) this;
         }
 
-        public Criteria andSourceDatamediaIdLessThanOrEqualTo(Integer value) {
+        public Criteria andSourceDatamediaIdLessThanOrEqualTo(Long value) {
             addCriterion("source_datamedia_id <=", value, "sourceDatamediaId");
             return (Criteria) this;
         }
 
-        public Criteria andSourceDatamediaIdIn(List<Integer> values) {
+        public Criteria andSourceDatamediaIdIn(List<Long> values) {
             addCriterion("source_datamedia_id in", values, "sourceDatamediaId");
             return (Criteria) this;
         }
 
-        public Criteria andSourceDatamediaIdNotIn(List<Integer> values) {
+        public Criteria andSourceDatamediaIdNotIn(List<Long> values) {
             addCriterion("source_datamedia_id not in", values, "sourceDatamediaId");
             return (Criteria) this;
         }
 
-        public Criteria andSourceDatamediaIdBetween(Integer value1, Integer value2) {
+        public Criteria andSourceDatamediaIdBetween(Long value1, Long value2) {
             addCriterion("source_datamedia_id between", value1, value2, "sourceDatamediaId");
             return (Criteria) this;
         }
 
-        public Criteria andSourceDatamediaIdNotBetween(Integer value1, Integer value2) {
+        public Criteria andSourceDatamediaIdNotBetween(Long value1, Long value2) {
             addCriterion("source_datamedia_id not between", value1, value2, "sourceDatamediaId");
             return (Criteria) this;
         }
@@ -294,52 +294,52 @@ public class PairBeanDal {
             return (Criteria) this;
         }
 
-        public Criteria andTargetDatamediaIdEqualTo(Integer value) {
+        public Criteria andTargetDatamediaIdEqualTo(Long value) {
             addCriterion("target_datamedia_id =", value, "targetDatamediaId");
             return (Criteria) this;
         }
 
-        public Criteria andTargetDatamediaIdNotEqualTo(Integer value) {
+        public Criteria andTargetDatamediaIdNotEqualTo(Long value) {
             addCriterion("target_datamedia_id <>", value, "targetDatamediaId");
             return (Criteria) this;
         }
 
-        public Criteria andTargetDatamediaIdGreaterThan(Integer value) {
+        public Criteria andTargetDatamediaIdGreaterThan(Long value) {
             addCriterion("target_datamedia_id >", value, "targetDatamediaId");
             return (Criteria) this;
         }
 
-        public Criteria andTargetDatamediaIdGreaterThanOrEqualTo(Integer value) {
+        public Criteria andTargetDatamediaIdGreaterThanOrEqualTo(Long value) {
             addCriterion("target_datamedia_id >=", value, "targetDatamediaId");
             return (Criteria) this;
         }
 
-        public Criteria andTargetDatamediaIdLessThan(Integer value) {
+        public Criteria andTargetDatamediaIdLessThan(Long value) {
             addCriterion("target_datamedia_id <", value, "targetDatamediaId");
             return (Criteria) this;
         }
 
-        public Criteria andTargetDatamediaIdLessThanOrEqualTo(Integer value) {
+        public Criteria andTargetDatamediaIdLessThanOrEqualTo(Long value) {
             addCriterion("target_datamedia_id <=", value, "targetDatamediaId");
             return (Criteria) this;
         }
 
-        public Criteria andTargetDatamediaIdIn(List<Integer> values) {
+        public Criteria andTargetDatamediaIdIn(List<Long> values) {
             addCriterion("target_datamedia_id in", values, "targetDatamediaId");
             return (Criteria) this;
         }
 
-        public Criteria andTargetDatamediaIdNotIn(List<Integer> values) {
+        public Criteria andTargetDatamediaIdNotIn(List<Long> values) {
             addCriterion("target_datamedia_id not in", values, "targetDatamediaId");
             return (Criteria) this;
         }
 
-        public Criteria andTargetDatamediaIdBetween(Integer value1, Integer value2) {
+        public Criteria andTargetDatamediaIdBetween(Long value1, Long value2) {
             addCriterion("target_datamedia_id between", value1, value2, "targetDatamediaId");
             return (Criteria) this;
         }
 
-        public Criteria andTargetDatamediaIdNotBetween(Integer value1, Integer value2) {
+        public Criteria andTargetDatamediaIdNotBetween(Long value1, Long value2) {
             addCriterion("target_datamedia_id not between", value1, value2, "targetDatamediaId");
             return (Criteria) this;
         }

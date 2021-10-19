@@ -10,7 +10,7 @@ public class RegionBean extends BaseModel implements Serializable {
 
     private String mode;
 
-    private Integer pipelineId;
+    private Long pipelineId;
 
     private static final long serialVersionUID = 1L;
 
@@ -38,11 +38,11 @@ public class RegionBean extends BaseModel implements Serializable {
         this.mode = mode == null ? null : mode.trim();
     }
 
-    public Integer getPipelineId() {
+    public Long getPipelineId() {
         return pipelineId;
     }
 
-    public void setPipelineId(Integer pipelineId) {
+    public void setPipelineId(Long pipelineId) {
         this.pipelineId = pipelineId;
     }
 

@@ -5,15 +5,15 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 public class PipelineBean extends BaseModel implements Serializable {
-    private Integer id;
+    private Long id;
 
-    private Integer taskId;
+    private Long taskId;
 
     private String name;
 
-    private Integer sourceEntityId;
+    private Long sourceEntityId;
 
-    private Integer targetEntityId;
+    private Long targetEntityId;
 
     private LocalDateTime modifyTime;
 
@@ -23,19 +23,19 @@ public class PipelineBean extends BaseModel implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public Integer getTaskId() {
+    public Long getTaskId() {
         return taskId;
     }
 
-    public void setTaskId(Integer taskId) {
+    public void setTaskId(Long taskId) {
         this.taskId = taskId;
     }
 
@@ -47,19 +47,19 @@ public class PipelineBean extends BaseModel implements Serializable {
         this.name = name == null ? null : name.trim();
     }
 
-    public Integer getSourceEntityId() {
+    public Long getSourceEntityId() {
         return sourceEntityId;
     }
 
-    public void setSourceEntityId(Integer sourceEntityId) {
+    public void setSourceEntityId(Long sourceEntityId) {
         this.sourceEntityId = sourceEntityId;
     }
 
-    public Integer getTargetEntityId() {
+    public Long getTargetEntityId() {
         return targetEntityId;
     }
 
-    public void setTargetEntityId(Integer targetEntityId) {
+    public void setTargetEntityId(Long targetEntityId) {
         this.targetEntityId = targetEntityId;
     }
 

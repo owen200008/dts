@@ -1,7 +1,7 @@
 package com.utopia.data.transfer.core.code.service.impl.task;
 
 import com.alibaba.fastjson.JSON;
-import com.utopia.data.transfer.core.code.base.ErrorCode;
+import com.utopia.data.transfer.model.archetype.ErrorCode;
 import com.utopia.data.transfer.core.code.canal.CanalEmbedSelector;
 import com.utopia.data.transfer.core.code.canal.CanalZKConfig;
 import com.utopia.data.transfer.core.code.model.EventDataTransaction;
@@ -16,7 +16,6 @@ import com.utopia.data.transfer.model.code.pipeline.SelectParamter;
 import com.utopia.exception.UtopiaRunTimeException;
 import com.utopia.extension.UtopiaExtensionLoader;
 import com.utopia.model.rsp.UtopiaResponseModel;
-import io.micrometer.core.instrument.Metrics;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
 

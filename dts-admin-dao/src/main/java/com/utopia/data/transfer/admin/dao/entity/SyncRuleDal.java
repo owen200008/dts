@@ -1,17 +1,16 @@
 package com.utopia.data.transfer.admin.dao.entity;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SourceDataMediaBeanDal {
+public class SyncRuleDal {
     protected String orderByClause;
 
     protected boolean distinct;
 
     protected List<Criteria> oredCriteria;
 
-    public SourceDataMediaBeanDal() {
+    public SyncRuleDal() {
         oredCriteria = new ArrayList<>();
     }
 
@@ -165,73 +164,133 @@ public class SourceDataMediaBeanDal {
             return (Criteria) this;
         }
 
-        public Criteria andNameIsNull() {
-            addCriterion("`name` is null");
+        public Criteria andPipelineIdIsNull() {
+            addCriterion("pipeline_id is null");
             return (Criteria) this;
         }
 
-        public Criteria andNameIsNotNull() {
-            addCriterion("`name` is not null");
+        public Criteria andPipelineIdIsNotNull() {
+            addCriterion("pipeline_id is not null");
             return (Criteria) this;
         }
 
-        public Criteria andNameEqualTo(String value) {
-            addCriterion("`name` =", value, "name");
+        public Criteria andPipelineIdEqualTo(Long value) {
+            addCriterion("pipeline_id =", value, "pipelineId");
             return (Criteria) this;
         }
 
-        public Criteria andNameNotEqualTo(String value) {
-            addCriterion("`name` <>", value, "name");
+        public Criteria andPipelineIdNotEqualTo(Long value) {
+            addCriterion("pipeline_id <>", value, "pipelineId");
             return (Criteria) this;
         }
 
-        public Criteria andNameGreaterThan(String value) {
-            addCriterion("`name` >", value, "name");
+        public Criteria andPipelineIdGreaterThan(Long value) {
+            addCriterion("pipeline_id >", value, "pipelineId");
             return (Criteria) this;
         }
 
-        public Criteria andNameGreaterThanOrEqualTo(String value) {
-            addCriterion("`name` >=", value, "name");
+        public Criteria andPipelineIdGreaterThanOrEqualTo(Long value) {
+            addCriterion("pipeline_id >=", value, "pipelineId");
             return (Criteria) this;
         }
 
-        public Criteria andNameLessThan(String value) {
-            addCriterion("`name` <", value, "name");
+        public Criteria andPipelineIdLessThan(Long value) {
+            addCriterion("pipeline_id <", value, "pipelineId");
             return (Criteria) this;
         }
 
-        public Criteria andNameLessThanOrEqualTo(String value) {
-            addCriterion("`name` <=", value, "name");
+        public Criteria andPipelineIdLessThanOrEqualTo(Long value) {
+            addCriterion("pipeline_id <=", value, "pipelineId");
             return (Criteria) this;
         }
 
-        public Criteria andNameLike(String value) {
-            addCriterion("`name` like", value, "name");
+        public Criteria andPipelineIdIn(List<Long> values) {
+            addCriterion("pipeline_id in", values, "pipelineId");
             return (Criteria) this;
         }
 
-        public Criteria andNameNotLike(String value) {
-            addCriterion("`name` not like", value, "name");
+        public Criteria andPipelineIdNotIn(List<Long> values) {
+            addCriterion("pipeline_id not in", values, "pipelineId");
             return (Criteria) this;
         }
 
-        public Criteria andNameIn(List<String> values) {
-            addCriterion("`name` in", values, "name");
+        public Criteria andPipelineIdBetween(Long value1, Long value2) {
+            addCriterion("pipeline_id between", value1, value2, "pipelineId");
             return (Criteria) this;
         }
 
-        public Criteria andNameNotIn(List<String> values) {
-            addCriterion("`name` not in", values, "name");
+        public Criteria andPipelineIdNotBetween(Long value1, Long value2) {
+            addCriterion("pipeline_id not between", value1, value2, "pipelineId");
             return (Criteria) this;
         }
 
-        public Criteria andNameBetween(String value1, String value2) {
-            addCriterion("`name` between", value1, value2, "name");
+        public Criteria andSyncRuleTypeIsNull() {
+            addCriterion("sync_rule_type is null");
             return (Criteria) this;
         }
 
-        public Criteria andNameNotBetween(String value1, String value2) {
-            addCriterion("`name` not between", value1, value2, "name");
+        public Criteria andSyncRuleTypeIsNotNull() {
+            addCriterion("sync_rule_type is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andSyncRuleTypeEqualTo(String value) {
+            addCriterion("sync_rule_type =", value, "syncRuleType");
+            return (Criteria) this;
+        }
+
+        public Criteria andSyncRuleTypeNotEqualTo(String value) {
+            addCriterion("sync_rule_type <>", value, "syncRuleType");
+            return (Criteria) this;
+        }
+
+        public Criteria andSyncRuleTypeGreaterThan(String value) {
+            addCriterion("sync_rule_type >", value, "syncRuleType");
+            return (Criteria) this;
+        }
+
+        public Criteria andSyncRuleTypeGreaterThanOrEqualTo(String value) {
+            addCriterion("sync_rule_type >=", value, "syncRuleType");
+            return (Criteria) this;
+        }
+
+        public Criteria andSyncRuleTypeLessThan(String value) {
+            addCriterion("sync_rule_type <", value, "syncRuleType");
+            return (Criteria) this;
+        }
+
+        public Criteria andSyncRuleTypeLessThanOrEqualTo(String value) {
+            addCriterion("sync_rule_type <=", value, "syncRuleType");
+            return (Criteria) this;
+        }
+
+        public Criteria andSyncRuleTypeLike(String value) {
+            addCriterion("sync_rule_type like", value, "syncRuleType");
+            return (Criteria) this;
+        }
+
+        public Criteria andSyncRuleTypeNotLike(String value) {
+            addCriterion("sync_rule_type not like", value, "syncRuleType");
+            return (Criteria) this;
+        }
+
+        public Criteria andSyncRuleTypeIn(List<String> values) {
+            addCriterion("sync_rule_type in", values, "syncRuleType");
+            return (Criteria) this;
+        }
+
+        public Criteria andSyncRuleTypeNotIn(List<String> values) {
+            addCriterion("sync_rule_type not in", values, "syncRuleType");
+            return (Criteria) this;
+        }
+
+        public Criteria andSyncRuleTypeBetween(String value1, String value2) {
+            addCriterion("sync_rule_type between", value1, value2, "syncRuleType");
+            return (Criteria) this;
+        }
+
+        public Criteria andSyncRuleTypeNotBetween(String value1, String value2) {
+            addCriterion("sync_rule_type not between", value1, value2, "syncRuleType");
             return (Criteria) this;
         }
 
@@ -375,128 +434,78 @@ public class SourceDataMediaBeanDal {
             return (Criteria) this;
         }
 
-        public Criteria andCreateTimeIsNull() {
-            addCriterion("create_time is null");
+        public Criteria andStartGtidIsNull() {
+            addCriterion("start_gtid is null");
             return (Criteria) this;
         }
 
-        public Criteria andCreateTimeIsNotNull() {
-            addCriterion("create_time is not null");
+        public Criteria andStartGtidIsNotNull() {
+            addCriterion("start_gtid is not null");
             return (Criteria) this;
         }
 
-        public Criteria andCreateTimeEqualTo(LocalDateTime value) {
-            addCriterion("create_time =", value, "createTime");
+        public Criteria andStartGtidEqualTo(String value) {
+            addCriterion("start_gtid =", value, "startGtid");
             return (Criteria) this;
         }
 
-        public Criteria andCreateTimeNotEqualTo(LocalDateTime value) {
-            addCriterion("create_time <>", value, "createTime");
+        public Criteria andStartGtidNotEqualTo(String value) {
+            addCriterion("start_gtid <>", value, "startGtid");
             return (Criteria) this;
         }
 
-        public Criteria andCreateTimeGreaterThan(LocalDateTime value) {
-            addCriterion("create_time >", value, "createTime");
+        public Criteria andStartGtidGreaterThan(String value) {
+            addCriterion("start_gtid >", value, "startGtid");
             return (Criteria) this;
         }
 
-        public Criteria andCreateTimeGreaterThanOrEqualTo(LocalDateTime value) {
-            addCriterion("create_time >=", value, "createTime");
+        public Criteria andStartGtidGreaterThanOrEqualTo(String value) {
+            addCriterion("start_gtid >=", value, "startGtid");
             return (Criteria) this;
         }
 
-        public Criteria andCreateTimeLessThan(LocalDateTime value) {
-            addCriterion("create_time <", value, "createTime");
+        public Criteria andStartGtidLessThan(String value) {
+            addCriterion("start_gtid <", value, "startGtid");
             return (Criteria) this;
         }
 
-        public Criteria andCreateTimeLessThanOrEqualTo(LocalDateTime value) {
-            addCriterion("create_time <=", value, "createTime");
+        public Criteria andStartGtidLessThanOrEqualTo(String value) {
+            addCriterion("start_gtid <=", value, "startGtid");
             return (Criteria) this;
         }
 
-        public Criteria andCreateTimeIn(List<LocalDateTime> values) {
-            addCriterion("create_time in", values, "createTime");
+        public Criteria andStartGtidLike(String value) {
+            addCriterion("start_gtid like", value, "startGtid");
             return (Criteria) this;
         }
 
-        public Criteria andCreateTimeNotIn(List<LocalDateTime> values) {
-            addCriterion("create_time not in", values, "createTime");
+        public Criteria andStartGtidNotLike(String value) {
+            addCriterion("start_gtid not like", value, "startGtid");
             return (Criteria) this;
         }
 
-        public Criteria andCreateTimeBetween(LocalDateTime value1, LocalDateTime value2) {
-            addCriterion("create_time between", value1, value2, "createTime");
+        public Criteria andStartGtidIn(List<String> values) {
+            addCriterion("start_gtid in", values, "startGtid");
             return (Criteria) this;
         }
 
-        public Criteria andCreateTimeNotBetween(LocalDateTime value1, LocalDateTime value2) {
-            addCriterion("create_time not between", value1, value2, "createTime");
+        public Criteria andStartGtidNotIn(List<String> values) {
+            addCriterion("start_gtid not in", values, "startGtid");
             return (Criteria) this;
         }
 
-        public Criteria andModifyTimeIsNull() {
-            addCriterion("modify_time is null");
+        public Criteria andStartGtidBetween(String value1, String value2) {
+            addCriterion("start_gtid between", value1, value2, "startGtid");
             return (Criteria) this;
         }
 
-        public Criteria andModifyTimeIsNotNull() {
-            addCriterion("modify_time is not null");
+        public Criteria andStartGtidNotBetween(String value1, String value2) {
+            addCriterion("start_gtid not between", value1, value2, "startGtid");
             return (Criteria) this;
         }
 
-        public Criteria andModifyTimeEqualTo(LocalDateTime value) {
-            addCriterion("modify_time =", value, "modifyTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andModifyTimeNotEqualTo(LocalDateTime value) {
-            addCriterion("modify_time <>", value, "modifyTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andModifyTimeGreaterThan(LocalDateTime value) {
-            addCriterion("modify_time >", value, "modifyTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andModifyTimeGreaterThanOrEqualTo(LocalDateTime value) {
-            addCriterion("modify_time >=", value, "modifyTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andModifyTimeLessThan(LocalDateTime value) {
-            addCriterion("modify_time <", value, "modifyTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andModifyTimeLessThanOrEqualTo(LocalDateTime value) {
-            addCriterion("modify_time <=", value, "modifyTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andModifyTimeIn(List<LocalDateTime> values) {
-            addCriterion("modify_time in", values, "modifyTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andModifyTimeNotIn(List<LocalDateTime> values) {
-            addCriterion("modify_time not in", values, "modifyTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andModifyTimeBetween(LocalDateTime value1, LocalDateTime value2) {
-            addCriterion("modify_time between", value1, value2, "modifyTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andModifyTimeNotBetween(LocalDateTime value1, LocalDateTime value2) {
-            addCriterion("modify_time not between", value1, value2, "modifyTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andNameLikeInsensitive(String value) {
-            addCriterion("upper(`name`) like", value.toUpperCase(), "name");
+        public Criteria andSyncRuleTypeLikeInsensitive(String value) {
+            addCriterion("upper(sync_rule_type) like", value.toUpperCase(), "syncRuleType");
             return (Criteria) this;
         }
 
@@ -507,6 +516,11 @@ public class SourceDataMediaBeanDal {
 
         public Criteria andTableLikeInsensitive(String value) {
             addCriterion("upper(`table`) like", value.toUpperCase(), "table");
+            return (Criteria) this;
+        }
+
+        public Criteria andStartGtidLikeInsensitive(String value) {
+            addCriterion("upper(start_gtid) like", value.toUpperCase(), "startGtid");
             return (Criteria) this;
         }
     }

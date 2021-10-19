@@ -6,11 +6,11 @@ import java.io.Serializable;
 public class PairBean extends BaseModel implements Serializable {
     private Integer id;
 
-    private Integer pipelineId;
+    private Long pipelineId;
 
-    private Integer sourceDatamediaId;
+    private Long sourceDatamediaId;
 
-    private Integer targetDatamediaId;
+    private Long targetDatamediaId;
 
     private static final long serialVersionUID = 1L;
 
@@ -22,27 +22,27 @@ public class PairBean extends BaseModel implements Serializable {
         this.id = id;
     }
 
-    public Integer getPipelineId() {
+    public Long getPipelineId() {
         return pipelineId;
     }
 
-    public void setPipelineId(Integer pipelineId) {
+    public void setPipelineId(Long pipelineId) {
         this.pipelineId = pipelineId;
     }
 
-    public Integer getSourceDatamediaId() {
+    public Long getSourceDatamediaId() {
         return sourceDatamediaId;
     }
 
-    public void setSourceDatamediaId(Integer sourceDatamediaId) {
+    public void setSourceDatamediaId(Long sourceDatamediaId) {
         this.sourceDatamediaId = sourceDatamediaId;
     }
 
-    public Integer getTargetDatamediaId() {
+    public Long getTargetDatamediaId() {
         return targetDatamediaId;
     }
 
-    public void setTargetDatamediaId(Integer targetDatamediaId) {
+    public void setTargetDatamediaId(Long targetDatamediaId) {
         this.targetDatamediaId = targetDatamediaId;
     }
 

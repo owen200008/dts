@@ -1,34 +1,26 @@
 package com.utopia.data.transfer.admin.service.impl;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.utopia.data.transfer.admin.contants.CommonUtil;
-import com.utopia.data.transfer.admin.contants.ErrorCode;
 import com.utopia.data.transfer.admin.dao.entity.EntityBean;
 import com.utopia.data.transfer.admin.dao.entity.EntityBeanDal;
 import com.utopia.data.transfer.admin.dao.mapper.EntityBeanMapper;
-import com.utopia.data.transfer.admin.exception.AdminException;
 import com.utopia.data.transfer.admin.service.EntityService;
 import com.utopia.data.transfer.admin.vo.EntityAddVo;
 import com.utopia.data.transfer.admin.vo.PageRes;
 import com.utopia.data.transfer.admin.vo.QueryEntityVo;
-import com.utopia.data.transfer.admin.vo.res.EntityRes;
+import com.utopia.exception.UtopiaRunTimeException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
-import java.rmi.ServerException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * describe:
@@ -45,7 +37,7 @@ public class EntityServiceImpl implements EntityService {
     EntityBeanMapper entityBeanMapper;
 
     @Override
-    public Integer addEntity(EntityAddVo entityAddVo) {
+    public Long addEntity(EntityAddVo entityAddVo) {
         try {
             EntityBean entityBean = CommonUtil.snakeObjectToUnderline(entityAddVo, EntityBean.class);
             entityBean.setCreateTime(LocalDateTime.now());
@@ -54,12 +46,12 @@ public class EntityServiceImpl implements EntityService {
             return entityBean.getId();
         } catch (IOException e) {
             log.error("parase object to new object fail");
-            throw new AdminException(ErrorCode.PARSE_OBJECT_FAIL);
+            throw new UtopiaRunTimeException(ErrorCode.PARSE_OBJECT_FAIL);
         }
     }
 
     @Override
-    public void deleteEntity(Integer id) {
+    public void deleteEntity(Long id) {
         EntityBeanDal entityBeanDal = new EntityBeanDal();
         EntityBeanDal.Criteria criteria = entityBeanDal.createCriteria();
         criteria.andIdEqualTo(id);
@@ -67,7 +59,7 @@ public class EntityServiceImpl implements EntityService {
     }
 
     @Override
-    public EntityRes getEntityById(Integer id) {
+    public EntityRes getEntityById(Long id) {
         EntityBeanDal entityBeanDal = new EntityBeanDal();
         EntityBeanDal.Criteria criteria = entityBeanDal.createCriteria();
         criteria.andIdEqualTo(id);
@@ -112,8 +104,10 @@ public class EntityServiceImpl implements EntityService {
         return pageRes;
     }
 
-
-
+    @Override
+    public List<EntityBean> getAll() {
+        return entityBeanMapper.selectByExample(new EntityBeanDal());
+    }
 
 
 }

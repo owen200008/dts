@@ -1,8 +1,8 @@
 package com.utopia.data.transfer.web.archetype.config.filter.dubbo;
 
-import com.utopia.data.transfer.core.archetype.base.BaseErrorCode;
+import com.utopia.data.transfer.model.archetype.BaseErrorCode;
 import com.utopia.model.rsp.UtopiaResponseModel;
-import com.utopia.model.rsp.UtopiaResponseModel;
+
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import javax.validation.ConstraintViolation;
