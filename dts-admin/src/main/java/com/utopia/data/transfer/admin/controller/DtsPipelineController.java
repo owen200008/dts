@@ -5,10 +5,9 @@ import com.utopia.data.transfer.admin.contants.PathConstants;
 import com.utopia.data.transfer.admin.dao.entity.PipelineBean;
 import com.utopia.data.transfer.admin.dao.entity.SyncRuleBean;
 import com.utopia.data.transfer.admin.service.PipelineService;
+import com.utopia.data.transfer.admin.vo.PageRes;
 import com.utopia.data.transfer.admin.vo.ResponseModel;
-import com.utopia.data.transfer.admin.vo.req.PipelineAddVo;
-import com.utopia.data.transfer.admin.vo.req.PipelinePairAddVo;
-import com.utopia.data.transfer.admin.vo.req.PipelineRegionAddVo;
+import com.utopia.data.transfer.admin.vo.req.*;
 import com.utopia.data.transfer.model.archetype.ErrorCode;
 import com.utopia.model.rsp.UtopiaErrorCode;
 import com.utopia.model.rsp.UtopiaResponseModel;
@@ -36,11 +35,7 @@ public class DtsPipelineController {
     @Resource
     PipelineService pipelineService;
 
-    @PostMapping("/pipeline/add")
-    public UtopiaResponseModel pipelineAdd(@Valid PipelineAddVo pipelineAddVo){
-        pipelineService.pipelineAdd(pipelineAddVo);
-        return UtopiaResponseModel.success();
-    }
+
 
 
     @PostMapping("/pipeline/pair/add")
@@ -65,24 +60,21 @@ public class DtsPipelineController {
     }
 
 
+    @PostMapping("/pipeline/add")
+    public UtopiaResponseModel pipelineAdd(@Valid PipelineAddVo pipelineAddVo){
+        pipelineService.pipelineAdd(pipelineAddVo);
+        return UtopiaResponseModel.success();
+    }
     @PostMapping("/pipeline/list")
-    public UtopiaResponseModel<List<JSONObject>> pipelineList(@RequestParam(value = "taskId",required = true) Long id){
+    public UtopiaResponseModel<PageRes<List<PipelineBean>>> pipelineList(QueryPipelineVo queryPipelineVo){
+        PageRes<List<PipelineBean>> page = pipelineService.pipelineList(queryPipelineVo);
+        return UtopiaResponseModel.success(page);
+    }
+
+    @PostMapping("/pipeline/list/taskId")
+    public UtopiaResponseModel< List<PipelineBean>> pipelineListBytaskId(@RequestParam(value = "taskId",required = true) Long id){
         List<PipelineBean> pipelineBeans = pipelineService.pipelineParamsList(id);
-        List<JSONObject> jsonObjectList = new ArrayList<>();
-        pipelineBeans.stream().forEach(pipe ->{
-            Long pipeId = pipe.getId();
-            String name = pipe.getName();
-            String pipelineParams = pipe.getPipelineParams();
-
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("id",pipeId);
-            jsonObject.put("name",name);
-            jsonObject.put("pipelineParams",pipelineParams);
-
-            jsonObjectList.add(jsonObject);
-        });
-
-        return UtopiaResponseModel.create(UtopiaErrorCode.CODE_SUCCESS.getCode(), PathConstants.SUC_MSG,jsonObjectList);
+        return UtopiaResponseModel.create(UtopiaErrorCode.CODE_SUCCESS.getCode(), PathConstants.SUC_MSG,pipelineBeans);
     }
 
     @PostMapping("/pipeline/get")

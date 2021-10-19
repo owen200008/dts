@@ -2,6 +2,8 @@ package com.utopia.data.transfer.admin.service;
 
 
 import com.utopia.data.transfer.admin.dao.entity.PairBean;
+import com.utopia.data.transfer.admin.vo.PageRes;
+import com.utopia.data.transfer.admin.vo.req.QueryPairVo;
 
 import java.util.List;
 
@@ -41,4 +43,8 @@ public interface PairService {
      * @return
      */
     List<PairBean> getByTargetId(Long targetMediaId);
+
+    PageRes<List<PairBean>> pairList(QueryPairVo queryPairVo);
+
+    PairBean pairGet(Long id);
 }

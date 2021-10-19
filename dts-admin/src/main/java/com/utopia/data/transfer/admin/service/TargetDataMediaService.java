@@ -18,4 +18,6 @@ public interface TargetDataMediaService {
     void targetDataMediaDelete(Long id);
 
     PageRes<List<TargetDataMediaBean>> targetDataMediaList(QueryDataMediaVo queryDataMediaVo);
+
+    void targetDataMediaAdd(TargetDataMediaBean targetDataMediaBean);
 }

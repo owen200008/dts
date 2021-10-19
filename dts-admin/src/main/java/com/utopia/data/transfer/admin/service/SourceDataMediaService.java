@@ -19,4 +19,6 @@ public interface SourceDataMediaService {
     void sourceDataMediaDelete(Long id);
 
     PageRes<List<SourceDataMediaBean>> sourceDataMediaList(QueryDataMediaVo queryDataMediaVo);
+
+    void sourceDataMediaAdd(SourceDataMediaBean sourceDataMediaBean);
 }

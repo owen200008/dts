@@ -34,6 +34,12 @@ public class DtsSourceDataMediaController {
     SourceDataMediaService sourceDataMediaService;
 
 
+    @PostMapping("/sourceData/add")
+    public UtopiaResponseModel<Void> sourceDataMediaAdd(SourceDataMediaBean sourceDataMediaBean){
+        sourceDataMediaService.sourceDataMediaAdd(sourceDataMediaBean);
+        return UtopiaResponseModel.success();
+    }
+
     @PostMapping("/sourceData/get")
     public UtopiaResponseModel<SourceDataMediaBean> sourceDataMediaGet(@RequestParam(value = "sourceId")Long id){
         SourceDataMediaBean sourceDataMediaBean = sourceDataMediaService.sourceDataMediaGet(id);

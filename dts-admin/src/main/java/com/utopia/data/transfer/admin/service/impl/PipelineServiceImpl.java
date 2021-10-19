@@ -1,5 +1,7 @@
 package com.utopia.data.transfer.admin.service.impl;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.utopia.data.transfer.admin.contants.CommonUtil;
 import com.utopia.data.transfer.admin.dao.entity.*;
 import com.utopia.data.transfer.admin.dao.mapper.PipelineBeanMapper;
@@ -12,9 +14,11 @@ import com.utopia.data.transfer.admin.dao.mapper.base.RegionBeanRepository;
 import com.utopia.data.transfer.admin.service.PairService;
 import com.utopia.data.transfer.admin.service.PipelineService;
 import com.utopia.data.transfer.admin.service.RegionService;
+import com.utopia.data.transfer.admin.vo.PageRes;
 import com.utopia.data.transfer.admin.vo.req.PipelineAddVo;
 import com.utopia.data.transfer.admin.vo.req.PipelinePairAddVo;
 import com.utopia.data.transfer.admin.vo.req.PipelineRegionAddVo;
+import com.utopia.data.transfer.admin.vo.req.QueryPipelineVo;
 import com.utopia.data.transfer.model.archetype.ErrorCode;
 import com.utopia.data.transfer.model.code.bean.StageType;
 import com.utopia.exception.UtopiaRunTimeException;
@@ -173,6 +177,18 @@ public class PipelineServiceImpl implements PipelineService {
     public Long pipelineSyncRuleAdd(SyncRuleBean syncRule) {
          syncRuleMapper.insert(syncRule);
          return syncRule.getId();
+    }
+
+    @Override
+    public PageRes<List<PipelineBean>> pipelineList(QueryPipelineVo queryPipelineVo) {
+        Page<Object> page = PageHelper.startPage(queryPipelineVo.getPageNum(), queryPipelineVo.getPageSize(), true);
+        PipelineBeanDal pipelineBeanDal = new PipelineBeanDal();
+        List<PipelineBean> pipelineBeans = pipelineBeanMapper.selectByExample(pipelineBeanDal);
+        if (CollectionUtils.isEmpty(pipelineBeans)){
+            return null;
+        }
+        PageRes<List<PipelineBean>> pageRes = PageRes.getPage(page.getTotal(), page.getPageSize(), pipelineBeans);
+        return pageRes;
     }
 
     @Override

@@ -58,4 +58,9 @@ public class SourceDataMediaServiceImpl  implements SourceDataMediaService {
         PageRes<List<SourceDataMediaBean>> pageRes = PageRes.getPage(page.getTotal(), page.getPageSize(), sourceDataMediaBeans);
         return pageRes;
     }
+
+    @Override
+    public void sourceDataMediaAdd(SourceDataMediaBean sourceDataMediaBean) {
+        sourceDataMediaBeanMapper.insert(sourceDataMediaBean);
+    }
 }

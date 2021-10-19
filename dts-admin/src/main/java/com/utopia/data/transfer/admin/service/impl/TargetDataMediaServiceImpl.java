@@ -62,4 +62,9 @@ public class TargetDataMediaServiceImpl implements TargetDataMediaService {
         PageRes<List<TargetDataMediaBean>> pageRes = PageRes.getPage(page.getTotal(), page.getPageSize(), targetDataMediaBeans);
         return pageRes;
     }
+
+    @Override
+    public void targetDataMediaAdd(TargetDataMediaBean targetDataMediaBean) {
+        targetDataMediaBeanMapper.insert(targetDataMediaBean);
+    }
 }

@@ -1,6 +1,7 @@
 package com.utopia.data.transfer.admin.controller;
 
 import com.utopia.data.transfer.admin.contants.PathConstants;
+import com.utopia.data.transfer.admin.dao.entity.SourceDataMediaBean;
 import com.utopia.data.transfer.admin.dao.entity.TargetDataMediaBean;
 import com.utopia.data.transfer.admin.service.TargetDataMediaService;
 import com.utopia.data.transfer.admin.vo.PageRes;
@@ -32,7 +33,7 @@ public class DtsTargetDataMediaController {
     @Autowired
     TargetDataMediaService targetDataMediaService;
 
-
+    
     @PostMapping("/targetData/get")
     public UtopiaResponseModel<TargetDataMediaBean> targetDataMediaGet(@RequestParam(value = "targetId")Long id){
         TargetDataMediaBean targetDataMediaBean = targetDataMediaService.targetDataMediaGet(id);
@@ -49,5 +50,11 @@ public class DtsTargetDataMediaController {
     public UtopiaResponseModel<PageRes<List<TargetDataMediaBean>>> targetDataMediaList(QueryDataMediaVo queryDataMediaVo){
         PageRes<List<TargetDataMediaBean>> page = targetDataMediaService.targetDataMediaList(queryDataMediaVo);
         return  UtopiaResponseModel.create(UtopiaErrorCode.CODE_SUCCESS.getCode(), PathConstants.SUC_MSG,page);
+    }
+
+    @PostMapping("/targetData/add")
+    public UtopiaResponseModel<Void> targetDataMediaAdd(TargetDataMediaBean targetDataMediaBean){
+        targetDataMediaService.targetDataMediaAdd(targetDataMediaBean);
+        return UtopiaResponseModel.success();
     }
 }
