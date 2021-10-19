@@ -9,17 +9,6 @@
   </resultMap>
 
 
-  <resultMap id="excludeResultMap" type="com.utopia.data.transfer.admin.dao.entity.PairDetail">
-    <result column="sourceName" jdbcType="VARCHAR" property="sourceName"></result>
-    <result column="sourceDatamediaId" jdbcType="INTEGER" property="sourceDatamediaId"></result>
-    <result column="sourceNamespace" jdbcType="VARCHAR" property="sourceNamespace"></result>
-    <result column="sourceTable" jdbcType="VARCHAR" property="sourceTable"></result>
-    <result column="targetName" jdbcType="VARCHAR" property="targetName"></result>
-    <result column="targetDatamediaId" jdbcType="INTEGER" property="targetDatamediaId"></result>
-    <result column="targetNamespace" jdbcType="VARCHAR" property="targetNamespace"></result>
-    <result column="targetTable" jdbcType="VARCHAR" property="targetTable"></result>
-    <result column="rule" property="rule" jdbcType="VARCHAR"></result>
-  </resultMap>
   <sql id="Example_Where_Clause">
     <where>
       <foreach collection="oredCriteria" item="criteria" separator="or">
@@ -84,36 +73,5 @@
 
 
 
-  <select id="selectByPipelineId" parameterType="java.lang.Integer" resultMap="excludeResultMap">
-    SELECT
-	*
-    FROM
-	(
-	SELECT
-		so.id AS sourceDatamediaId,
-		so.namespace AS sourceNamespace,
-		so.TABLE AS sourceTable,
-		so.name as sourceName
-	FROM
-		u_pipeline pi
-		INNER JOIN u_pair pa ON pi.id = pa.pipeline_id
-		INNER JOIN u_source_datamedia so ON pa.source_datamedia_id = so.id
-	WHERE
-		pi.id = #{id}
-	) AS source,
-	(
-	SELECT
-		ta.id AS targetDatamediaId,
-		ta.namespace AS targetNamespace,
-		ta.TABLE AS targetTable,
-		ta.name as targetName,
-		ta.rule AS rule
-	FROM
-		u_pipeline pi
-		INNER JOIN u_pair pa ON pi.id = pa.pipeline_id
-		INNER JOIN u_target_datamedia ta ON pa.target_datamedia_id = ta.id
-	WHERE
-		pi.id = #{id}
-	) AS target
-  </select>
+
 </mapper>

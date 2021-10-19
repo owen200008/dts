@@ -1,25 +1,34 @@
 package com.utopia.data.transfer.admin.service.impl;
 
+import com.utopia.data.transfer.admin.contants.CommonUtil;
 import com.utopia.data.transfer.admin.dao.entity.*;
 import com.utopia.data.transfer.admin.dao.mapper.PipelineBeanMapper;
 import com.utopia.data.transfer.admin.dao.mapper.SourceDataMediaBeanMapper;
+import com.utopia.data.transfer.admin.dao.mapper.SyncRuleBeanMapper;
 import com.utopia.data.transfer.admin.dao.mapper.TargetDataMediaBeanMapper;
 import com.utopia.data.transfer.admin.dao.mapper.base.PairBeanRepository;
+import com.utopia.data.transfer.admin.dao.mapper.base.PipelineBeanRepository;
 import com.utopia.data.transfer.admin.dao.mapper.base.RegionBeanRepository;
-import com.utopia.data.transfer.admin.service.EntityService;
 import com.utopia.data.transfer.admin.service.PairService;
 import com.utopia.data.transfer.admin.service.PipelineService;
 import com.utopia.data.transfer.admin.service.RegionService;
-import com.utopia.data.transfer.admin.service.SyncRuleService;
+import com.utopia.data.transfer.admin.vo.req.PipelineAddVo;
+import com.utopia.data.transfer.admin.vo.req.PipelinePairAddVo;
+import com.utopia.data.transfer.admin.vo.req.PipelineRegionAddVo;
 import com.utopia.data.transfer.model.archetype.ErrorCode;
+import com.utopia.data.transfer.model.code.bean.StageType;
 import com.utopia.exception.UtopiaRunTimeException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * describe:
@@ -38,13 +47,10 @@ public class PipelineServiceImpl implements PipelineService {
     RegionService regionService;
     @Autowired
     PairService pairSevice;
-    @Autowired
-    SyncRuleService syncRuleService;
-    @Autowired
-    EntityService entityService;
+
 
     @Autowired
-    PipelineBeanMapper pipelineBeanRepository;
+    PipelineBeanRepository pipelineBeanRepository;
 
     @Autowired
     PairBeanRepository pairBeanRepository;
@@ -58,24 +64,22 @@ public class PipelineServiceImpl implements PipelineService {
     @Autowired
     TargetDataMediaBeanMapper targetDataMediaBeanMapper;
 
-    @Override
-    public void pipelineAdd(PipelineBean pipelineBean) {
-        {
-            Long sourceEntityId = pipelineBean.getSourceEntityId();
-            EntityBean byId = entityService.getById(sourceEntityId);
-            if(Objects.isNull(byId)){
-                throw new UtopiaRunTimeException(ErrorCode.CHILD_NEED_DELETE_FIRST);
-            }
-        }
-        {
-            Long targetEntityId = pipelineBean.getTargetEntityId();
-            EntityBean byId = entityService.getById(targetEntityId);
-            if(Objects.isNull(byId)){
-                throw new UtopiaRunTimeException(ErrorCode.CHILD_NEED_DELETE_FIRST);
-            }
-        }
+    @Autowired
+    SyncRuleBeanMapper syncRuleMapper;
 
+    @Override
+    public Long pipelineAdd(PipelineAddVo pipelineAddVo) {
+        PipelineBean pipelineBean = null;
+        try {
+            pipelineBean = CommonUtil.snakeObjectToUnderline(pipelineAddVo, PipelineBean.class);
+        } catch (IOException e) {
+            log.error("parase object to new object fail");
+            throw new UtopiaRunTimeException(ErrorCode.JSON_PARSE_ERROR);
+        }
+        pipelineBean.setCreateTime(LocalDateTime.now());
+        pipelineBean.setModifyTime(LocalDateTime.now());
         pipelineBeanMapper.insert(pipelineBean);
+        return pipelineBean.getId();
     }
 
     @Override
@@ -93,12 +97,10 @@ public class PipelineServiceImpl implements PipelineService {
                 throw new UtopiaRunTimeException(ErrorCode.CHILD_NEED_DELETE_FIRST);
             }
         }
-        {
-            List<SyncRuleBean> byPipelineId = syncRuleService.getByPipelineId(pipelineId);
-            if(!CollectionUtils.isEmpty(byPipelineId)){
-                throw new UtopiaRunTimeException(ErrorCode.CHILD_NEED_DELETE_FIRST);
-            }
-        }
+
+
+
+
         pipelineBeanMapper.deleteByPrimaryKey(pipelineId);
     }
 
@@ -110,7 +112,72 @@ public class PipelineServiceImpl implements PipelineService {
     }
 
     @Override
+    public void pipelinePairAdd(PipelinePairAddVo pipelinePairAddVo) {
+        // 先添加source和target
+        SourceDataMediaBean sourceDataMediaBean = new SourceDataMediaBean();
+        sourceDataMediaBean.setName(pipelinePairAddVo.getSourceName());
+        sourceDataMediaBean.setNamespace(pipelinePairAddVo.getSourceNamespace());
+        sourceDataMediaBean.setTable(pipelinePairAddVo.getSourceTable());
+        sourceDataMediaBean.setCreateTime(LocalDateTime.now());
+        sourceDataMediaBean.setModifyTime(LocalDateTime.now());
+        sourceDataMediaBeanMapper.insert(sourceDataMediaBean);
+
+        TargetDataMediaBean targetDataMediaBean = new TargetDataMediaBean();
+        targetDataMediaBean.setName(pipelinePairAddVo.getTargetName());
+        targetDataMediaBean.setNamespace(pipelinePairAddVo.getTargetNamespace());
+        targetDataMediaBean.setTable(pipelinePairAddVo.getTargetTable());
+        targetDataMediaBean.setCreateTime(LocalDateTime.now());
+        targetDataMediaBean.setModifyTime(LocalDateTime.now());
+
+        targetDataMediaBeanMapper.insert(targetDataMediaBean);
+
+        // 将对应id插入中间表中
+        PairBean pairBean = new PairBean();
+        pairBean.setPipelineId(pipelinePairAddVo.getPipelineId());
+        pairBean.setSourceDatamediaId(sourceDataMediaBean.getId());
+        pairBean.setTargetDatamediaId(targetDataMediaBean.getId());
+        pairBeanRepository.insert(pairBean);
+    }
+
+    @Override
+    public void pipelineRegionAdd(PipelineRegionAddVo pipelineRegionAddVo) {
+
+        RegionBean sourceRegionBean = new RegionBean();
+        sourceRegionBean.setMode(StageType.SELECT.toString());
+        sourceRegionBean.setPipelineId(pipelineRegionAddVo.getPipelineId().longValue());
+        sourceRegionBean.setRegion(pipelineRegionAddVo.getSourceRegion());
+
+        regionBeanRepository.insert(sourceRegionBean);
+
+        RegionBean targetRegionBean = new RegionBean();
+        targetRegionBean.setMode(StageType.LOAD.toString());
+        targetRegionBean.setPipelineId(pipelineRegionAddVo.getPipelineId().longValue());
+        targetRegionBean.setRegion(pipelineRegionAddVo.getTargetRegion());
+
+        regionBeanRepository.insert(targetRegionBean);
+    }
+
+
+    @Override
+    public PipelineBean pipelineGet(Long id) {
+        PipelineBeanDal pipelineBeanDal = new PipelineBeanDal();
+        pipelineBeanDal.createCriteria().andIdEqualTo(id);
+        List<PipelineBean> pipelineBeans = pipelineBeanMapper.selectByExample(pipelineBeanDal);
+        if (CollectionUtils.isEmpty(pipelineBeans)){
+            return null;
+        }
+        return pipelineBeans.get(0);
+    }
+
+    @Override
+    public Long pipelineSyncRuleAdd(SyncRuleBean syncRule) {
+         syncRuleMapper.insert(syncRule);
+         return syncRule.getId();
+    }
+
+    @Override
     public List<PipelineBean> getAll() {
         return pipelineBeanRepository.selectByExample(new PipelineBeanDal());
     }
+
 }
