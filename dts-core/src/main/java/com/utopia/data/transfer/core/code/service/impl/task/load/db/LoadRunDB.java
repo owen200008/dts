@@ -73,6 +73,16 @@ public class LoadRunDB implements LoadRun {
 
         @Override
         public UtopiaErrorCodeClass load(TransferData transferData) {
+            //首先判断如果是同源的话
+            switch(sourceEntityDesc.getType()){
+                case MYSQL:
+                    return loadDb(transferData);
+
+            }
+            return ErrorCode.LOAD_SOURCE_DATA_NO_SUPPORT;
+        }
+
+        protected UtopiaErrorCodeClass loadDb(TransferData transferData){
             List<TransferEventDataTransaction> transferEventData = transferData.getTransferEventData();
 
             //首先基于数据分组

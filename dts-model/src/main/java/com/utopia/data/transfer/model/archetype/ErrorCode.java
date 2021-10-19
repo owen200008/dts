@@ -34,6 +34,7 @@ public class ErrorCode extends BaseErrorCode {
     public final static UtopiaErrorCodeClass SOURCE_DATAMEDIA_NO_FIND = new UtopiaErrorCodeClass(24203, "");
     public final static UtopiaErrorCodeClass TARGET_DATAMEDIA_NO_FIND = new UtopiaErrorCodeClass(24204, "");
 
+    public final static UtopiaErrorCodeClass LOAD_SOURCE_DATA_NO_SUPPORT = new UtopiaErrorCodeClass(24377, "");
     public final static UtopiaErrorCodeClass LOAD_RUN_CLOSED = new UtopiaErrorCodeClass(24378, "");
     public final static UtopiaErrorCodeClass LOAD_RUN_EXCEPTION = new UtopiaErrorCodeClass(24379, "");
 
@@ -47,7 +48,7 @@ public class ErrorCode extends BaseErrorCode {
     public final static  UtopiaErrorCodeClass PARSE_OBJECT_FAIL = new UtopiaErrorCodeClass(24400, "");
 
     public final static UtopiaErrorCodeClass SELECT_RULE_NO_SELECT_DATA = new UtopiaErrorCodeClass(24494, "");
-    
+
     public final static UtopiaErrorCodeClass SELECT_DISPATH_EXCEPTION = new UtopiaErrorCodeClass(24495, "");
     public final static UtopiaErrorCodeClass SELECT_DISPATH_FACADE_NOFIND = new UtopiaErrorCodeClass(24496, "");
     public final static UtopiaErrorCodeClass SELECT_RULE_INIT_FAIL = new UtopiaErrorCodeClass(24497, "");
