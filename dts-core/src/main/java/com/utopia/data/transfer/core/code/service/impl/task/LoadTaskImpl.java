@@ -4,7 +4,6 @@ import com.utopia.data.transfer.model.archetype.ServiceException;
 import com.utopia.data.transfer.model.archetype.ErrorCode;
 import com.utopia.data.transfer.core.code.service.ArbitrateEventService;
 import com.utopia.data.transfer.core.code.service.ConfigService;
-import com.utopia.data.transfer.core.code.service.MessageParser;
 import com.utopia.data.transfer.core.code.service.impl.TaskImpl;
 import com.utopia.data.transfer.core.code.service.impl.task.load.LoadRun;
 import com.utopia.data.transfer.core.code.service.impl.task.load.LoadTransferFacade;
@@ -53,10 +52,10 @@ public class LoadTaskImpl extends TaskImpl implements LoadTransferFacade {
     private volatile boolean            isStart             = false;
     private volatile long               lastUpdateTime      = System.currentTimeMillis();
 
-    public LoadTaskImpl(ConfigService configService, MessageParser messageParser, ArbitrateEventService arbitrateEventService,
+    public LoadTaskImpl(ConfigService configService, ArbitrateEventService arbitrateEventService,
                         ApplicationContext applicationContext,
                         ApplicationEventPublisher applicationEventPublisher) {
-        super(configService, messageParser, arbitrateEventService);
+        super(configService, arbitrateEventService);
         this.applicationContext = applicationContext;
         this.applicationEventPublisher = applicationEventPublisher;
     }

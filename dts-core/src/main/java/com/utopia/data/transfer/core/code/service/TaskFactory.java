@@ -1,9 +1,9 @@
 package com.utopia.data.transfer.core.code.service;
 
-import com.utopia.data.transfer.core.code.canal.CanalZKConfig;
 import com.utopia.data.transfer.core.code.service.impl.task.LoadTaskImpl;
 import com.utopia.data.transfer.core.code.service.impl.task.SelectTaskImpl;
 import com.utopia.data.transfer.model.code.bean.StageType;
+import com.utopia.register.center.api.ZookeeperConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEventPublisher;
@@ -21,11 +21,7 @@ public class TaskFactory {
     @Autowired
     private ConfigService configService;
     @Autowired
-    private MessageParser messageParser;
-    @Autowired
     private ArbitrateEventService arbitrateEventService;
-    @Autowired
-    private CanalZKConfig canalZKConfig;
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -38,9 +34,9 @@ public class TaskFactory {
     public Task createTaskByType(StageType stageType){
         switch(stageType){
             case SELECT:
-                return new SelectTaskImpl(configService, messageParser, arbitrateEventService, canalZKConfig);
+                return new SelectTaskImpl(configService, arbitrateEventService);
             case LOAD:
-                return new LoadTaskImpl(configService, messageParser, arbitrateEventService, applicationContext, applicationEventPublisher);
+                return new LoadTaskImpl(configService, arbitrateEventService, applicationContext, applicationEventPublisher);
         }
         return null;
     }

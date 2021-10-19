@@ -22,7 +22,6 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 public abstract class TaskImpl implements Runnable, Task {
 
     protected final ConfigService configService;
-    protected final MessageParser messageParser;
     protected final ArbitrateEventService arbitrateEventService;
 
     protected Thread                    thread = new Thread(this);
@@ -37,9 +36,8 @@ public abstract class TaskImpl implements Runnable, Task {
 
     protected volatile boolean          running = true;
 
-    public TaskImpl(ConfigService configService, MessageParser messageParser, ArbitrateEventService arbitrateEventService){
+    public TaskImpl(ConfigService configService, ArbitrateEventService arbitrateEventService){
         this.configService = configService;
-        this.messageParser = messageParser;
         this.arbitrateEventService = arbitrateEventService;
     }
 

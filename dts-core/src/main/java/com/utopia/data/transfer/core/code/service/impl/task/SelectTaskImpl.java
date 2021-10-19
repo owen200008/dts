@@ -1,16 +1,16 @@
 package com.utopia.data.transfer.core.code.service.impl.task;
 
 import com.alibaba.fastjson.JSON;
+import com.utopia.data.transfer.core.code.service.impl.task.select.SelectDataFactory;
+import com.utopia.data.transfer.core.code.service.impl.task.select.SelectDataRule;
 import com.utopia.data.transfer.model.archetype.ErrorCode;
-import com.utopia.data.transfer.core.code.canal.CanalEmbedSelector;
-import com.utopia.data.transfer.core.code.canal.CanalZKConfig;
 import com.utopia.data.transfer.core.code.model.EventDataTransaction;
 import com.utopia.data.transfer.core.code.model.Message;
 import com.utopia.data.transfer.core.code.service.ArbitrateEventService;
 import com.utopia.data.transfer.core.code.service.ConfigService;
-import com.utopia.data.transfer.core.code.service.MessageParser;
 import com.utopia.data.transfer.core.code.service.impl.TaskImpl;
 import com.utopia.data.transfer.core.code.service.impl.task.select.SelectDispatchRule;
+import com.utopia.data.transfer.model.archetype.ServiceException;
 import com.utopia.data.transfer.model.code.pipeline.Pipeline;
 import com.utopia.data.transfer.model.code.pipeline.SelectParamter;
 import com.utopia.exception.UtopiaRunTimeException;
@@ -19,6 +19,7 @@ import com.utopia.model.rsp.UtopiaResponseModel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -34,25 +35,22 @@ import java.util.concurrent.locks.LockSupport;
 @Slf4j
 public class SelectTaskImpl extends TaskImpl {
 
-    private final CanalZKConfig canalZKConfig;
-
     /**
      * 运行调度控制
      */
     private volatile boolean            isStart             = false;
     private volatile long               lastUpdateTime      = System.currentTimeMillis();
 
-    private CanalEmbedSelector canalSelector;
+    private SelectDataRule selectDataRule;
+
     private SelectDispatchRule selectDispatchRule;
 
     private SelectTaskPrometheus selectTaskPrometheus;
 
     protected Thread processThread;
 
-    public SelectTaskImpl(ConfigService configService, MessageParser messageParser, ArbitrateEventService arbitrateEventService,
-                          CanalZKConfig canalZKConfig) {
-        super(configService, messageParser, arbitrateEventService);
-        this.canalZKConfig = canalZKConfig;
+    public SelectTaskImpl(ConfigService configService, ArbitrateEventService arbitrateEventService) {
+        super(configService, arbitrateEventService);
     }
 
     @Override
@@ -128,8 +126,14 @@ public class SelectTaskImpl extends TaskImpl {
 
             // 启动selector
             // 获取对应的selector
-            canalSelector = new CanalEmbedSelector(pipelineId, configService, messageParser, this.sourceEntityDesc, canalZKConfig);
-            canalSelector.start();
+            SelectDataFactory extension = UtopiaExtensionLoader.getExtensionLoader(SelectDataFactory.class).getExtension(sourceEntityDesc.getType().name());
+            if(Objects.isNull(extension)){
+                log.error("create selectDataRule error");
+                throw new ServiceException(ErrorCode.SELECT_RULE_NO_SELECT_DATA);
+            }
+            this.selectDataRule = extension.createSelectDataRule(pipelineId);
+
+
 
             processThread = new Thread(() -> {
                 String currentName = Thread.currentThread().getName();
@@ -165,8 +169,8 @@ public class SelectTaskImpl extends TaskImpl {
                 processThread.interrupt();
             }
 
-            if (canalSelector != null && canalSelector.isStart()) {
-                canalSelector.stop();
+            if (selectDataRule != null && selectDataRule.isStart()) {
+                selectDataRule.stop();
             }
 
             try {
@@ -182,7 +186,7 @@ public class SelectTaskImpl extends TaskImpl {
         while (running) {
             try {
                 //获取数据
-                Optional<Message<EventDataTransaction>> selector = canalSelector.selector();
+                Optional<Message<EventDataTransaction>> selector = selectDataRule.selector();
                 if(!selector.isPresent()){
                     continue;
                 }
@@ -238,7 +242,7 @@ public class SelectTaskImpl extends TaskImpl {
                         }
                     }
                     //确认
-                    canalSelector.ack(message.getId());
+                    selectDataRule.ack(message.getId());
                     break;
                 }while(running);
             } catch (Throwable e) {
@@ -255,7 +259,7 @@ public class SelectTaskImpl extends TaskImpl {
 
     protected void sendRollbackTermin() {
         selectTaskPrometheus.getRollbackException().increment();
-        canalSelector.rollback();
+        selectDataRule.rollback();
         try {
             Thread.sleep(3000);
         } catch (InterruptedException e) {

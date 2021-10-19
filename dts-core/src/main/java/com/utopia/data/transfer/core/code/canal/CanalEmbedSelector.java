@@ -26,6 +26,7 @@ import com.utopia.data.transfer.core.code.model.Message;
 import com.utopia.data.transfer.core.code.service.ConfigService;
 import com.utopia.data.transfer.core.code.utils.MessageDumper;
 import com.utopia.data.transfer.core.code.service.MessageParser;
+import com.utopia.register.center.api.ZookeeperConfig;
 import com.utopia.utils.CollectionUtils;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -61,7 +63,7 @@ public class CanalEmbedSelector {
     private ConfigService           configService;
     private MessageParser           messageParser;
     private CanalDownStreamHandler  handler;
-    private CanalZKConfig           canalZKConfig;
+    private ZookeeperConfig zookeeperConfig;
 
     private CanalServerWithEmbedded canalServer = new CanalServerWithEmbedded();
     private ClientIdentity          clientIdentity;
@@ -72,11 +74,11 @@ public class CanalEmbedSelector {
      */
     private volatile boolean        running          = false;
 
-    public CanalEmbedSelector(Long pipelineId, ConfigService configService, MessageParser messageParser, EntityDesc source, CanalZKConfig canalZKConfig){
+    public CanalEmbedSelector(Long pipelineId, ConfigService configService, MessageParser messageParser, EntityDesc source, ZookeeperConfig canalZKConfig){
         this.configService = configService;
         this.pipeline = configService.getPipeline(pipelineId);
         this.messageParser = messageParser;
-        this.canalZKConfig = canalZKConfig;
+        this.zookeeperConfig = canalZKConfig;
         this.source = source;
     }
 
@@ -178,8 +180,8 @@ public class CanalEmbedSelector {
             slaveId = entityDesc.getSlaveId();
         }
         CanalParameter canalParameter = new CanalParameter();
-        canalParameter.setZkClusterId(canalZKConfig.getZkClusterId());
-        canalParameter.setZkClusters(canalZKConfig.getZkAddress());
+        canalParameter.setZkClusterId(1L);
+        canalParameter.setZkClusters(Arrays.asList(zookeeperConfig.getUrl().split(",")));
         //使用zk
         canalParameter.setMetaMode(CanalParameter.MetaMode.ZOOKEEPER);
 
@@ -207,8 +209,8 @@ public class CanalEmbedSelector {
         canalParameter.setGtidEnable(true);
 
         canal.setCanalParameter(canalParameter);
-        canal.setGmtCreate(Date.from(entityDesc.getCreateTime().atZone(ZoneId.of("GMT")).toInstant()));
-        canal.setGmtModified(Date.from(entityDesc.getModifyTime().atZone(ZoneId.of("GMT")).toInstant()));
+        canal.setGmtCreate(Objects.isNull(entityDesc.getCreateTime()) ? null : Date.from(entityDesc.getCreateTime().atZone(ZoneId.of("GMT")).toInstant()));
+        canal.setGmtModified(Objects.isNull(entityDesc.getModifyTime()) ? null : Date.from(entityDesc.getModifyTime().atZone(ZoneId.of("GMT")).toInstant()));
 
         return canal;
     }

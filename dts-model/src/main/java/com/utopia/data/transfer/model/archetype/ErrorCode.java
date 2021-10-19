@@ -45,6 +45,7 @@ public class ErrorCode extends BaseErrorCode {
     public final static UtopiaErrorCodeClass LOAD_DDL_DATA_ERROR = new UtopiaErrorCodeClass(24398, "");
     public final static UtopiaErrorCodeClass LOAD_GET_EXTENSION_FAIL = new UtopiaErrorCodeClass(24399, "");
 
+    public final static UtopiaErrorCodeClass SELECT_RULE_NO_SELECT_DATA = new UtopiaErrorCodeClass(24494, "");
     public final static UtopiaErrorCodeClass SELECT_DISPATH_EXCEPTION = new UtopiaErrorCodeClass(24495, "");
     public final static UtopiaErrorCodeClass SELECT_DISPATH_FACADE_NOFIND = new UtopiaErrorCodeClass(24496, "");
     public final static UtopiaErrorCodeClass SELECT_RULE_INIT_FAIL = new UtopiaErrorCodeClass(24497, "");
