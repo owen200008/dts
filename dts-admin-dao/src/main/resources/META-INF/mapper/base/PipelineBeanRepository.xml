@@ -14,14 +14,6 @@
         <result column="pipeline_params" jdbcType="LONGVARCHAR" property="pipelineParams"/>
     </resultMap>
 
-    <resultMap id="excludeResultMap" type="com.utopia.data.transfer.admin.dao.entity.PipeDetail">
-        <id column="id" jdbcType="INTEGER" property="id"></id>
-        <result column="name" jdbcType="VARCHAR" property="name"></result>
-        <result column="sourceEntityName" jdbcType="VARCHAR" property="sourceEntityName"></result>
-        <result column="sourceEntityId" jdbcType="INTEGER" property="sourceEntityId"></result>
-        <result column="targetEntityName" jdbcType="VARCHAR" property="targetEntityName"></result>
-        <result column="targetEntityId" jdbcType="INTEGER" property="targetEntityId"></result>
-    </resultMap>
     <sql id="Example_Where_Clause">
         <where>
             <foreach collection="oredCriteria" item="criteria" separator="or">
@@ -95,68 +87,5 @@
 
     </sql>
 
-    <select id="selectDetailById" parameterType="java.lang.Integer" resultMap="excludeResultMap">
 
-                   SELECT
-                    *
-                FROM
-                    (
-                    SELECT
-                        pi.id,
-                        pi.NAME,
-                        en.NAME AS sourceEntityName,
-                        en.id AS sourceEntityId
-                    FROM
-                        u_pipeline pi
-                        INNER JOIN u_entity en ON pi.source_entity_id = en.id
-                    WHERE
-                        pi.id = #{id}
-                    ) AS source,
-                    (
-                    SELECT
-                        en.NAME AS targetEntityName,
-                        en.id AS targetEntityId
-                    FROM
-                        u_pipeline pi
-                        INNER JOIN u_entity en ON pi.target_entity_id = en.id
-                    WHERE
-                        pi.id = #{id}
-                    ) AS target
-
-    </select>
-
-    <select id="selectDetailByTaskId" parameterType="int" resultMap="excludeResultMap">
-
-               SELECT
-            source.*,
-            target.targetEntityName,
-            target.targetEntityId
-        FROM
-            (
-            SELECT
-                pi.pipeline_params as pipelineParams,
-                pi.id,
-                pi.NAME,
-                en.NAME AS sourceEntityName,
-                en.id AS sourceEntityId
-            FROM
-                u_pipeline pi
-                INNER JOIN u_entity en ON pi.source_entity_id = en.id
-            WHERE
-                pi.task_id = #{id}
-            ) AS source
-            INNER JOIN (
-            SELECT
-                pi.id,
-                en.NAME AS targetEntityName,
-                en.id AS targetEntityId
-            FROM
-                u_pipeline pi
-                INNER JOIN u_entity en ON pi.target_entity_id = en.id
-            WHERE
-            pi.task_id = #{id}
-            ) AS target ON source.id = target.id
-
-
-    </select>
 </mapper>

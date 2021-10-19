@@ -10,6 +10,7 @@ import com.utopia.data.transfer.admin.service.EntityService;
 import com.utopia.data.transfer.admin.vo.EntityAddVo;
 import com.utopia.data.transfer.admin.vo.PageRes;
 import com.utopia.data.transfer.admin.vo.QueryEntityVo;
+import com.utopia.data.transfer.model.archetype.ErrorCode;
 import com.utopia.exception.UtopiaRunTimeException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +60,7 @@ public class EntityServiceImpl implements EntityService {
     }
 
     @Override
-    public EntityRes getEntityById(Long id) {
+    public EntityBean getEntityById(Long id) {
         EntityBeanDal entityBeanDal = new EntityBeanDal();
         EntityBeanDal.Criteria criteria = entityBeanDal.createCriteria();
         criteria.andIdEqualTo(id);
@@ -67,18 +68,11 @@ public class EntityServiceImpl implements EntityService {
         if (CollectionUtils.isEmpty(entityBeans)){
             return null;
         }
-        EntityRes entityRes = null;
-        try {
-            entityRes = CommonUtil.snakeObjectToUnderline(entityBeans.get(0),EntityRes.class);
-        } catch (IOException e) {
-            log.error("parase object to new object fail");
-            throw new AdminException(ErrorCode.PARSE_OBJECT_FAIL);
-        }
-        return entityRes;
+        return entityBeans.get(0);
     }
 
     @Override
-    public PageRes<List<EntityRes>> getEntityList(QueryEntityVo queryEntityVo) {
+    public PageRes<List<EntityBean>> getEntityList(QueryEntityVo queryEntityVo) {
         Page<Object> page = PageHelper.startPage(queryEntityVo.getPageNum(), queryEntityVo.getPageSize(), true);
         EntityBeanDal entityBeanDal = new EntityBeanDal();
         EntityBeanDal.Criteria criteria = entityBeanDal.createCriteria();
@@ -86,21 +80,8 @@ public class EntityServiceImpl implements EntityService {
             criteria.andNameEqualTo(queryEntityVo.getName());
         }
         criteria.andTypeEqualTo(queryEntityVo.getType());
-
         List<EntityBean> entityBeans = entityBeanMapper.selectByExample(entityBeanDal);
-
-        List<EntityRes> collect = entityBeans.stream().map(e -> {
-            EntityRes entityRes = null;
-            try {
-                entityRes = CommonUtil.snakeObjectToUnderline(e, EntityRes.class);
-            } catch (IOException ioException) {
-                log.error("parase object to new object fail");
-                throw new AdminException(ErrorCode.PARSE_OBJECT_FAIL);
-            }
-            return entityRes;
-        }).collect(Collectors.toList());
-
-        PageRes<List<EntityRes>> pageRes = PageRes.getPage(page.getTotal(), page.getPageSize(), collect);
+        PageRes<List<EntityBean>> pageRes = PageRes.getPage(page.getTotal(), page.getPageSize(), entityBeans);
         return pageRes;
     }
 

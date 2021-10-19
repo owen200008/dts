@@ -6,9 +6,11 @@ import com.utopia.data.transfer.admin.dao.entity.PairBeanDal;
 import com.utopia.data.transfer.admin.dao.mapper.PairBeanMapper;
 import com.utopia.data.transfer.admin.service.PairSevice;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class PairSeviceImpl implements PairSevice {
 
     @Autowired

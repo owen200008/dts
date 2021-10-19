@@ -4,6 +4,7 @@ import com.utopia.data.transfer.admin.contants.CommonUtil;
 import com.utopia.data.transfer.admin.dao.entity.*;
 import com.utopia.data.transfer.admin.dao.mapper.PipelineBeanMapper;
 import com.utopia.data.transfer.admin.dao.mapper.SourceDataMediaBeanMapper;
+import com.utopia.data.transfer.admin.dao.mapper.SyncRuleMapper;
 import com.utopia.data.transfer.admin.dao.mapper.TargetDataMediaBeanMapper;
 import com.utopia.data.transfer.admin.dao.mapper.base.PairBeanRepository;
 import com.utopia.data.transfer.admin.dao.mapper.base.PipelineBeanRepository;
@@ -15,6 +16,7 @@ import com.utopia.data.transfer.admin.vo.req.PipelineAddVo;
 import com.utopia.data.transfer.admin.vo.req.PipelinePairAddVo;
 import com.utopia.data.transfer.admin.vo.req.PipelineRegionAddVo;
 import com.utopia.data.transfer.model.archetype.ErrorCode;
+import com.utopia.data.transfer.model.code.bean.StageType;
 import com.utopia.exception.UtopiaRunTimeException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -62,8 +64,11 @@ public class PipelineServiceImpl implements PipelineService {
     @Autowired
     TargetDataMediaBeanMapper targetDataMediaBeanMapper;
 
+    @Autowired
+    SyncRuleMapper syncRuleMapper;
+
     @Override
-    public void pipelineAdd(PipelineAddVo pipelineAddVo) {
+    public Long pipelineAdd(PipelineAddVo pipelineAddVo) {
         PipelineBean pipelineBean = null;
         try {
             pipelineBean = CommonUtil.snakeObjectToUnderline(pipelineAddVo, PipelineBean.class);
@@ -74,6 +79,7 @@ public class PipelineServiceImpl implements PipelineService {
         pipelineBean.setCreateTime(LocalDateTime.now());
         pipelineBean.setModifyTime(LocalDateTime.now());
         pipelineBeanMapper.insert(pipelineBean);
+        return pipelineBean.getId();
     }
 
     @Override
@@ -120,7 +126,6 @@ public class PipelineServiceImpl implements PipelineService {
         targetDataMediaBean.setName(pipelinePairAddVo.getTargetName());
         targetDataMediaBean.setNamespace(pipelinePairAddVo.getTargetNamespace());
         targetDataMediaBean.setTable(pipelinePairAddVo.getTargetTable());
-        targetDataMediaBean.setRule(pipelinePairAddVo.getRule());
         targetDataMediaBean.setCreateTime(LocalDateTime.now());
         targetDataMediaBean.setModifyTime(LocalDateTime.now());
 
@@ -138,61 +143,36 @@ public class PipelineServiceImpl implements PipelineService {
     public void pipelineRegionAdd(PipelineRegionAddVo pipelineRegionAddVo) {
 
         RegionBean sourceRegionBean = new RegionBean();
-        sourceRegionBean.setMode(SOURCE_MODE);
-        sourceRegionBean.setPipelineId(pipelineRegionAddVo.getPipelineId());
+        sourceRegionBean.setMode(StageType.SELECT.toString());
+        sourceRegionBean.setPipelineId(pipelineRegionAddVo.getPipelineId().longValue());
         sourceRegionBean.setRegion(pipelineRegionAddVo.getSourceRegion());
 
         regionBeanRepository.insert(sourceRegionBean);
 
         RegionBean targetRegionBean = new RegionBean();
-        targetRegionBean.setMode(TARGET_MODE);
-        targetRegionBean.setPipelineId(pipelineRegionAddVo.getPipelineId());
+        targetRegionBean.setMode(StageType.LOAD.toString());
+        targetRegionBean.setPipelineId(pipelineRegionAddVo.getPipelineId().longValue());
         targetRegionBean.setRegion(pipelineRegionAddVo.getTargetRegion());
 
         regionBeanRepository.insert(targetRegionBean);
     }
 
 
-
-
     @Override
-    public List<PipeDetailRes> pipelineDetailByTaskId(Long id) {
-        List<PipeDetail> pipeDetails = pipelineBeanRepository.selectDetailByTaskId(id);
-        if (CollectionUtils.isEmpty(pipeDetails)) {
+    public PipelineBean pipelineGet(Long id) {
+        PipelineBeanDal pipelineBeanDal = new PipelineBeanDal();
+        pipelineBeanDal.createCriteria().andIdEqualTo(id);
+        List<PipelineBean> pipelineBeans = pipelineBeanMapper.selectByExample(pipelineBeanDal);
+        if (CollectionUtils.isEmpty(pipelineBeans)){
             return null;
         }
-        List<PipeDetailRes> pipeDetailResList = new ArrayList<>();
-        // 一个task只有两个pipeline可以循环获取
-        for (PipeDetail pipeDetail : pipeDetails) {
-            // 根据Id去获取region信息
-            List<RegionBean> regionBeans = regionBeanRepository.selectByPipelineId(pipeDetail.getId());
-            // 根据id获取pair列表
-            List<PairDetail> pairDetails = pairBeanRepository.selectByPipelineId(pipeDetail.getId());
+        return pipelineBeans.get(0);
+    }
 
-            PipeDetailRes finalPipeDetailRes = null;
-            try {
-                // 现将pipeDetail相同字段赋值
-                finalPipeDetailRes = CommonUtil.snakeObjectToUnderline(pipeDetail, PipeDetailRes.class);
-                finalPipeDetailRes.setPairList(pairDetails);
-                // 处理region信息 变为source和target
-                for (RegionBean re : regionBeans) {
-                    String mode = re.getMode();
-                    if (StringUtils.equals(SOURCE_MODE, mode)) {
-                        finalPipeDetailRes.setSourceRegion(re.getRegion());
-                        finalPipeDetailRes.setSourceRegionId(re.getId());
-                    } else {
-                        finalPipeDetailRes.setTargetRegion(re.getRegion());
-                        finalPipeDetailRes.setTargetRegionId(re.getId());
-                    }
-                }
-                pipeDetailResList.add(finalPipeDetailRes);
-            } catch (IOException e) {
-                log.error("parase object to new object fail");
-                throw new AdminException(ErrorCode.PARSE_OBJECT_FAIL);
-            }
-        }
-
-        return pipeDetailResList;
+    @Override
+    public Long pipelineSyncRuleAdd(SyncRule syncRule) {
+         syncRuleMapper.insert(syncRule);
+         return syncRule.getId();
     }
 
     @Override

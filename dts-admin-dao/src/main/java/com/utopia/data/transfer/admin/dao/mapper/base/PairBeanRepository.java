@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface PairBeanRepository extends PairBeanMapper {
 
-    List<PairDetail> selectByPipelineId(@Param("id") Long pipelineId);
+
 }

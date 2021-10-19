@@ -2,6 +2,8 @@ package com.utopia.data.transfer.admin.service.impl;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.utopia.data.transfer.admin.aspect.EventCut;
+import com.utopia.data.transfer.admin.contants.PathConstants;
 import com.utopia.data.transfer.admin.dao.entity.PipelineBean;
 import com.utopia.data.transfer.admin.dao.entity.TaskBean;
 import com.utopia.data.transfer.admin.dao.entity.TaskBeanDal;
@@ -70,6 +72,7 @@ public class TaskServiceImpl implements TaskSevice {
     }
 
     @Override
+    @EventCut(key = PathConstants.CONFIG_KEY)
     public void taskSwitch(Long id,Integer valid) {
         TaskBeanDal taskBeanDal = new TaskBeanDal();
         taskBeanDal.createCriteria().andIdEqualTo(id);

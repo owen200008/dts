@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class PipelinePairAddVo {
 
 
-    private Integer pipelineId;
+    private Long pipelineId;
 
     private String sourceName;
 

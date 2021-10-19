@@ -18,18 +18,10 @@ public class GlobalExceptionHandler {
 	@ResponseBody
 	public Object exceptionHandler(Throwable e) {
 		UtopiaResponseModel<Object> rm = new UtopiaResponseModel<>();
-		if (e instanceof AdminException) {
-			AdminException ae = (AdminException) e;
-			rm.setCode( false ?
-					UtopiaErrorCode.UNKNOW_ERROR.getCode() : ae.getCode());
-			rm.setMsg(ae.getMessage());
-			if (ae.getData() != null) {
-				rm.setData(ae.getData());
-			}
-
-		} else if (e instanceof DataAccessException) {
+		if (e instanceof DataAccessException) {
 			//数据库异常处理
 			rm.setCode(ErrorCode.DB_ERROR.getCode());
+
 		} else if (e instanceof UtopiaRunTimeException) {
 			UtopiaRunTimeException exception = ((UtopiaRunTimeException) e);
 			//数据库异常处理

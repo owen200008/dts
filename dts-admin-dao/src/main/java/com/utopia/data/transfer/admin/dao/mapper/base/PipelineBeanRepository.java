@@ -8,7 +8,4 @@ import java.util.List;
 public interface PipelineBeanRepository extends PipelineBeanMapper {
 
 
-    PipeDetail selectDetailById(@Param("id") Long id);
-
-    List<PipeDetail> selectDetailByTaskId(@Param("id")Long id);
 }

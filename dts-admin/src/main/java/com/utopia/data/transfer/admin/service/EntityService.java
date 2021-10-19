@@ -14,9 +14,9 @@ public interface EntityService {
     void deleteEntity(Long id);
 
 
-    EntityRes getEntityById(Long id);
+    EntityBean getEntityById(Long id);
 
-    PageRes<List<EntityRes>> getEntityList(QueryEntityVo queryEntityVo);
+    PageRes<List<EntityBean>> getEntityList(QueryEntityVo queryEntityVo);
 
     List<EntityBean> getAll();
 }
