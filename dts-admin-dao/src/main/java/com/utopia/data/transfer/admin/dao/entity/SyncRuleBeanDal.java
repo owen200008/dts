@@ -3,14 +3,14 @@ package com.utopia.data.transfer.admin.dao.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PairBeanDal {
+public class SyncRuleBeanDal {
     protected String orderByClause;
 
     protected boolean distinct;
 
     protected List<Criteria> oredCriteria;
 
-    public PairBeanDal() {
+    public SyncRuleBeanDal() {
         oredCriteria = new ArrayList<>();
     }
 
@@ -224,123 +224,303 @@ public class PairBeanDal {
             return (Criteria) this;
         }
 
-        public Criteria andSourceDatamediaIdIsNull() {
-            addCriterion("source_datamedia_id is null");
+        public Criteria andSyncRuleTypeIsNull() {
+            addCriterion("sync_rule_type is null");
             return (Criteria) this;
         }
 
-        public Criteria andSourceDatamediaIdIsNotNull() {
-            addCriterion("source_datamedia_id is not null");
+        public Criteria andSyncRuleTypeIsNotNull() {
+            addCriterion("sync_rule_type is not null");
             return (Criteria) this;
         }
 
-        public Criteria andSourceDatamediaIdEqualTo(Long value) {
-            addCriterion("source_datamedia_id =", value, "sourceDatamediaId");
+        public Criteria andSyncRuleTypeEqualTo(String value) {
+            addCriterion("sync_rule_type =", value, "syncRuleType");
             return (Criteria) this;
         }
 
-        public Criteria andSourceDatamediaIdNotEqualTo(Long value) {
-            addCriterion("source_datamedia_id <>", value, "sourceDatamediaId");
+        public Criteria andSyncRuleTypeNotEqualTo(String value) {
+            addCriterion("sync_rule_type <>", value, "syncRuleType");
             return (Criteria) this;
         }
 
-        public Criteria andSourceDatamediaIdGreaterThan(Long value) {
-            addCriterion("source_datamedia_id >", value, "sourceDatamediaId");
+        public Criteria andSyncRuleTypeGreaterThan(String value) {
+            addCriterion("sync_rule_type >", value, "syncRuleType");
             return (Criteria) this;
         }
 
-        public Criteria andSourceDatamediaIdGreaterThanOrEqualTo(Long value) {
-            addCriterion("source_datamedia_id >=", value, "sourceDatamediaId");
+        public Criteria andSyncRuleTypeGreaterThanOrEqualTo(String value) {
+            addCriterion("sync_rule_type >=", value, "syncRuleType");
             return (Criteria) this;
         }
 
-        public Criteria andSourceDatamediaIdLessThan(Long value) {
-            addCriterion("source_datamedia_id <", value, "sourceDatamediaId");
+        public Criteria andSyncRuleTypeLessThan(String value) {
+            addCriterion("sync_rule_type <", value, "syncRuleType");
             return (Criteria) this;
         }
 
-        public Criteria andSourceDatamediaIdLessThanOrEqualTo(Long value) {
-            addCriterion("source_datamedia_id <=", value, "sourceDatamediaId");
+        public Criteria andSyncRuleTypeLessThanOrEqualTo(String value) {
+            addCriterion("sync_rule_type <=", value, "syncRuleType");
             return (Criteria) this;
         }
 
-        public Criteria andSourceDatamediaIdIn(List<Long> values) {
-            addCriterion("source_datamedia_id in", values, "sourceDatamediaId");
+        public Criteria andSyncRuleTypeLike(String value) {
+            addCriterion("sync_rule_type like", value, "syncRuleType");
             return (Criteria) this;
         }
 
-        public Criteria andSourceDatamediaIdNotIn(List<Long> values) {
-            addCriterion("source_datamedia_id not in", values, "sourceDatamediaId");
+        public Criteria andSyncRuleTypeNotLike(String value) {
+            addCriterion("sync_rule_type not like", value, "syncRuleType");
             return (Criteria) this;
         }
 
-        public Criteria andSourceDatamediaIdBetween(Long value1, Long value2) {
-            addCriterion("source_datamedia_id between", value1, value2, "sourceDatamediaId");
+        public Criteria andSyncRuleTypeIn(List<String> values) {
+            addCriterion("sync_rule_type in", values, "syncRuleType");
             return (Criteria) this;
         }
 
-        public Criteria andSourceDatamediaIdNotBetween(Long value1, Long value2) {
-            addCriterion("source_datamedia_id not between", value1, value2, "sourceDatamediaId");
+        public Criteria andSyncRuleTypeNotIn(List<String> values) {
+            addCriterion("sync_rule_type not in", values, "syncRuleType");
             return (Criteria) this;
         }
 
-        public Criteria andTargetDatamediaIdIsNull() {
-            addCriterion("target_datamedia_id is null");
+        public Criteria andSyncRuleTypeBetween(String value1, String value2) {
+            addCriterion("sync_rule_type between", value1, value2, "syncRuleType");
             return (Criteria) this;
         }
 
-        public Criteria andTargetDatamediaIdIsNotNull() {
-            addCriterion("target_datamedia_id is not null");
+        public Criteria andSyncRuleTypeNotBetween(String value1, String value2) {
+            addCriterion("sync_rule_type not between", value1, value2, "syncRuleType");
             return (Criteria) this;
         }
 
-        public Criteria andTargetDatamediaIdEqualTo(Long value) {
-            addCriterion("target_datamedia_id =", value, "targetDatamediaId");
+        public Criteria andNamespaceIsNull() {
+            addCriterion("namespace is null");
             return (Criteria) this;
         }
 
-        public Criteria andTargetDatamediaIdNotEqualTo(Long value) {
-            addCriterion("target_datamedia_id <>", value, "targetDatamediaId");
+        public Criteria andNamespaceIsNotNull() {
+            addCriterion("namespace is not null");
             return (Criteria) this;
         }
 
-        public Criteria andTargetDatamediaIdGreaterThan(Long value) {
-            addCriterion("target_datamedia_id >", value, "targetDatamediaId");
+        public Criteria andNamespaceEqualTo(String value) {
+            addCriterion("namespace =", value, "namespace");
             return (Criteria) this;
         }
 
-        public Criteria andTargetDatamediaIdGreaterThanOrEqualTo(Long value) {
-            addCriterion("target_datamedia_id >=", value, "targetDatamediaId");
+        public Criteria andNamespaceNotEqualTo(String value) {
+            addCriterion("namespace <>", value, "namespace");
             return (Criteria) this;
         }
 
-        public Criteria andTargetDatamediaIdLessThan(Long value) {
-            addCriterion("target_datamedia_id <", value, "targetDatamediaId");
+        public Criteria andNamespaceGreaterThan(String value) {
+            addCriterion("namespace >", value, "namespace");
             return (Criteria) this;
         }
 
-        public Criteria andTargetDatamediaIdLessThanOrEqualTo(Long value) {
-            addCriterion("target_datamedia_id <=", value, "targetDatamediaId");
+        public Criteria andNamespaceGreaterThanOrEqualTo(String value) {
+            addCriterion("namespace >=", value, "namespace");
             return (Criteria) this;
         }
 
-        public Criteria andTargetDatamediaIdIn(List<Long> values) {
-            addCriterion("target_datamedia_id in", values, "targetDatamediaId");
+        public Criteria andNamespaceLessThan(String value) {
+            addCriterion("namespace <", value, "namespace");
             return (Criteria) this;
         }
 
-        public Criteria andTargetDatamediaIdNotIn(List<Long> values) {
-            addCriterion("target_datamedia_id not in", values, "targetDatamediaId");
+        public Criteria andNamespaceLessThanOrEqualTo(String value) {
+            addCriterion("namespace <=", value, "namespace");
             return (Criteria) this;
         }
 
-        public Criteria andTargetDatamediaIdBetween(Long value1, Long value2) {
-            addCriterion("target_datamedia_id between", value1, value2, "targetDatamediaId");
+        public Criteria andNamespaceLike(String value) {
+            addCriterion("namespace like", value, "namespace");
             return (Criteria) this;
         }
 
-        public Criteria andTargetDatamediaIdNotBetween(Long value1, Long value2) {
-            addCriterion("target_datamedia_id not between", value1, value2, "targetDatamediaId");
+        public Criteria andNamespaceNotLike(String value) {
+            addCriterion("namespace not like", value, "namespace");
+            return (Criteria) this;
+        }
+
+        public Criteria andNamespaceIn(List<String> values) {
+            addCriterion("namespace in", values, "namespace");
+            return (Criteria) this;
+        }
+
+        public Criteria andNamespaceNotIn(List<String> values) {
+            addCriterion("namespace not in", values, "namespace");
+            return (Criteria) this;
+        }
+
+        public Criteria andNamespaceBetween(String value1, String value2) {
+            addCriterion("namespace between", value1, value2, "namespace");
+            return (Criteria) this;
+        }
+
+        public Criteria andNamespaceNotBetween(String value1, String value2) {
+            addCriterion("namespace not between", value1, value2, "namespace");
+            return (Criteria) this;
+        }
+
+        public Criteria andTableIsNull() {
+            addCriterion("`table` is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andTableIsNotNull() {
+            addCriterion("`table` is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andTableEqualTo(String value) {
+            addCriterion("`table` =", value, "table");
+            return (Criteria) this;
+        }
+
+        public Criteria andTableNotEqualTo(String value) {
+            addCriterion("`table` <>", value, "table");
+            return (Criteria) this;
+        }
+
+        public Criteria andTableGreaterThan(String value) {
+            addCriterion("`table` >", value, "table");
+            return (Criteria) this;
+        }
+
+        public Criteria andTableGreaterThanOrEqualTo(String value) {
+            addCriterion("`table` >=", value, "table");
+            return (Criteria) this;
+        }
+
+        public Criteria andTableLessThan(String value) {
+            addCriterion("`table` <", value, "table");
+            return (Criteria) this;
+        }
+
+        public Criteria andTableLessThanOrEqualTo(String value) {
+            addCriterion("`table` <=", value, "table");
+            return (Criteria) this;
+        }
+
+        public Criteria andTableLike(String value) {
+            addCriterion("`table` like", value, "table");
+            return (Criteria) this;
+        }
+
+        public Criteria andTableNotLike(String value) {
+            addCriterion("`table` not like", value, "table");
+            return (Criteria) this;
+        }
+
+        public Criteria andTableIn(List<String> values) {
+            addCriterion("`table` in", values, "table");
+            return (Criteria) this;
+        }
+
+        public Criteria andTableNotIn(List<String> values) {
+            addCriterion("`table` not in", values, "table");
+            return (Criteria) this;
+        }
+
+        public Criteria andTableBetween(String value1, String value2) {
+            addCriterion("`table` between", value1, value2, "table");
+            return (Criteria) this;
+        }
+
+        public Criteria andTableNotBetween(String value1, String value2) {
+            addCriterion("`table` not between", value1, value2, "table");
+            return (Criteria) this;
+        }
+
+        public Criteria andStartGtidIsNull() {
+            addCriterion("start_gtid is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andStartGtidIsNotNull() {
+            addCriterion("start_gtid is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andStartGtidEqualTo(String value) {
+            addCriterion("start_gtid =", value, "startGtid");
+            return (Criteria) this;
+        }
+
+        public Criteria andStartGtidNotEqualTo(String value) {
+            addCriterion("start_gtid <>", value, "startGtid");
+            return (Criteria) this;
+        }
+
+        public Criteria andStartGtidGreaterThan(String value) {
+            addCriterion("start_gtid >", value, "startGtid");
+            return (Criteria) this;
+        }
+
+        public Criteria andStartGtidGreaterThanOrEqualTo(String value) {
+            addCriterion("start_gtid >=", value, "startGtid");
+            return (Criteria) this;
+        }
+
+        public Criteria andStartGtidLessThan(String value) {
+            addCriterion("start_gtid <", value, "startGtid");
+            return (Criteria) this;
+        }
+
+        public Criteria andStartGtidLessThanOrEqualTo(String value) {
+            addCriterion("start_gtid <=", value, "startGtid");
+            return (Criteria) this;
+        }
+
+        public Criteria andStartGtidLike(String value) {
+            addCriterion("start_gtid like", value, "startGtid");
+            return (Criteria) this;
+        }
+
+        public Criteria andStartGtidNotLike(String value) {
+            addCriterion("start_gtid not like", value, "startGtid");
+            return (Criteria) this;
+        }
+
+        public Criteria andStartGtidIn(List<String> values) {
+            addCriterion("start_gtid in", values, "startGtid");
+            return (Criteria) this;
+        }
+
+        public Criteria andStartGtidNotIn(List<String> values) {
+            addCriterion("start_gtid not in", values, "startGtid");
+            return (Criteria) this;
+        }
+
+        public Criteria andStartGtidBetween(String value1, String value2) {
+            addCriterion("start_gtid between", value1, value2, "startGtid");
+            return (Criteria) this;
+        }
+
+        public Criteria andStartGtidNotBetween(String value1, String value2) {
+            addCriterion("start_gtid not between", value1, value2, "startGtid");
+            return (Criteria) this;
+        }
+
+        public Criteria andSyncRuleTypeLikeInsensitive(String value) {
+            addCriterion("upper(sync_rule_type) like", value.toUpperCase(), "syncRuleType");
+            return (Criteria) this;
+        }
+
+        public Criteria andNamespaceLikeInsensitive(String value) {
+            addCriterion("upper(namespace) like", value.toUpperCase(), "namespace");
+            return (Criteria) this;
+        }
+
+        public Criteria andTableLikeInsensitive(String value) {
+            addCriterion("upper(`table`) like", value.toUpperCase(), "table");
+            return (Criteria) this;
+        }
+
+        public Criteria andStartGtidLikeInsensitive(String value) {
+            addCriterion("upper(start_gtid) like", value.toUpperCase(), "startGtid");
             return (Criteria) this;
         }
     }

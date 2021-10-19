@@ -3,7 +3,7 @@ package com.utopia.data.transfer.admin.dao.entity;
 import com.utopia.data.transfer.admin.dao.base.BaseModel;
 import java.io.Serializable;
 
-public class SyncRule extends BaseModel implements Serializable {
+public class SyncRuleBean extends BaseModel implements Serializable {
     private Long id;
 
     private Long pipelineId;
@@ -93,7 +93,7 @@ public class SyncRule extends BaseModel implements Serializable {
         if (getClass() != that.getClass()) {
             return false;
         }
-        SyncRule other = (SyncRule) that;
+        SyncRuleBean other = (SyncRuleBean) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
             && (this.getPipelineId() == null ? other.getPipelineId() == null : this.getPipelineId().equals(other.getPipelineId()))
             && (this.getSyncRuleType() == null ? other.getSyncRuleType() == null : this.getSyncRuleType().equals(other.getSyncRuleType()))

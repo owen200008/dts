@@ -9,13 +9,21 @@ import org.apache.ibatis.annotations.Param;
 public interface TargetDataMediaBeanMapper extends BaseDao {
     int deleteByExample(TargetDataMediaBeanDal example);
 
+    int deleteByPrimaryKey(Long id);
+
     int insert(TargetDataMediaBean record);
 
     int insertSelective(TargetDataMediaBean record);
 
     List<TargetDataMediaBean> selectByExample(TargetDataMediaBeanDal example);
 
+    TargetDataMediaBean selectByPrimaryKey(Long id);
+
     int updateByExampleSelective(@Param("record") TargetDataMediaBean record, @Param("example") TargetDataMediaBeanDal example);
 
     int updateByExample(@Param("record") TargetDataMediaBean record, @Param("example") TargetDataMediaBeanDal example);
+
+    int updateByPrimaryKeySelective(TargetDataMediaBean record);
+
+    int updateByPrimaryKey(TargetDataMediaBean record);
 }

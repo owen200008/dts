@@ -82,6 +82,10 @@
       order by ${orderByClause}
     </if>
   </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from u_region
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
   <delete id="deleteByExample" parameterType="com.utopia.data.transfer.admin.dao.entity.RegionBeanDal">
     delete from u_region
     <if test="_parameter != null">
@@ -89,17 +93,20 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.utopia.data.transfer.admin.dao.entity.RegionBean">
-    insert into u_region (id, region, `mode`, 
-      pipeline_id)
-    values (#{id,jdbcType=INTEGER}, #{region,jdbcType=VARCHAR}, #{mode,jdbcType=VARCHAR}, 
-      #{pipelineId,jdbcType=BIGINT})
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into u_region (region, `mode`, pipeline_id
+      )
+    values (#{region,jdbcType=VARCHAR}, #{mode,jdbcType=VARCHAR}, #{pipelineId,jdbcType=BIGINT}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.utopia.data.transfer.admin.dao.entity.RegionBean">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
     insert into u_region
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
       <if test="region != null">
         region,
       </if>
@@ -111,9 +118,6 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=INTEGER},
-      </if>
       <if test="region != null">
         #{region,jdbcType=VARCHAR},
       </if>

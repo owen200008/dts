@@ -13,7 +13,7 @@ public interface PipelineService {
      * 增加pipeline
      * @param pipelineAddVo
      */
-    void pipelineAdd(PipelineAddVo pipelineAddVo);
+    void pipelineAdd(PipelineBean pipelineAddVo);
 
     /**
      * 删除
@@ -33,16 +33,4 @@ public interface PipelineService {
      * @return
      */
     List<PipelineBean> getAll();
-
-
-
-
-    void pipelinePairAdd(PipelinePairAddVo pipelinePairAddVo);
-
-
-    void pipelineRegionAdd(PipelineRegionAddVo pipelineRegionAddVo);
-
-    List<PipeDetailRes> pipelineDetailByTaskId(Long id);
-
-
 }

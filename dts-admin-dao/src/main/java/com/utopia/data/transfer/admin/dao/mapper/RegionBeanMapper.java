@@ -9,6 +9,8 @@ import org.apache.ibatis.annotations.Param;
 public interface RegionBeanMapper extends BaseDao {
     int deleteByExample(RegionBeanDal example);
 
+    int deleteByPrimaryKey(Integer id);
+
     int insert(RegionBean record);
 
     int insertSelective(RegionBean record);

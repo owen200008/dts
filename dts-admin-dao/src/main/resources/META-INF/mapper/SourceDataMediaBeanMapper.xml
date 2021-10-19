@@ -84,6 +84,16 @@
       order by ${orderByClause}
     </if>
   </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from u_source_datamedia
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from u_source_datamedia
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
   <delete id="deleteByExample" parameterType="com.utopia.data.transfer.admin.dao.entity.SourceDataMediaBeanDal">
     delete from u_source_datamedia
     <if test="_parameter != null">
@@ -91,19 +101,20 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.utopia.data.transfer.admin.dao.entity.SourceDataMediaBean">
-    insert into u_source_datamedia (id, `name`, namespace, 
-      `table`, create_time, modify_time
-      )
-    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{namespace,jdbcType=VARCHAR}, 
-      #{table,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{modifyTime,jdbcType=TIMESTAMP}
-      )
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into u_source_datamedia (`name`, namespace, `table`, 
+      create_time, modify_time)
+    values (#{name,jdbcType=VARCHAR}, #{namespace,jdbcType=VARCHAR}, #{table,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{modifyTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.utopia.data.transfer.admin.dao.entity.SourceDataMediaBean">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
     insert into u_source_datamedia
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
       <if test="name != null">
         `name`,
       </if>
@@ -121,9 +132,6 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=BIGINT},
-      </if>
       <if test="name != null">
         #{name,jdbcType=VARCHAR},
       </if>
@@ -178,5 +186,35 @@
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.utopia.data.transfer.admin.dao.entity.SourceDataMediaBean">
+    update u_source_datamedia
+    <set>
+      <if test="name != null">
+        `name` = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="namespace != null">
+        namespace = #{namespace,jdbcType=VARCHAR},
+      </if>
+      <if test="table != null">
+        `table` = #{table,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyTime != null">
+        modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.utopia.data.transfer.admin.dao.entity.SourceDataMediaBean">
+    update u_source_datamedia
+    set `name` = #{name,jdbcType=VARCHAR},
+      namespace = #{namespace,jdbcType=VARCHAR},
+      `table` = #{table,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      modify_time = #{modifyTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

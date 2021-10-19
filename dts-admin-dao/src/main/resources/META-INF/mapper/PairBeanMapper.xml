@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.utopia.data.transfer.admin.dao.mapper.PairBeanMapper">
   <resultMap id="BaseResultMap" type="com.utopia.data.transfer.admin.dao.entity.PairBean">
-    <id column="id" jdbcType="INTEGER" property="id" />
+    <id column="id" jdbcType="BIGINT" property="id" />
     <result column="pipeline_id" jdbcType="BIGINT" property="pipelineId" />
     <result column="source_datamedia_id" jdbcType="BIGINT" property="sourceDatamediaId" />
     <result column="target_datamedia_id" jdbcType="BIGINT" property="targetDatamediaId" />
@@ -82,6 +82,10 @@
       order by ${orderByClause}
     </if>
   </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from u_pair
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
   <delete id="deleteByExample" parameterType="com.utopia.data.transfer.admin.dao.entity.PairBeanDal">
     delete from u_pair
     <if test="_parameter != null">
@@ -91,7 +95,7 @@
   <insert id="insert" parameterType="com.utopia.data.transfer.admin.dao.entity.PairBean">
     insert into u_pair (id, pipeline_id, source_datamedia_id, 
       target_datamedia_id)
-    values (#{id,jdbcType=INTEGER}, #{pipelineId,jdbcType=BIGINT}, #{sourceDatamediaId,jdbcType=BIGINT}, 
+    values (#{id,jdbcType=BIGINT}, #{pipelineId,jdbcType=BIGINT}, #{sourceDatamediaId,jdbcType=BIGINT}, 
       #{targetDatamediaId,jdbcType=BIGINT})
   </insert>
   <insert id="insertSelective" parameterType="com.utopia.data.transfer.admin.dao.entity.PairBean">
@@ -112,7 +116,7 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
-        #{id,jdbcType=INTEGER},
+        #{id,jdbcType=BIGINT},
       </if>
       <if test="pipelineId != null">
         #{pipelineId,jdbcType=BIGINT},
@@ -129,7 +133,7 @@
     update u_pair
     <set>
       <if test="record.id != null">
-        id = #{record.id,jdbcType=INTEGER},
+        id = #{record.id,jdbcType=BIGINT},
       </if>
       <if test="record.pipelineId != null">
         pipeline_id = #{record.pipelineId,jdbcType=BIGINT},
@@ -147,7 +151,7 @@
   </update>
   <update id="updateByExample" parameterType="map">
     update u_pair
-    set id = #{record.id,jdbcType=INTEGER},
+    set id = #{record.id,jdbcType=BIGINT},
       pipeline_id = #{record.pipelineId,jdbcType=BIGINT},
       source_datamedia_id = #{record.sourceDatamediaId,jdbcType=BIGINT},
       target_datamedia_id = #{record.targetDatamediaId,jdbcType=BIGINT}
