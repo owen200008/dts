@@ -15,4 +15,7 @@ public interface TaskSevice {
     PageRes<List<TaskBean>> taskList(QueryTaskVo queryTaskVo);
 
     void taskSwitch(Integer id,Integer valid);
+
+
+    List<TaskBean> getAll();
 }

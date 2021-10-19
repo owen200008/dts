@@ -33,6 +33,10 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.utopia</groupId>
+            <artifactId>utopia-utils</artifactId>
+        </dependency>
         <!-- archetype define end *************************************************** -->
 
         <!-- project define begin *************************************************** -->

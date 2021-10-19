@@ -5,6 +5,7 @@ import lombok.Data;
 
 import com.utopia.data.transfer.model.code.entity.mysql.MysqlProperty;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -34,12 +35,12 @@ public class EntityDesc implements Serializable {
     /**
      * 创建时间
      */
-    private Date                gmtCreate;
+    private LocalDateTime       createTime;
 
     /**
      * 修改时间
      */
-    private Date                gmtModified;
+    private LocalDateTime       modifyTime;
 
     /**
      * 链接到mysql的slaveId

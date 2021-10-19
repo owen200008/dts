@@ -18,4 +18,6 @@ public interface EntityService {
     EntityRes getEntityById(Integer id);
 
     PageRes<List<EntityRes>> getEntityList(QueryEntityVo queryEntityVo);
+
+    List<EntityBean> getAll();
 }

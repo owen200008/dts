@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
-import java.util.Properties;
 
 /**
  * @author owen.cai
@@ -13,10 +12,6 @@ import java.util.Properties;
  * @alter_date
  */
 public class MysqlProperty implements Serializable {
-    @Getter
-    @Setter
-    private Properties properties;
-
     @Getter
     @Setter
     private int                                       maxWait                       = 60 * 1000;

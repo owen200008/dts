@@ -66,8 +66,8 @@
             <artifactId>dubbo-spring-boot-starter</artifactId>
         </dependency>-->
         <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
         </dependency>
         <dependency>
             <groupId>com.github.pagehelper</groupId>
@@ -90,10 +90,36 @@
             <groupId>com.utopia</groupId>
             <artifactId>utopia-log-http</artifactId>
         </dependency>
-<!--        <dependency>
+
+        <!-- data sync-->
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-dependencies-zookeeper</artifactId>
+            <type>pom</type>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.alibaba.nacos/nacos-client -->
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-registry-nacos</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>dubbo-common</artifactId>
+                    <groupId>org.apache.dubbo</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>dubbo-registry-api</artifactId>
+                    <groupId>org.apache.dubbo</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
             <groupId>com.utopia</groupId>
-            <artifactId>utopia-apolicy-dubbo</artifactId>
-        </dependency> -->
+            <artifactId>register-center-instance</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.utopia</groupId>
+            <artifactId>register-center-sync</artifactId>
+        </dependency>
 
         <!-- test -->
         <dependency>

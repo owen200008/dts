@@ -1,5 +1,6 @@
 package com.utopia.data.transfer.admin.vo;
 
+import com.utopia.model.rsp.UtopiaResponseModel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
  * @author niuyaze
  * @date 2021/10/15
  */
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

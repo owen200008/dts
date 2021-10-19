@@ -231,4 +231,9 @@ public class PipelineServiceImpl implements PipelineService {
         return pipeDetailResList;
     }
 
+    @Override
+    public List<PipelineBean> getAll() {
+        return pipelineBeanRepository.selectByExample(new PipelineBeanDal());
+    }
+
 }

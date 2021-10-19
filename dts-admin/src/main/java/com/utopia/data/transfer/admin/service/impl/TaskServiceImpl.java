@@ -153,9 +153,6 @@ public class TaskServiceImpl implements TaskSevice {
             pipeline.setSourceEntityId(pipe.getSourceEntityId().longValue());
             pipeline.setTargetEntityId(pipe.getTargetEntityId().longValue());
 
-            pipeline.setSourceRegion(pipe.getSourceRegion());
-            pipeline.setTargetRegion(pipe.getTargetRegion());
-
             pipelineList.add(pipeline);
 
 

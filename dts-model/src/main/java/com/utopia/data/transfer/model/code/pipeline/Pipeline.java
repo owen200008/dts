@@ -29,10 +29,8 @@ public class Pipeline implements Serializable {
     private String              name;
 
     private List<DataMediaRulePair> pairs;
-    private Long sourceEntityId;
-    private String sourceRegion;
-    private Long targetEntityId;
-    private String targetRegion;
+    private Integer sourceEntityId;
+    private Integer targetEntityId;
     private SyncRuleTarget syncRuleTarget;
 
     private PipelineParameter params;

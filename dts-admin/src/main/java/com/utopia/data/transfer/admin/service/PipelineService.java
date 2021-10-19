@@ -1,5 +1,6 @@
 package com.utopia.data.transfer.admin.service;
 
+import com.utopia.data.transfer.admin.dao.entity.PipelineBean;
 import com.utopia.data.transfer.admin.vo.req.PipelineAddVo;
 import com.utopia.data.transfer.admin.vo.req.PipelinePairAddVo;
 import com.utopia.data.transfer.admin.vo.req.PipelineRegionAddVo;
@@ -24,4 +25,9 @@ public interface PipelineService {
 
     List<PipeDetailRes> pipelineDetailByTaskId(Integer id);
 
+    /**
+     * 获取所有的pipeline
+     * @return
+     */
+    List<PipelineBean> getAll();
 }
