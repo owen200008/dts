@@ -39,3 +39,4 @@ cmake_build*
 *.flattened-pom.xml
 
 *_selfdefine.properties
+dts-dashboard/node_modules
