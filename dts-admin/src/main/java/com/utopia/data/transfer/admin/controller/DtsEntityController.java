@@ -23,8 +23,8 @@ import java.util.List;
  * @author niuyaze
  * @date 2021/10/19
  */
-@RestController()
-@RequestMapping(value = "/dts/")
+@RestController
+@RequestMapping(value = "/dts")
 @Slf4j
 public class DtsEntityController {
 

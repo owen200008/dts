@@ -28,14 +28,12 @@ import java.util.Objects;
  */
 
 @RestController()
-@RequestMapping(value = "/dts/")
+@RequestMapping(value = "/dts")
 @Slf4j
 public class DtsPipelineController {
 
     @Resource
     PipelineService pipelineService;
-
-
 
 
     @PostMapping("/pipeline/pair/add")
@@ -61,9 +59,11 @@ public class DtsPipelineController {
 
 
     @PostMapping("/pipeline/add")
-    public UtopiaResponseModel pipelineAdd(@Valid PipelineAddVo pipelineAddVo){
-        pipelineService.pipelineAdd(pipelineAddVo);
-        return UtopiaResponseModel.success();
+    public UtopiaResponseModel<JSONObject> pipelineAdd(@Valid PipelineAddVo pipelineAddVo){
+        Long pi = pipelineService.pipelineAdd(pipelineAddVo);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("pipelineId",pi);
+        return UtopiaResponseModel.success(jsonObject);
     }
     @PostMapping("/pipeline/list")
     public UtopiaResponseModel<PageRes<List<PipelineBean>>> pipelineList(QueryPipelineVo queryPipelineVo){

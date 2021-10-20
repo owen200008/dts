@@ -94,6 +94,9 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.utopia.data.transfer.admin.dao.entity.TaskBean">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
     insert into u_task (id, `name`, `valid`, modify_time, 
       create_time)
     values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{valid,jdbcType=BIT}, #{modifyTime,jdbcType=TIMESTAMP}, 

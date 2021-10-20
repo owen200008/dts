@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * describe:
  *
@@ -15,13 +17,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PipelineAddVo {
 
+    @NotNull
     private  String name;
-
+    @NotNull
     private Integer taskId;
-
+    @NotNull
     private Integer sourceEntityId;
-
+    @NotNull
     private Integer targetEntityId;
-
+    @NotNull
     private String pipelineParams;
 }

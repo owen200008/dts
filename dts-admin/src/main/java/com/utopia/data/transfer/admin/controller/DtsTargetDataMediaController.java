@@ -1,5 +1,6 @@
 package com.utopia.data.transfer.admin.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.utopia.data.transfer.admin.contants.PathConstants;
 import com.utopia.data.transfer.admin.dao.entity.SourceDataMediaBean;
 import com.utopia.data.transfer.admin.dao.entity.TargetDataMediaBean;
@@ -53,8 +54,11 @@ public class DtsTargetDataMediaController {
     }
 
     @PostMapping("/targetData/add")
-    public UtopiaResponseModel<Void> targetDataMediaAdd(TargetDataMediaBean targetDataMediaBean){
-        targetDataMediaService.targetDataMediaAdd(targetDataMediaBean);
-        return UtopiaResponseModel.success();
+    public UtopiaResponseModel<JSONObject> targetDataMediaAdd(TargetDataMediaBean targetDataMediaBean){
+        Long targetDataMediaAdd = targetDataMediaService.targetDataMediaAdd(targetDataMediaBean);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("targetDataId",targetDataMediaAdd);
+
+        return UtopiaResponseModel.success(jsonObject);
     }
 }

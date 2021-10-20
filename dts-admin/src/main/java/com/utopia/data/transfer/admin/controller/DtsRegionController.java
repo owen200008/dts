@@ -36,6 +36,13 @@ public class DtsRegionController {
     @Autowired
     RegionService regionService;
 
+    @PostMapping("/region/add")
+    public UtopiaResponseModel<Void> regionAdd(RegionBean regionBean){
+        Integer regionId = regionService.add(regionBean);
+
+        return UtopiaResponseModel.success();
+    }
+
 
     @PostMapping("/region/list")
     public UtopiaResponseModel<PageRes<List<RegionBean>>> regionList(@Valid QueryRegionVo queryRegionVo){
@@ -48,6 +55,13 @@ public class DtsRegionController {
         RegionBean regionBean = regionService.regionGet(id);
         return UtopiaResponseModel.create(UtopiaErrorCode.CODE_SUCCESS.getCode(), PathConstants.SUC_MSG,regionBean);
     }
+
+    @PostMapping("/region/get/pipelineId")
+    public UtopiaResponseModel<List<RegionBean>> regionGetPipelineId(@RequestParam(value = "pipelineId",required = true) Long id){
+        List<RegionBean> byPipelineId = regionService.getByPipelineId(id);
+        return UtopiaResponseModel.success(byPipelineId);
+    }
+
 
     @PostMapping("/region/delete")
     public UtopiaResponseModel<Void> regionDelete(@RequestParam(value = "regionId",required = true) Long id){

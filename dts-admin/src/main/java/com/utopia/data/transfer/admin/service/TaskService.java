@@ -11,7 +11,7 @@ public interface TaskService {
      * 创建任务
      * @param name
      */
-    void taskAdd(String name);
+    Long taskAdd(String name);
 
     /**
      * 删除任务
@@ -31,7 +31,7 @@ public interface TaskService {
      * @param id
      * @param valid
      */
-    void taskSwitch(Long id, Integer valid);
+    int taskSwitch(Long id, Integer valid);
 
     /**
      * 获取所有任务

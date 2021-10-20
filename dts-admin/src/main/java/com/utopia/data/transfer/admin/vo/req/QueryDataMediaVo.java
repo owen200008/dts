@@ -17,7 +17,7 @@ public class QueryDataMediaVo {
 
     private String name;
 
-    private Integer pageNum;
+    private Integer pageNum = 1;
 
-    private  Integer pageSize;
+    private  Integer pageSize = 10;
 }

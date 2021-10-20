@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+	<!-- 需要进一步定制  -->
+	<settings>
+		<setting name="cacheEnabled" value="true" />
+		<setting name="lazyLoadingEnabled" value="false" />
+		<setting name="aggressiveLazyLoading" value="true" />
+		<setting name="multipleResultSetsEnabled" value="true" />
+		<setting name="useColumnLabel" value="true" />
+		<setting name="useGeneratedKeys" value="false" />
+		<setting name="autoMappingBehavior" value="PARTIAL" />
+		<setting name="defaultExecutorType" value="SIMPLE" />
+		<setting name="defaultStatementTimeout" value="25000" />
+	</settings>
+
+	<typeAliases>
+		<!-- Java Type -->
+		<typeAlias alias="HashMap" type="java.util.HashMap" />
+		<typeAlias alias="List" type="java.util.List" />
+		<typeAlias alias="String" type="java.lang.String" />
+		<typeAlias alias="BigDecimal" type="java.math.BigDecimal" />
+		<typeAlias alias="Integer" type="java.lang.Integer" />
+
+	</typeAliases>
+	<plugins>
+		<plugin interceptor="com.github.pagehelper.PageInterceptor">
+			<property name="helperDialect" value="mysql"/>
+			<property name="reasonable" value="true"/>
+		</plugin>
+	</plugins>
+</configuration>
+
+	
+	<!-- 
+	http://www.mybatis.org/mybatis-3/zh/configuration.html#typeAliases
+	
+	已经为许多常见的 Java 类型内建了相应的类型别名。它们都是大小写不敏感的，需要注意的是由基本类型名称重复导致的特殊处理。
+
+	别名	映射的类型
+	_byte	byte
+	_long	long
+	_short	short
+	_int	int
+	_integer	int
+	_double	double
+	_float	float
+	_boolean	boolean
+	string	String
+	byte	Byte
+	long	Long
+	short	Short
+	int	Integer
+	integer	Integer
+	double	Double
+	float	Float
+	boolean	Boolean
+	date	Date
+	decimal	BigDecimal
+	bigdecimal	BigDecimal
+	object	Object
+	map	Map
+	hashmap	HashMap
+	list	List
+	arraylist	ArrayList
+	collection	Collection
+	iterator	Iterator
+	
+	 -->
+	
+	
+	<!-- 
+	http://www.mybatis.org/mybatis-3/zh/sqlmap-xml.html
+	为了未来的参考,MyBatis 通过包含的 jdbcType 枚举型,支持下面的 JDBC 类型。
+	
+	BIT	FLOAT	CHAR	TIMESTAMP	OTHER	UNDEFINED
+	TINYINT	REAL	VARCHAR	BINARY	BLOB	NVARCHAR
+	SMALLINT	DOUBLE	LONGVARCHAR	VARBINARY	CLOB	NCHAR
+	INTEGER	NUMERIC	DATE	LONGVARBINARY	BOOLEAN	NCLOB
+	BIGINT	DECIMAL	TIME	NULL	CURSOR	ARRAY
+	
+	JDBC Type			Java Type
+	CHAR				String
+	VARCHAR				String
+	LONGVARCHAR			String
+	NUMERIC				java.math.BigDecimal
+	DECIMAL				java.math.BigDecimal
+	BIT					boolean
+	BOOLEAN				boolean
+	TINYINT				byte
+	SMALLINT			short
+	INTEGER				int
+	BIGINT				long
+	REAL				float
+	FLOAT				double
+	DOUBLE				double
+	BINARY				byte[]
+	VARBINARY			byte[]
+	LONGVARBINARY		byte[]
+	DATE				java.sql.Date
+	TIME				java.sql.Time
+	TIMESTAMP			java.sql.Timestamp
+	CLOB				Clob
+	BLOB				Blob
+	ARRAY				Array
+	DISTINCT			mapping of underlying type
+	STRUCT				Struct
+	REF	                Ref
+	DATALINK			java.net.URL[color=red][/color]
+	
+	
+	 --> 
+	

@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class QueryPipelineVo {
 
-    private Integer pageSize = 1;
+    private Integer pageSize = 10;
 
-    private Integer pageNum = 10;
+    private Integer pageNum = 1;
 }

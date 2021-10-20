@@ -39,4 +39,11 @@
 		<typeHandler handler="org.apache.ibatis.type.JapaneseDateTypeHandler" />
 	</typeHandlers>
 
+	<plugins>
+		<plugin interceptor="com.github.pagehelper.PageInterceptor">
+			<property name="helperDialect" value="mysql"/>
+			<property name="reasonable" value="true"/>
+		</plugin>
+	</plugins>
+
 </configuration>

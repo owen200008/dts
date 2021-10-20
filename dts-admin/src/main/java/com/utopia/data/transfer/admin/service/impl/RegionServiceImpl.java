@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -26,8 +27,9 @@ public class RegionServiceImpl implements RegionService {
     RegionBeanMapper regionBeanMapper;
 
     @Override
-    public void add(RegionBean regionBean) {
+    public Integer add(RegionBean regionBean) {
         regionBeanMapper.insertSelective(regionBean);
+        return regionBean.getId();
     }
 
     @Override

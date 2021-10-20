@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -42,13 +43,14 @@ public class TaskServiceImpl implements TaskService {
     public static final boolean DEFAULT_STATUS = false;
 
     @Override
-    public void taskAdd(String name) {
+    public Long taskAdd(String name) {
         TaskBean taskBean = new TaskBean();
         taskBean.setName(name);
         taskBean.setCreateTime(LocalDateTime.now());
         taskBean.setModifyTime(LocalDateTime.now());
         taskBean.setValid(DEFAULT_STATUS);
         taskBeanMapper.insert(taskBean);
+        return taskBean.getId();
     }
 
     @Override
@@ -65,7 +67,9 @@ public class TaskServiceImpl implements TaskService {
     public PageRes<List<TaskBean>> taskList(QueryTaskVo queryTaskVo) {
         Page<Object> page = PageHelper.startPage(queryTaskVo.getPageNum(), queryTaskVo.getPageSize(), true);
         TaskBeanDal taskBeanDal = new TaskBeanDal();
-        taskBeanDal.createCriteria().andNameEqualTo(queryTaskVo.getName());
+        if (!StringUtils.isEmpty(queryTaskVo.getName())){
+            taskBeanDal.createCriteria().andNameEqualTo(queryTaskVo.getName());
+        }
         List<TaskBean> taskBeans = taskBeanMapper.selectByExample(taskBeanDal);
         PageRes<List<TaskBean>> pageRes = PageRes.getPage(page.getTotal(), page.getPageSize(), taskBeans);
         return pageRes;
@@ -73,12 +77,13 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @EventCut(key = PathConstants.CONFIG_KEY)
-    public void taskSwitch(Long id,Integer valid) {
+    public int taskSwitch(Long id,Integer valid) {
         TaskBeanDal taskBeanDal = new TaskBeanDal();
         taskBeanDal.createCriteria().andIdEqualTo(id);
         TaskBean taskBean = new TaskBean();
         taskBean.setValid(valid > 0 ? true : false);
-        taskBeanMapper.updateByExampleSelective(taskBean, taskBeanDal);
+        int i = taskBeanMapper.updateByExampleSelective(taskBean, taskBeanDal);
+        return i;
     }
 
     @Override

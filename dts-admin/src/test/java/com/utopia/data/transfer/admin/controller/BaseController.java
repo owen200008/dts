@@ -3,6 +3,8 @@ package com.utopia.data.transfer.admin.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
+import com.utopia.data.transfer.model.code.data.media.DataMediaRuleTarget;
+import com.utopia.data.transfer.model.code.data.media.DataMediaType;
 import com.utopia.data.transfer.model.code.pipeline.PipelineParameter;
 import org.apache.commons.lang3.RandomUtils;
 import org.junit.Before;
@@ -43,7 +45,6 @@ public class BaseController {
 
     @Before
     public void setup() {
-
         mockMVC = MockMvcBuilders.webAppContextSetup(this.wac).build();
     }
 
@@ -53,7 +54,7 @@ public class BaseController {
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("name", "1");
-        params.add("type","12" );
+        params.add("type", DataMediaType.MYSQL.name());
         params.add("username", "1");
         params.add("url", "1");
         params.add("password","1" );
@@ -62,7 +63,7 @@ public class BaseController {
 
 
         MvcResult result = this.mockMVC.perform(
-                MockMvcRequestBuilders.get("/dts/entity/add")
+                MockMvcRequestBuilders.post("/dts/entity/add")
                         .params(params)
                         .accept(MediaType.APPLICATION_JSON)
         ).andReturn();
@@ -188,32 +189,7 @@ public class BaseController {
 
     @Test
     public void testPipelinePairAdd() throws Exception {
-        //pipelineId
-        //通道名称	a=>b
-        //sourceName	String	是	目标映射端名称	a
-        //sourceNamespace	String	是	select数据源 中数据库名	canary1
-        //sourceTable	String	是	select数据源 中数据库中的表名	setting_entity
-        //targetName	String	是	目标映射端名称	b
-        //targetNamespace	String	是	load数据源 中数据库名	canary2
-        //targetTable	String	是	load数据源 中数据库中的表名	setting_entity
-        //rule	String	是	从select数据表中字段到load表中字段的映射规则
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("pipelineId", "11");
-        params.add("sourceName", "sourcename");
-        params.add("sourceTable", "sourceTable");
-        params.add("sourceNamespace", "sourceNamespace");
-        params.add("targetName", "targetName");
-        params.add("targetTable", "targetTable");
-        params.add("targetNamespace", "targetNamespace");
-        params.add("rule", "rule");
 
-        MvcResult result = this.mockMVC.perform(
-                MockMvcRequestBuilders.get("/dts/pipeline/pair/add")
-                        .params(params)
-                        .accept(MediaType.APPLICATION_JSON)
-        ).andReturn();
-        //CdeResponse<User> resp = JSON.parseObject(result,new TypeReference<CodeResponse<User>>(){});
-        System.out.println(result.getResponse().getContentAsString());
 
     }
 

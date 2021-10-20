@@ -1,5 +1,6 @@
 package com.utopia.data.transfer.admin.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.utopia.data.transfer.admin.dao.entity.TaskBean;
 import com.utopia.data.transfer.admin.service.TaskService;
 import com.utopia.data.transfer.admin.vo.PageRes;
@@ -30,8 +31,10 @@ public class DtsTaskController {
 
     @PostMapping("/task/add")
     public UtopiaResponseModel taskAdd(@RequestParam("name")String name){
-        taskSevice.taskAdd(name);
-        return UtopiaResponseModel.success();
+        Long taskId = taskSevice.taskAdd(name);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("taskId",taskId);
+        return UtopiaResponseModel.success(jsonObject);
     }
 
     @PostMapping("/task/delete")
@@ -41,7 +44,7 @@ public class DtsTaskController {
     }
 
     @PostMapping("/task/list")
-    public UtopiaResponseModel<PageRes<List<TaskBean>>> taskList(@Valid QueryTaskVo queryTaskVo){
+    public UtopiaResponseModel<PageRes<List<TaskBean>>> taskList(QueryTaskVo queryTaskVo){
         PageRes<List<TaskBean>> listPageRes = taskSevice.taskList(queryTaskVo);
         return UtopiaResponseModel.success(listPageRes);
     }

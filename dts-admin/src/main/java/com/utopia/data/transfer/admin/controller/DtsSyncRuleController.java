@@ -29,31 +29,31 @@ public class DtsSyncRuleController {
     @Autowired
     SyncRuleService syncRuleService;
 
-    @PostMapping("/sync/add")
+    @PostMapping("/syncRule/add")
     public UtopiaResponseModel<Void> syncRuleAdd(SyncRuleBean syncRuleBean){
         syncRuleService.syncRuleAdd(syncRuleBean);
         return UtopiaResponseModel.success();
     }
 
-    @PostMapping("/sync/get/pipelineId")
+    @PostMapping("/syncRule/get/pipelineId")
     public UtopiaResponseModel<List<SyncRuleBean>> syncRuleGetPipelineId(@RequestParam("pipelineId")Long id){
         List<SyncRuleBean> byPipelineId = syncRuleService.getByPipelineId(id);
         return UtopiaResponseModel.success(byPipelineId);
     }
 
-    @PostMapping("/sync/get")
+    @PostMapping("/syncRule/get")
     public UtopiaResponseModel<SyncRuleBean> syncRuleGet(@RequestParam("id")Long id){
         SyncRuleBean byPipelineId = syncRuleService.syncRuleGet(id);
         return UtopiaResponseModel.success(byPipelineId);
     }
 
-    @PostMapping("/sync/list")
+    @PostMapping("/syncRule/list")
     public UtopiaResponseModel<PageRes<List<SyncRuleBean>>> syncRuleList(QuerySyncRuleVo querySyncRuleVo){
         PageRes<List<SyncRuleBean>> listPageRes = syncRuleService.syncRuleList(querySyncRuleVo);
         return UtopiaResponseModel.success(listPageRes);
     }
 
-    @PostMapping("/sync/delete")
+    @PostMapping("/syncRule/delete")
     public UtopiaResponseModel<Void> syncRuleDelete(@RequestParam("id")Long id){
         syncRuleService.syncRuleDelete(id);
         return UtopiaResponseModel.success();

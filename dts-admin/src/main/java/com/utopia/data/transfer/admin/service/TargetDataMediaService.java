@@ -19,5 +19,5 @@ public interface TargetDataMediaService {
 
     PageRes<List<TargetDataMediaBean>> targetDataMediaList(QueryDataMediaVo queryDataMediaVo);
 
-    void targetDataMediaAdd(TargetDataMediaBean targetDataMediaBean);
+    Long targetDataMediaAdd(TargetDataMediaBean targetDataMediaBean);
 }

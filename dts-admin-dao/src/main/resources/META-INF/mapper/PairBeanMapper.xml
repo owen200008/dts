@@ -93,6 +93,9 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.utopia.data.transfer.admin.dao.entity.PairBean">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
     insert into u_pair (id, pipeline_id, source_datamedia_id, 
       target_datamedia_id)
     values (#{id,jdbcType=BIGINT}, #{pipelineId,jdbcType=BIGINT}, #{sourceDatamediaId,jdbcType=BIGINT}, 

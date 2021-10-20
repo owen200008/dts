@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -60,7 +61,10 @@ public class SourceDataMediaServiceImpl  implements SourceDataMediaService {
     }
 
     @Override
-    public void sourceDataMediaAdd(SourceDataMediaBean sourceDataMediaBean) {
+    public Long sourceDataMediaAdd(SourceDataMediaBean sourceDataMediaBean) {
+        sourceDataMediaBean.setCreateTime(LocalDateTime.now());
+        sourceDataMediaBean.setModifyTime(LocalDateTime.now());
         sourceDataMediaBeanMapper.insert(sourceDataMediaBean);
+        return sourceDataMediaBean.getId();
     }
 }
