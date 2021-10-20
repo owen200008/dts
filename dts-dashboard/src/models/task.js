@@ -51,7 +51,7 @@ export default {
       const json = yield call(addItem, payload);
       if (json.code === 200) {
         message.success("添加成功");
-        callback();
+        callback(json.data);
         yield put({ type: "reload", fetchValue });
       } else {
         message.warn(json.msg || json.data);

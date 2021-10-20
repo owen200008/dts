@@ -1,42 +1,16 @@
-export const regionItems = (req, res) => {
+export const getItem = (req, res) => {
   res.json({
-    "code": "200",
-    "msg": "success",
-    "data":
-      [
-        {
-          "id": 111,
-          "region": "zq-cloud",
-          "mode": "SELECT"
-        },
-        {
-          "id": 111,
-          "region": "zq-cloud2",
-          "mode": "LOAD"
-        }
-      ]
-  })
-}
-
-export const regionItems = (req, res) => {
-  res.json({
-    "code": "200",
-    "msg": "success",
-    "data":
-      [
-        {
-          "id": 111,
-          "region": "zq-cloud",
-          "mode": "SELECT"
-        },
-        {
-          "id": 111,
-          "region": "zq-cloud2",
-          "mode": "LOAD"
-        }
-      ]
-  })
-}
+    "code": '200',
+    "message": "success",
+    "data": {
+      "id": 2,
+      "name": "通道1",
+      "pipelineParams": "",
+      "sourceEntityId": 11111,
+      "targetEntityId": 12222,
+    }
+  });
+};
 
 export const listItems = (req, res) => {
   res.json({
@@ -44,8 +18,8 @@ export const listItems = (req, res) => {
     "message": "success",
     "data": {
       "pageSize": 1,
-      "totalCount": 150,
-      "entityList": [
+      "total": 150,
+      "data": [
         {
           "id": 2,
           "name": "通道1",
@@ -67,5 +41,5 @@ export const listItems = (req, res) => {
 };
 export default {
   listItems,
-  regionItems
+  getItem
 };

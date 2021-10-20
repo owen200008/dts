@@ -4,6 +4,11 @@ import { getNotices } from './mock/notices';
 import * as dataSource from './mock/dataSource';
 import * as task from './mock/task';
 import * as pipeline from './mock/pipeline';
+import * as sourceData from './mock/sourceData';
+import * as targetData from './mock/targetData';
+import * as region from './mock/region';
+import * as pair from './mock/pair';
+import * as sync from './mock/sync';
 import { getUsers } from './mock/user';
 import { getPlatform, platformEnum, userLogin } from './mock/platform'
 import { format, delay } from 'roadhog-api-doc';
@@ -119,7 +124,10 @@ const proxy = {
   },
   'POST /dts/entity/add': {
     $body: {
-      code: 200
+      code: 200,
+      data: {
+        entityId: 222
+      }
     },
   },
   'POST /dts/entity/delete': {
@@ -136,7 +144,10 @@ const proxy = {
   },
   'POST /dts/task/add': {
     $body: {
-      code: 200
+      code: 200,
+      data: {
+        entityId: 222
+      }
     },
   },
   'POST /dts/task/delete': {
@@ -148,6 +159,9 @@ const proxy = {
     $body: {
       code: 200
     },
+  },
+  'POST /dts/pipeline/get': {
+    $body: pipeline.getItem,
   },
   'POST /dts/pipeline/list': {
     $body: pipeline.listItems,
@@ -161,6 +175,108 @@ const proxy = {
       }
     },
   },
+  'POST /dts/pipeline/region/add': {
+    $body: {
+      "code": 200,
+      "msg": "success",
+      "data": {
+        "pipelineId": 1223
+      }
+    },
+  },
+
+  'POST /dts/sourceData/add': {
+    $body: {
+      "code": 200,
+      "msg": "success",
+      "data": {
+        "sourceDataId": 1223
+      }
+    },
+  },
+  'POST /dts/sourceData/list': {
+    $body: sourceData.listItems,
+  },
+  'POST /dts/sourceData/get': {
+    $body: sourceData.getItem,
+  },
+  'POST /dts/sourceData/delete': {
+    $body: {
+      "code": 200,
+    },
+  },
+  'POST /dts/targetData/add': {
+    $body: {
+      "code": 200,
+      "msg": "success",
+      "data": {
+        "sourceDataId": 1223
+      }
+    },
+  },
+  'POST /dts/targetData/list': {
+    $body: targetData.listItems,
+  },
+  'POST /dts/targetData/get': {
+    $body: targetData.getItem,
+  },
+  'POST /dts/targetData/delete': {
+    $body: {
+      "code": 200,
+    },
+  },
+  'POST /dts/region/add': {
+    $body: {
+      "code": 200,
+      "msg": "success",
+      "data": {
+        "sourceDataId": 1223
+      }
+    },
+  },
+  'POST /dts/region/list': {
+    $body: region.listItems,
+  },
+  'POST /dts/region/delete': {
+    $body: {
+      "code": 200,
+    },
+  },
+  'POST /dts/pair/add': {
+    $body: {
+      "code": 200,
+      "msg": "success",
+      "data": {
+        "sourceDataId": 1223
+      }
+    },
+  },
+  'POST /dts/pair/list': {
+    $body: pair.listItems,
+  },
+  'POST /dts/pair/delete': {
+    $body: {
+      "code": 200,
+    },
+  },
+  'POST /dts/sync/add': {
+    $body: {
+      "code": 200,
+      "msg": "success",
+      "data": {
+        "sync": 1223
+      }
+    },
+  },
+  'POST /dts/sync/list': {
+    $body: sync.listItems,
+  },
+  'POST /dts/sync/delete': {
+    $body: {
+      "code": 200,
+    },
+  },
+
 };
 
 export default (noProxy ? {} : delay(proxy, 1000));

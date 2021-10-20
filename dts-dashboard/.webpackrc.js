@@ -10,7 +10,7 @@ export default {
       extraBabelPlugins: ["dva-hmr"]
     }
   },
-  outputPath: path.resolve(__dirname, "../soul-admin/src/main/resources/static"),
+  outputPath: path.resolve(__dirname, "../dts-admin/src/main/resources/static"),
   alias: {
     components: path.resolve(__dirname, "src/components/")
   },
@@ -28,7 +28,7 @@ export default {
   /* proxy: {
     "/": {
       // target: "http://172.26.13.8:8887",
-      target:"http://global-soul-admin.blurams.vip",
+      target:"http://global-dts-admin.blurams.vip",
       changeOrigin: true,
       pathRewrite: { "^/": "" }
     }

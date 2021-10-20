@@ -2,7 +2,7 @@ import { isUrl } from '../utils/utils';
 
 
 const menuData = [
-  /*{
+  /* {
     name: '插件列表',
     icon: 'dashboard',
     path: 'plug',
@@ -48,7 +48,7 @@ const menuData = [
         id: 'springCloud8'
       },
   ],
-},*/
+}, */
   {
     name: '系统管理',
     icon: 'setting',
@@ -59,9 +59,6 @@ const menuData = [
         path: 'manage',
       }, */
       {
-        name: '数据源管理',
-        path: 'dataSource',
-      }, {
         name: '任务管理',
         path: 'task',
       },
@@ -69,27 +66,28 @@ const menuData = [
         name: '通道管理',
         path: 'pipeline',
       },
-      /* {
-        name: 'Hystrix管理',
-        path: 'hystrix',
-      }, {
-        name: 'jar包管理',
-        path: 'jar',
-      }, {
-        name: 'URL管理',
-        path: 'url',
-      }, {
-        name: '网关节点',
-        path: 'nodes',
+      {
+        name: '数据源管理',
+        path: 'dataSource',
       },
       {
-        name: '节点匹配',
-        path: 'matching',
+        name: 'Region管理',
+        path: 'region',
       },
       {
-        name: '配置历史',
-        path: 'configHistory',
-      },*/
+        name: '源数据管理',
+        path: 'sourceData',
+      },
+      {
+        name: '目标数据管理',
+        path: 'targetData',
+      }, {
+        name: '映射关系管理',
+        path: 'pair',
+      }, {
+        name: '同步规则管理',
+        path: 'sync',
+      },
     ],
   },
 ];

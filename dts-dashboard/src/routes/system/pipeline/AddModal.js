@@ -1,5 +1,5 @@
 import React, { PureComponent, Fragment } from "react";
-import { Modal, Form, Switch, Input, Select, Divider } from "antd";
+import { Modal, Form, Switch, Input, Select, Divider, Button } from "antd";
 import { connect } from "dva";
 
 import ace from 'ace-builds'
@@ -7,6 +7,7 @@ import 'ace-builds/webpack-resolver'
 import 'ace-builds/src-noconflict/theme-xcode' // 默认设置的主题
 import 'ace-builds/src-noconflict/mode-json' // 默认设置的语言模式
 import { formatJSON } from "../../../utils/jsonUtil";
+import AddDataSourceModal from '../dataSource/AddModal';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -18,8 +19,25 @@ const FormItem = Form.Item;
   dataSourceList: dataSource.dataList
 }))
 class AddModal extends PureComponent {
+  constructor(props) {
+    super(props);
+    const { sourceEntityId, targetEntityId } = props;
+    this.state = {
+      popup: null,
+      sourceEntityId,
+      targetEntityId
+    }
+  }
 
-  componentDidMount() {
+  componentDidMount () {
+    const { dispatch } = this.props;
+    dispatch({
+      type: "dataSource/fetch",
+      payload: {
+        pageNum: 1,
+        pageSize: 10000
+      }
+    });
     setTimeout(this.initAceEditor, 100);
   }
 
@@ -67,11 +85,48 @@ class AddModal extends PureComponent {
     return jsonDoc;
   }
 
+
+  closeModal = () => {
+    this.setState({ popup: null });
+  };
+
   filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
 
-  render() {
-    let { taskList, dataSourceList, handleCancel, form, id, name, taskId, sourceEntityId, targetEntityId, pipelineParams } = this.props;
+  addDataSource = (key) => {
+    const { dispatch } = this.props;
+    this.setState({
+      popup: (
+        <AddDataSourceModal
+          disabled={false}
+          handleOk={values => {
+            dispatch({
+              type: "dataSource/add",
+              payload: {
+                ...values
+              },
+              fetchValue: {
+                pageNum: 1,
+                pageSize: 10000
+              },
+              callback: ({ entityId }) => {
+                this.setState({
+                  [key]: entityId
+                })
+                this.closeModal();
+              }
+            });
+          }}
+          handleCancel={() => {
+            this.closeModal();
+          }}
+        />
+      )
+    });
+  }
 
+  render() {
+    let { taskList, dataSourceList, handleCancel, form, id, name, taskId, pipelineParams } = this.props;
+    let { sourceEntityId, targetEntityId, popup } = this.state;
     let disable = false;
     if (id) {
       disable = true;
@@ -115,10 +170,10 @@ class AddModal extends PureComponent {
               rules: [{ required: true, message: "请选择任务" }],
               initialValue: taskId
             })(
-              <Select allowClear={true} showSearch={true} filterOption={this.filterOption}>
+              <Select allowClear={true} showSearch={true} filterOption={this.filterOption} disabled>
                 {taskList.map((item, index) => {
                   return (
-                    <Option key={index} value={item.id}>
+                    <Option key={index} value={`${item.id}`}>
                       {item.name}
                     </Option>
                   );
@@ -131,7 +186,7 @@ class AddModal extends PureComponent {
               rules: [{ required: true, message: "请选择同步源" }],
               initialValue: sourceEntityId
             })(
-              <Select allowClear={true} showSearch={true} filterOption={this.filterOption}>
+              <Select style={{ width: '70%' }} allowClear={true} showSearch={true} filterOption={this.filterOption}>
                 {dataSourceList.map((item, index) => {
                   return (
                     <Option key={index} value={item.id}>
@@ -141,13 +196,20 @@ class AddModal extends PureComponent {
                 })}
               </Select>
             )}
+            <Button
+              style={{ marginLeft: 20, marginTop: 0 }}
+              onClick={this.addDataSource.bind(this, 'sourceEntityId')}
+              icon="plus"
+            >
+              添加
+            </Button>
           </FormItem>
           <FormItem label="同步目标" {...formItemLayout}>
             {getFieldDecorator("targetEntityId", {
               rules: [{ required: true, message: "请选择同步目标" }],
               initialValue: targetEntityId// pluginTypeEnums[typePlugin].name
             })(
-              <Select allowClear={true} showSearch={true} filterOption={this.filterOption}>
+              <Select style={{ width: '70%' }} allowClear={true} showSearch={true} filterOption={this.filterOption}>
                 {dataSourceList.map((item, index) => {
                   return (
                     <Option key={index} value={item.id}>
@@ -157,6 +219,13 @@ class AddModal extends PureComponent {
                 })}
               </Select>
             )}
+            <Button
+              style={{ marginLeft: 20, marginTop: 0 }}
+              onClick={this.addDataSource.bind(this, 'targetEntityId')}
+              icon="plus"
+            >
+              添加
+            </Button>
           </FormItem>
           <FormItem label="参数" {...formItemLayout}>
             <div style={{ width: '100%', height: '200px' }} ref="editor">{formatJSON(pipelineParams)}</div>
@@ -184,6 +253,7 @@ class AddModal extends PureComponent {
             })(<Switch/>)}
           </FormItem> */}
         </Form>
+        {popup}
       </Modal>
     );
   }

@@ -5,10 +5,6 @@ import {
   deleteItem,
   getItem,
   listItems,
-  pairAddItem,
-  regionAddItem,
-  regionGetItem,
-  entityGetItem
 } from "../services/pipeline";
 
 export default {
@@ -27,15 +23,15 @@ export default {
       const { payload } = params;
       const json = yield call(listItems, payload);
       if (json.code === 200) {
-        let { totalCount, entityList } = json.data;
-        let dataList = entityList.map(item => {
+        let { total, data } = json.data;
+        let dataList = data.map(item => {
           item.key = item.id;
           return item;
         });
         yield put({
           type: "saveList",
           payload: {
-            total: totalCount,
+            total,
             dataList
           }
         });
@@ -48,26 +44,13 @@ export default {
         callback(json.data);
       }
     },
-    * fetchRegionItem(params, { call }) {
-      const { payload, callback } = params;
-      const json = yield call(regionGetItem, payload);
-      if (json.code === 200) {
-        callback(json.data);
-      }
-    },
-    * fetchEntityItem(params, { call }) {
-      const { payload, callback } = params;
-      const json = yield call(entityGetItem, payload);
-      if (json.code === 200) {
-        callback(json.data);
-      }
-    },
+
     * add(params, { call, put }) {
       const { payload, callback, fetchValue } = params;
       const json = yield call(addItem, payload);
       if (json.code === 200) {
         message.success("添加成功");
-        callback();
+        callback(json.data);
         yield put({ type: "reload", fetchValue });
       } else {
         message.warn(json.msg || json.data);
@@ -86,29 +69,6 @@ export default {
       }
     },
 
-    * pairAdd(params, { call, put }) {
-      const { payload, fetchValue, callback } = params;
-      const json = yield call(pairAddItem, payload);
-      if (json.code === 200) {
-        message.success("添加成功");
-        callback();
-        yield put({ type: "reload", fetchValue });
-      } else {
-        message.warn(json.msg || json.data);
-      }
-    },
-
-    * regionAdd(params, { call, put }) {
-      const { payload, fetchValue, callback } = params;
-      const json = yield call(regionAddItem, payload);
-      if (json.code === 200) {
-        message.success("添加成功");
-        callback();
-        yield put({ type: "reload", fetchValue });
-      } else {
-        message.warn(json.msg || json.data);
-      }
-    },
 
 
     * reload(params, { put }) {

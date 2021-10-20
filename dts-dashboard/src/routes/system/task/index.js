@@ -1,6 +1,7 @@
 import React, { PureComponent } from "react";
 import { Table, Input, Button, Popconfirm, Icon, Col, Row, Breadcrumb, Switch } from "antd";
 import { connect } from "dva";
+import { stringify } from 'qs';
 import AddModal from "./AddModal";
 
 @connect(({ task, loading }) => ({
@@ -182,6 +183,20 @@ export default class Task extends PureComponent {
 
   }
 
+  toPipeline = (item) => {
+    let { dispatch } = this.props;
+    let { id } = item;
+    dispatch({
+      type: 'task/redirect',
+      location: {
+        pathname: '/system/pipeline',
+        search: `?${stringify({
+          id
+        })}`
+      }
+    })
+  };
+
   render() {
 
     const { task, loading } = this.props;
@@ -256,14 +271,14 @@ export default class Task extends PureComponent {
         render: (text, record) => {
           return (
             <div>
-              {/* <Icon
-                title='编辑'
-                type="file"
+              <Icon
+                title='添加通道'
+                type="retweet"
                 style={{ color: 'orange' }}
                 onClick={() => {
-                  this.editClick(record);
+                  this.toPipeline(record);
                 }}
-              /> */}
+              />
               <Popconfirm
                 title="你确认删除吗"
                 placement='bottom'

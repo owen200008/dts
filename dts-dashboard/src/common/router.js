@@ -112,27 +112,27 @@ export const getRouterData = app => {
     },
 
     '/system/pipeline': {
-      component: dynamicWrapper(app, ['dataSource', 'pipeline'], () => import('../routes/system/pipeline')),
+      component: dynamicWrapper(app, ['dataSource', 'pipeline', 'region', 'sourceData', 'targetData', 'pair', 'sync'], () => import('../routes/system/pipeline')),
     },
     '/system/task': {
       component: dynamicWrapper(app, ['task'], () => import('../routes/system/task')),
     },
+    '/system/region': {
+      component: dynamicWrapper(app, ['region'], () => import('../routes/system/region')),
+    },
+    '/system/sourceData': {
+      component: dynamicWrapper(app, ['sourceData'], () => import('../routes/system/sourceData')),
+    },
+    '/system/targetData': {
+      component: dynamicWrapper(app, ['targetData'], () => import('../routes/system/targetData')),
+    },
+    '/system/pair': {
+      component: dynamicWrapper(app, ['pair'], () => import('../routes/system/pair')),
+    },
+    '/system/sync': {
+      component: dynamicWrapper(app, ['sync'], () => import('../routes/system/sync')),
+    },
     /*
-    '/system/url': {
-      component: dynamicWrapper(app, ['url'], () => import('../routes/system/url')),
-    },
-    '/system/rule': {
-      component: dynamicWrapper(app, ['url', 'rule', 'condition'], () => import('../routes/system/rule')),
-    },
-    '/system/matchPluginConfig': {
-      component: dynamicWrapper(app, ['url', 'rule', 'hystrix', 'pluginConfig', 'matchPluginConfig'], () => import('../routes/system/matchPluginConfig')),
-    },
-    '/system/matchAction': {
-      component: dynamicWrapper(app, ['url', 'rule', 'action', 'matchAction'], () => import('../routes/system/matchAction')),
-    },
-    '/system/hystrix': {
-      component: dynamicWrapper(app, ['hystrix'], () => import('../routes/system/hystrix')),
-    },
     '/system/jar': {
       component: dynamicWrapper(app, ['hotload'], () => import('../routes/system/hotload')),
     },
@@ -146,55 +146,55 @@ export const getRouterData = app => {
       component: dynamicWrapper(app, ['auth'], () => import('../routes/system/appAuth')),
     },
 
-'/exception/403': {
-  component: dynamicWrapper(app, [], () => import('../routes/Exception/403')),
+    '/exception/403': {
+      component: dynamicWrapper(app, [], () => import('../routes/Exception/403')),
     },
-'/exception/404': {
-  component: dynamicWrapper(app, [], () => import('../routes/Exception/404')),
+    '/exception/404': {
+      component: dynamicWrapper(app, [], () => import('../routes/Exception/404')),
     },
-'/exception/500': {
-  component: dynamicWrapper(app, [], () => import('../routes/Exception/500')),
+    '/exception/500': {
+      component: dynamicWrapper(app, [], () => import('../routes/Exception/500')),
     },
-'/exception/trigger': {
-  component: dynamicWrapper(app, ['error'], () =>
-    import('../routes/Exception/triggerException')
-  ),
+    '/exception/trigger': {
+      component: dynamicWrapper(app, ['error'], () =>
+        import('../routes/Exception/triggerException')
+      ),
     },
-'/user': {
-  component: dynamicWrapper(app, [], () => import('../layouts/UserLayout')),
+    '/user': {
+      component: dynamicWrapper(app, [], () => import('../layouts/UserLayout')),
     },
-'/user/login': {
-  component: dynamicWrapper(app, ['login'], () => import('../routes/User/Login')),
+    '/user/login': {
+      component: dynamicWrapper(app, ['login'], () => import('../routes/User/Login')),
     }
   };
-// Get name from ./menu.js or just set it in the router data.
-const menuData = getFlatMenuData(getMenuData());
+  // Get name from ./menu.js or just set it in the router data.
+  const menuData = getFlatMenuData(getMenuData());
 
-// Route configuration data
-// eg. {name,authority ...routerConfig }
-const routerData = {};
-// The route matches the menu
-Object.keys(routerConfig).forEach(path => {
-  // Regular match item name
-  // eg.  router /user/:id === /user/chen
-  const pathRegexp = pathToRegexp(path);
-  const menuKey = Object.keys(menuData).find(key => pathRegexp.test(`${key}`));
-  let menuItem = {};
-  // If menuKey is not empty
-  if (menuKey) {
-    menuItem = menuData[menuKey];
-  }
-  let router = routerConfig[path];
-  // If you need to configure complex parameter routing,
-  // https://github.com/ant-design/ant-design-pro-site/blob/master/docs/router-and-nav.md#%E5%B8%A6%E5%8F%82%E6%95%B0%E7%9A%84%E8%B7%AF%E7%94%B1%E8%8F%9C%E5%8D%95
-  // eg . /list/:type/user/info/:id
-  router = {
-    ...router,
-    name: router.name || menuItem.name,
-    authority: router.authority || menuItem.authority,
-    hideInBreadcrumb: router.hideInBreadcrumb || menuItem.hideInBreadcrumb,
-  };
-  routerData[path] = router;
-});
-return routerData;
+  // Route configuration data
+  // eg. {name,authority ...routerConfig }
+  const routerData = {};
+  // The route matches the menu
+  Object.keys(routerConfig).forEach(path => {
+    // Regular match item name
+    // eg.  router /user/:id === /user/chen
+    const pathRegexp = pathToRegexp(path);
+    const menuKey = Object.keys(menuData).find(key => pathRegexp.test(`${key}`));
+    let menuItem = {};
+    // If menuKey is not empty
+    if (menuKey) {
+      menuItem = menuData[menuKey];
+    }
+    let router = routerConfig[path];
+    // If you need to configure complex parameter routing,
+    // https://github.com/ant-design/ant-design-pro-site/blob/master/docs/router-and-nav.md#%E5%B8%A6%E5%8F%82%E6%95%B0%E7%9A%84%E8%B7%AF%E7%94%B1%E8%8F%9C%E5%8D%95
+    // eg . /list/:type/user/info/:id
+    router = {
+      ...router,
+      name: router.name || menuItem.name,
+      authority: router.authority || menuItem.authority,
+      hideInBreadcrumb: router.hideInBreadcrumb || menuItem.hideInBreadcrumb,
+    };
+    routerData[path] = router;
+  });
+  return routerData;
 };

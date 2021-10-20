@@ -1,7 +1,7 @@
 import request from "../utils/request";
 
 const baseUrl = document.getElementById("httpPath").innerHTML;
-
+self.CACHE_MEMORY = self.CACHE_MEMORY || {};
 
 export async function addItem(params) {
   return request(`${baseUrl}/dts/pipeline/add`, {
@@ -22,14 +22,21 @@ export async function deleteItem(params) {
 }
 
 export async function getItem(params) {
+  let key = `pipeline_id_${params.pipelineId}`;
+
+  if (self.CACHE_MEMORY[key]) return Promise.resolve(self.CACHE_MEMORY[key]);
   return request(`${baseUrl}/dts/pipeline/get`, {
     method: `POST`,
     body: {
       ...params
     }
-  });
+  }).then(resp => {
+    if (resp.code === '200') {
+      self.CACHE_MEMORY[key] = resp;
+    }
+    return resp;
+  })
 }
-
 export async function listItems(params) {
   return request(`${baseUrl}/dts/pipeline/list`, {
     method: `POST`,
@@ -39,38 +46,4 @@ export async function listItems(params) {
   });
 }
 
-export async function pairAddItem(params) {
-  return request(`${baseUrl}/dts/pipeline/pair/add`, {
-    method: `POST`,
-    body: {
-      ...params
-    }
-  });
-}
 
-export async function regionAddItem(params) {
-  return request(`${baseUrl}/dts/pipeline/region/add`, {
-    method: `POST`,
-    body: {
-      ...params
-    }
-  });
-}
-
-export async function regionGetItem(params) {
-  return request(`${baseUrl}/dts/region/get/pipeline`, {
-    method: `POST`,
-    body: {
-      ...params
-    }
-  });
-}
-
-export async function entityGetItem(params) {
-  return request(`${baseUrl}/dts/entity/get/pipeline`, {
-    method: `POST`,
-    body: {
-      ...params
-    }
-  });
-}
