@@ -15,13 +15,13 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @Slf4j
-@RequestMapping("/dts")
+@RequestMapping
 public class DtrUserController {
 
     public final static  String NAME = "admin";
     public final static  String PASS = "admin";
 
-    @PostMapping("/login")
+    @PostMapping("/dts/login")
     public UtopiaResponseModel userLogin(
             @RequestParam("username")String username,
             @RequestParam("password")String password
