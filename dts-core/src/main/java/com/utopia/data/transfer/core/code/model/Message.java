@@ -16,6 +16,7 @@
 
 package com.utopia.data.transfer.core.code.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -23,7 +24,7 @@ import java.util.List;
  * 
  * @author jianghang 2012-7-31 下午02:43:08
  */
-public class Message<T> {
+public class Message<T> implements Serializable {
 
     private Long    id;
     /**

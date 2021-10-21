@@ -127,6 +127,9 @@ public class SelectTaskImpl extends TaskImpl {
         try {
             arbitrateEventService.getPipelineEventService().waitSelectResource(pipelineId);
 
+            //先启动dispatch
+            this.selectDispatchRule.start(this);
+
             // 启动selector
             // 获取对应的selector
             SelectDataFactory extension = UtopiaExtensionLoader.getExtensionLoader(SelectDataFactory.class).getExtension(sourceEntityDesc.getType().name());
@@ -135,8 +138,6 @@ public class SelectTaskImpl extends TaskImpl {
                 throw new ServiceException(ErrorCode.SELECT_RULE_NO_SELECT_DATA);
             }
             this.selectDataRule = extension.createSelectDataRule(pipelineId);
-
-
 
             processThread = new Thread(() -> {
                 String currentName = Thread.currentThread().getName();
