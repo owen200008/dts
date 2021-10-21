@@ -169,13 +169,17 @@ export default class Task extends PureComponent {
     const { dispatch } = this.props;
     const { name, type, currentPage } = this.state;
     dispatch({
+      type: "task/updateItem",
+      payload: params,
+    });
+    dispatch({
       type: "task/switchItem",
       payload: params,
-      fetchValue: {
+      /* fetchValue: {
         name, type,
         pageNum: currentPage,
         pageSize: this.pageSize
-      },
+      }, */
       callback: () => {
         this.setState({ selectedRowKeys: [] });
       }

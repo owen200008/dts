@@ -39,3 +39,11 @@ export async function listItems(params) {
   });
 }
 
+export async function listItemsById(params) {
+  return request(`${baseUrl}/dts/sync/get/pipelineId`, {
+    method: `POST`,
+    body: {
+      ...params
+    }
+  });
+}

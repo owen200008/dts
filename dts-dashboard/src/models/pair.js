@@ -5,6 +5,7 @@ import {
   deleteItem,
   getItem,
   listItems,
+  listItemsById
 } from "../services/pair";
 import * as pipeline from '../services/pipeline';
 import * as sourceData from '../services/sourceData';
@@ -25,7 +26,7 @@ export default {
     * fetch(params, { call, put }) {
       const { payload } = params;
       const json = yield call(listItems, payload);
-      if (json.code === 200) {
+      if (json.code === '200') {
         let { total, data } = json.data;
         let promiseArr = (data.map(async item => {
           item.key = item.id;
@@ -52,10 +53,18 @@ export default {
         });
       }
     },
+    * fetchById(params, { call }) {
+      const { payload, callback } = params;
+      const json = yield call(listItemsById, payload);
+      if (json.code === '200') {
+        callback(json.data)
+      }
+
+    },
     * fetchItem(params, { call }) {
       const { payload, callback } = params;
       const json = yield call(getItem, payload);
-      if (json.code === 200) {
+      if (json.code === "200") {
         const plugin = json.data;
         callback(plugin);
       }
@@ -63,7 +72,7 @@ export default {
     * add(params, { call, put }) {
       const { payload, callback, fetchValue } = params;
       const json = yield call(addItem, payload);
-      if (json.code === 200) {
+      if (json.code === '200') {
         message.success("添加成功");
         callback(json.data);
         if (fetchValue) yield put({ type: "reload", fetchValue });
@@ -75,7 +84,7 @@ export default {
     * delete(params, { call, put }) {
       const { payload, fetchValue, callback } = params;
       const json = yield call(deleteItem, payload);
-      if (json.code === 200) {
+      if (json.code === '200') {
         message.success("删除成功");
         callback();
         yield put({ type: "reload", fetchValue });

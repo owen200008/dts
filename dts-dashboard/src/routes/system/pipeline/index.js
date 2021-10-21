@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import { Table, Input, Button, Popconfirm, Icon, Col, Row, Breadcrumb, Select } from "antd";
+import { Table, Input, Button, Popconfirm, Icon, Col, Row, Breadcrumb, Select, Descriptions } from "antd";
 import { connect } from "dva";
 import { parse } from "qs";
 import AddModal from "./AddModal";
@@ -273,21 +273,167 @@ export default class Pipeline extends PureComponent {
     });
   };
 
-
   onTableExpand = (expanded, record) => {
-    console.info(record);
+    const { loading, id } = record;
+    if (!expanded || loading && loading !== 3) return;
+    let payload = {
+      pipelineId: id
+    };
+    this.updateItem({ id, loading: 1 });
+    const { dispatch } = this.props;
+    Promise.all([
+      new Promise((resolve) => {
+        dispatch({
+          type: 'sync/fetchById',
+          payload,
+          callback: resolve
+        })
+      }),
+      new Promise((resolve) => {
+        dispatch({
+          type: 'region/fetchById',
+          payload,
+          callback: resolve
+        })
+      }),
+      new Promise((resolve) => {
+        dispatch({
+          type: 'pair/fetchById',
+          payload,
+          callback: resolve
+        })
+      }).then(pair => {
+        return Promise.all([
+          new Promise((resolve) => {
+            dispatch({
+              type: 'sourceData/fetchItem',
+              payload: { sourceId: pair.sourceDatamediaId },
+              callback: resolve
+            })
+          }),
+          new Promise((resolve) => {
+            dispatch({
+              type: 'targetData/fetchItem',
+              payload: { sourceId: pair.targetDatamediaId },
+              callback: resolve
+            })
+          }),
+        ]);
+      }),
+      new Promise((resolve) => {
+        dispatch({
+          type: 'dataSource/fetchItem',
+          payload: {
+            id: record.sourceEntityId
+          },
+          callback: resolve
+        })
+      }),
+      new Promise((resolve) => {
+        dispatch({
+          type: 'dataSource/fetchItem',
+          payload: {
+            id: record.targetEntityId
+          },
+          callback: resolve
+        })
+      })
+    ]).then(([sync, region, pair, sourceEntity, targetEntity]) => {
+      this.updateItem({
+        id,
+        loading: 2,
+        extraInfo: {
+          sync, region, pair, sourceEntity, targetEntity
+        }
+      });
+    }).catch(() => {
+      this.updateItem({
+        id,
+        loading: 3
+      });
+    });
   }
 
-  expandedRowRender = record => <p>{record.description}</p>
+  expandedRowRender = record => {
+    const { loading, extraInfo } = record;
+    if (loading === 2) {
+      const { sync, region, pair, sourceEntity, targetEntity } = extraInfo;
+      let syncList = sync.map(item => {
+        item.key = item.id;
+        return item;
+      })
+      return (
+        <p>
+          <Descriptions style={{ marginBottom: 20 }} title="数据源" size="small">
+            <Descriptions.Item label="同步源">{sourceEntity.name}</Descriptions.Item>
+            <Descriptions.Item label="同步目标">{targetEntity.name}</Descriptions.Item>
+          </Descriptions>
+          <Descriptions style={{ marginBottom: 20 }} title="Region" size="small">
+            <Descriptions.Item label={region[0].mode}>{region[0].region}</Descriptions.Item>
+            <Descriptions.Item label={region[1].mode}>{region[1].region}</Descriptions.Item>
+          </Descriptions>
+          <Descriptions style={{ marginBottom: 20 }} title="数据映射关系" size="small">
+            <Descriptions.Item label="源数据">{pair[0].name}</Descriptions.Item>
+            <Descriptions.Item label="目标数据">{pair[1].name}</Descriptions.Item>
+          </Descriptions>
+          <Descriptions title="同步规则" size="small">
+            <Descriptions.Item>
+              <Table
+                size="small"
+                bordered
+                columns={[{
+                  align: "center",
+                  title: "同步规则类型",
+                  dataIndex: "syncRuleType",
+                  key: "syncRuleType",
+                },
+                {
+                  align: "center",
+                  title: "数据库名",
+                  dataIndex: "namespace",
+                  key: "namespace",
+                },
+                {
+                  align: "center",
+                  title: "数据表名",
+                  dataIndex: "table",
+                  key: "table",
+                },
+                {
+                  align: "center",
+                  title: "同步位置标识",
+                  dataIndex: "startGtid",
+                  key: "startGtid",
+                },]}
+                dataSource={syncList}
+                pagination={false}
+              />
+            </Descriptions.Item>
+          </Descriptions>
+        </p>
+      );
+    } else if (loading === 3) {
+      return <p>加载失败，请重试</p>
+    }
+    return <p>加载中……</p>
+
+  }
+
+  updateItem(payload) {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'pipeline/updateItem',
+      payload,
+    })
+  }
 
 
   render() {
 
-    const { pipeline, task, dataSource, loading } = this.props;
+    const { pipeline, task, loading } = this.props;
     const { dataList } = pipeline;
     let { taskId, popup } = this.state;
     const taskList = task.dataList;
-    const dataSourceList = dataSource.dataList;
 
     const tableColumns = [
       {
@@ -328,7 +474,7 @@ export default class Pipeline extends PureComponent {
                 }}
               />
               <Icon
-                title='添加数据映射'
+                title='添加同步规则'
                 type="profile"
                 style={{ marginLeft: 20, color: 'green' }}
                 onClick={() => {

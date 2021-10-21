@@ -2,7 +2,7 @@
 
 export const listItems = (req, res) => {
   res.json({
-    "code": 200,
+    "code": '200',
     "message": "success",
     "data": {
       "pageSize": 1,
@@ -24,6 +24,32 @@ export const listItems = (req, res) => {
     },
   });
 };
+
+export const listItemsById = (req, res) => {
+  res.json({
+    "code": "200",
+    "msg": "",
+    "data":
+      [
+        {
+          "id": 111,
+          "pipelineId": 22,
+          "sourceDatamediaId": 33,
+          "targetDatamediaId": 44
+        },
+        {
+          "id": 111,
+          "pipelineId": 22,
+          "sourceDatamediaId": 33,
+          "targetDatamediaId": 44
+        }
+
+      ]
+
+  });
+};
+
 export default {
   listItems,
+  listItemsById
 };
