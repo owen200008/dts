@@ -13,6 +13,7 @@ import java.io.Serializable;
 @Data
 public class DispatchParamter implements Serializable {
     private String dispatchRule;
+    private Boolean transferFullData;
     private String dispatchSelectParam;
     private String dispatchLoadParam;
 }

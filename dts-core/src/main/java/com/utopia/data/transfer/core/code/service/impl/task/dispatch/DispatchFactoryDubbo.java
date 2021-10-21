@@ -19,6 +19,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -51,6 +52,7 @@ public class DispatchFactoryDubbo implements DispatchFactory {
 
     public static class SelectDispatchDubbo implements SelectDispatchRule {
 
+        private Boolean transferFullData;
         private LoadTransferFacade loadTransferFacade;
 
         public SelectDispatchDubbo(String dispatchRuleParam) {
@@ -59,6 +61,11 @@ public class DispatchFactoryDubbo implements DispatchFactory {
 
         @Override
         public boolean start(SelectTaskImpl selectTask) {
+            this.transferFullData = selectTask.getPipeline().getParams().getDispatchParamter().getTransferFullData();
+            if(Objects.isNull(this.transferFullData)){
+                this.transferFullData = false;
+            }
+
             ReferenceConfig<LoadTransferFacade> reference = new ReferenceConfig();
             reference.setInterface(LoadTransferFacade.class);
             reference.setVersion(TRANSFER_VERSION);
@@ -78,7 +85,11 @@ public class DispatchFactoryDubbo implements DispatchFactory {
         public CompletableFuture<UtopiaResponseModel> dispatch(Pipeline pipeline, Message<EventDataTransaction> message) {
             //根据pipeline获取服务
             try{
-                return loadTransferFacade.transfer(new Message(message.getId(), transferTransfer(message.getDatas())));
+                if(this.transferFullData){
+                    return loadTransferFacade.inner(message);
+                }else{
+                    return loadTransferFacade.transfer(new Message(message.getId(), transferTransfer(message.getDatas())));
+                }
             }catch(Throwable e){
                 log.error("dispatch error", e);
             }
