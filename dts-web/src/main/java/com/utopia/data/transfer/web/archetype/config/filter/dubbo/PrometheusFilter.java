@@ -31,8 +31,7 @@ public class PrometheusFilter implements Filter {
   }
 
   public Iterable<Tag> getTags(Invoker<?> invoker, Invocation invocation) {
-    return Tags.of(Tag.of("interface", invoker.getInterface().getName()),
-            Tag.of("method", invocation.getMethodName()),
-            Tag.of("group", (String)invocation.getObjectAttachments().get("group")));
+    return Tags.of(Tag.of("interface", invoker.getUrl().getServiceKey()),
+            Tag.of("method", invocation.getMethodName()));
   }
 }

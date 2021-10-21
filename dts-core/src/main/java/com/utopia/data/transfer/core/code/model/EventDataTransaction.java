@@ -1,5 +1,6 @@
 package com.utopia.data.transfer.core.code.model;
 
+import com.utopia.data.transfer.model.code.transfer.EventDataTransactionInterface;
 import com.utopia.data.transfer.model.code.transfer.TransferUniqueDesc;
 import lombok.Data;
 
@@ -13,7 +14,7 @@ import java.util.List;
  * @alter_date
  */
 @Data
-public class EventDataTransaction implements Serializable {
+public class EventDataTransaction implements EventDataTransactionInterface, Serializable {
 
     private TransferUniqueDesc                  gtid;
     private List<EventData>                     datas;

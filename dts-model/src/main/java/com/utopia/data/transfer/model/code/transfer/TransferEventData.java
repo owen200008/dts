@@ -6,7 +6,6 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -16,7 +15,7 @@ import java.util.List;
  * @alter_date
  */
 @Data
-public class TransferEventData implements Serializable {
+public class TransferEventData implements EventDataInterface, Serializable {
     /**
      * dts内部维护的一套tableId，与manager中得到的table Id对应
      */

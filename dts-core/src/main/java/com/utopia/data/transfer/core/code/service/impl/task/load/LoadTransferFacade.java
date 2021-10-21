@@ -1,6 +1,8 @@
 package com.utopia.data.transfer.core.code.service.impl.task.load;
 
-import com.utopia.data.transfer.model.code.transfer.TransferData;
+import com.utopia.data.transfer.core.code.model.EventDataTransaction;
+import com.utopia.data.transfer.core.code.model.Message;
+import com.utopia.data.transfer.model.code.transfer.TransferEventDataTransaction;
 import com.utopia.model.rsp.UtopiaResponseModel;
 
 import java.util.concurrent.CompletableFuture;
@@ -16,5 +18,12 @@ public interface LoadTransferFacade {
      * 传输
      * @return
      */
-    CompletableFuture<UtopiaResponseModel> transfer(TransferData transferData);
+    CompletableFuture<UtopiaResponseModel> transfer(Message<TransferEventDataTransaction> transferData);
+
+    /**
+     * 内部传输
+     * @param message
+     * @return
+     */
+    CompletableFuture<UtopiaResponseModel> inner(Message<EventDataTransaction> message);
 }

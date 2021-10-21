@@ -104,7 +104,7 @@ public class TransferUniqueDesc {
         return true;
     }
 
-    public String getWriteString(){
+    public String createUniqueWriteString(){
         StringBuilder ret = new StringBuilder();
         ret.append(this.key);
         ret.append(SIGN_SPLITE);

@@ -1,6 +1,8 @@
 package com.utopia.data.transfer.core.code.service.impl.task.load.db;
 
 import com.alibaba.fastjson.JSON;
+import com.utopia.data.transfer.core.code.model.EventDataTransaction;
+import com.utopia.data.transfer.core.code.model.Message;
 import com.utopia.data.transfer.model.archetype.ServiceException;
 import com.utopia.data.transfer.model.archetype.ErrorCode;
 import com.utopia.data.transfer.core.code.service.impl.task.load.LoadRun;
@@ -12,7 +14,8 @@ import com.utopia.data.transfer.model.code.data.media.DataMediaRulePair;
 import com.utopia.data.transfer.model.code.entity.EntityDesc;
 import com.utopia.data.transfer.model.code.entity.EventColumn;
 import com.utopia.data.transfer.model.code.pipeline.Pipeline;
-import com.utopia.data.transfer.model.code.transfer.TransferData;
+import com.utopia.data.transfer.model.code.transfer.EventDataInterface;
+import com.utopia.data.transfer.model.code.transfer.EventDataTransactionInterface;
 import com.utopia.data.transfer.model.code.transfer.TransferEventData;
 import com.utopia.data.transfer.model.code.transfer.TransferEventDataTransaction;
 import com.utopia.extension.UtopiaExtensionLoader;
@@ -72,24 +75,34 @@ public class LoadRunDB implements LoadRun {
         }
 
         @Override
-        public UtopiaErrorCodeClass load(TransferData transferData) {
+        public UtopiaErrorCodeClass load(Message<TransferEventDataTransaction> transferData) {
+            return loadImpl(transferData);
+        }
+
+        @Override
+        public UtopiaErrorCodeClass loadInner(Message<EventDataTransaction> message) {
+            return loadImpl(message);
+        }
+
+        protected UtopiaErrorCodeClass loadImpl(Message<? extends EventDataTransactionInterface> message){
             //首先判断如果是同源的话
             switch(sourceEntityDesc.getType()){
                 case MYSQL:
-                    return loadDb(transferData);
+                    return loadDb(message);
 
             }
             return ErrorCode.LOAD_SOURCE_DATA_NO_SUPPORT;
         }
 
-        protected UtopiaErrorCodeClass loadDb(TransferData transferData){
-            List<TransferEventDataTransaction> transferEventData = transferData.getTransferEventData();
+        protected UtopiaErrorCodeClass loadDb(Message<? extends EventDataTransactionInterface> transferData){
+            List<? extends EventDataTransactionInterface> datas = transferData.getDatas();
+
 
             //首先基于数据分组
             boolean isDdl = false;
             List<TransferEventDataTransactionGroup> ayList = new ArrayList();
-            List<TransferEventDataTransaction> subTransaction = new ArrayList();
-            for (TransferEventDataTransaction transferEventDatum : transferEventData) {
+            List<EventDataTransactionInterface> subTransaction = new ArrayList();
+            for (EventDataTransactionInterface transferEventDatum : datas) {
                 if(this.syncRuleItem.filter(transferEventDatum.getGtid())){
                     //过滤已经执行的
                     continue;
@@ -148,9 +161,9 @@ public class LoadRunDB implements LoadRun {
             LobCreator lobCreator = dbDialect.getLobHandler().getLobCreator();
             try {
                 return dbDialect.getTransactionTemplate().execute(status -> {
-                    List<TransferEventDataTransaction> ayList = transferEventData.getAyList();
-                    for (TransferEventDataTransaction transferEventDataTransaction : ayList) {
-                        for (final TransferEventData data : transferEventDataTransaction.getDatas()) {
+                    List<EventDataTransactionInterface> ayList = transferEventData.getAyList();
+                    for (EventDataTransactionInterface transferEventDataTransaction : ayList) {
+                        for (final EventDataInterface data : transferEventDataTransaction.getDatas()) {
                             try{
                                 DataMediaRulePair cacheSourcePairesBySourceId = pipeline.getCacheSourcePairesBySourceId(data.getTableId());
 
@@ -186,11 +199,11 @@ public class LoadRunDB implements LoadRun {
         }
 
         private UtopiaErrorCodeClass doDdl(TransferEventDataTransactionGroup transferEventData) {
-            List<TransferEventDataTransaction> ayList = transferEventData.getAyList();
+            List<EventDataTransactionInterface> ayList = transferEventData.getAyList();
             //ddl 不支持回滚，只要有失败就全失败
             try {
-                for (TransferEventDataTransaction transferEventDataTransaction : ayList) {
-                    for (TransferEventData data : transferEventDataTransaction.getDatas()) {
+                for (EventDataTransactionInterface transferEventDataTransaction : ayList) {
+                    for (EventDataInterface data : transferEventDataTransaction.getDatas()) {
                         UtopiaErrorCodeClass execute = dbDialect.getJdbcTemplate().execute((StatementCallback<UtopiaErrorCodeClass>) statement -> {
                             if (dbDialect instanceof MysqlDialect && StringUtils.isNotEmpty(data.getDdlSchemaName())) {
                                 // 解决当数据库名称为关键字如"Order"的时候,会报错,无法同步
@@ -213,7 +226,7 @@ public class LoadRunDB implements LoadRun {
                 throw new ServiceException(ErrorCode.LOAD_DDL_RUN_ERROR);
             }
         }
-        protected TransferEventDataTransactionGroup createGroup(boolean isDdl, List<TransferEventDataTransaction> subTransaction) {
+        protected TransferEventDataTransactionGroup createGroup(boolean isDdl, List<EventDataTransactionInterface> subTransaction) {
             TransferEventDataTransactionGroup group = new TransferEventDataTransactionGroup();
             group.setDdl(isDdl);
             group.setAyList(subTransaction);
@@ -279,9 +292,9 @@ public class LoadRunDB implements LoadRun {
          *
          * @return
          */
-        private boolean isDdlDatas(TransferEventDataTransaction eventDatas) {
+        private boolean isDdlDatas(EventDataTransactionInterface eventDatas) {
             boolean result = false;
-            for (TransferEventData eventData : eventDatas.getDatas()) {
+            for (EventDataInterface eventData : eventDatas.getDatas()) {
                 result |= eventData.getEventType().isDdl();
                 if (result && !eventData.getEventType().isDdl()) {
                     throw new ServiceException(ErrorCode.LOAD_DDL_DATA_ERROR.getCode(), "ddl/dml can't be in one batch, it's may be a bug , pls submit issues.");

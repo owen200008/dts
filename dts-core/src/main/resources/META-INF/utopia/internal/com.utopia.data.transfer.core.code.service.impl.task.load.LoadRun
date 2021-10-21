@@ -1,1 +1,2 @@
 MYSQL=com.utopia.data.transfer.core.code.service.impl.task.load.db.LoadRunDB
+KAFKA=com.utopia.data.transfer.core.code.service.impl.task.load.db.LoadRunKafka

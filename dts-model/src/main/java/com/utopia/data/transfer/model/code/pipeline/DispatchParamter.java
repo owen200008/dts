@@ -13,5 +13,6 @@ import java.io.Serializable;
 @Data
 public class DispatchParamter implements Serializable {
     private String dispatchRule;
-    private String dispatchRuleParam;
+    private String dispatchSelectParam;
+    private String dispatchLoadParam;
 }

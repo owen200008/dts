@@ -1,7 +1,9 @@
 package com.utopia.data.transfer.core.code.service.impl.task;
 
-import com.utopia.data.transfer.core.code.service.impl.task.load.LoadDispatchFactory;
-import com.utopia.data.transfer.core.code.service.impl.task.load.LoadDispatchRule;
+import com.utopia.data.transfer.core.code.model.EventDataTransaction;
+import com.utopia.data.transfer.core.code.model.Message;
+import com.utopia.data.transfer.core.code.service.impl.task.dispatch.DispatchFactory;
+import com.utopia.data.transfer.core.code.service.impl.task.dispatch.LoadDispatchRule;
 import com.utopia.data.transfer.model.archetype.ServiceException;
 import com.utopia.data.transfer.model.archetype.ErrorCode;
 import com.utopia.data.transfer.core.code.service.ArbitrateEventService;
@@ -10,16 +12,13 @@ import com.utopia.data.transfer.core.code.service.impl.TaskImpl;
 import com.utopia.data.transfer.core.code.service.impl.task.load.LoadRun;
 import com.utopia.data.transfer.core.code.service.impl.task.load.LoadTransferFacade;
 import com.utopia.data.transfer.model.code.pipeline.DispatchParamter;
-import com.utopia.data.transfer.model.code.transfer.TransferData;
+import com.utopia.data.transfer.model.code.pipeline.Pipeline;
+import com.utopia.data.transfer.model.code.transfer.TransferEventDataTransaction;
 import com.utopia.exception.UtopiaRunTimeException;
 import com.utopia.extension.UtopiaExtensionLoader;
-import com.utopia.log.BasicLogUtil;
 import com.utopia.model.rsp.UtopiaErrorCodeClass;
 import com.utopia.model.rsp.UtopiaResponseModel;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.config.spring.ServiceBean;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
@@ -46,7 +45,6 @@ public class LoadTaskImpl extends TaskImpl implements LoadTransferFacade {
 
     private LoadTaskPrometheus loadTaskPrometheus;
 
-    // 运行调度控制
     private volatile boolean            isStart             = false;
     private volatile long               lastUpdateTime      = System.currentTimeMillis();
 
@@ -55,23 +53,25 @@ public class LoadTaskImpl extends TaskImpl implements LoadTransferFacade {
     }
 
     @Override
-    public void startTask(Long pipelineId) {
-        super.startTask(pipelineId);
+    public boolean startTask(Long pipelineId) {
+        Pipeline pipeline = configService.getPipeline(pipelineId);
+
         loadTaskPrometheus = new LoadTaskPrometheus(pipelineId);
 
         DispatchParamter selectParamter = pipeline.getParams().getDispatchParamter();
 
-        LoadDispatchFactory extension = UtopiaExtensionLoader.getExtensionLoader(LoadDispatchFactory.class)
+        DispatchFactory extension = UtopiaExtensionLoader.getExtensionLoader(DispatchFactory.class)
                 .getExtension(selectParamter.getDispatchRule());
         if(Objects.isNull(extension)) {
-            log.error("loadDispatchRule find {}", selectParamter.getDispatchRule());
+            log.error("no loadDispatchRule find {}", selectParamter.getDispatchRule());
             throw new UtopiaRunTimeException(ErrorCode.LOAD_RULE_NO_FIND);
         }
-        this.loadDispatchRule = extension.create(selectParamter.getDispatchRuleParam());
+        this.loadDispatchRule = extension.createLoadDispatchRule(selectParamter.getDispatchLoadParam());
         if(this.loadDispatchRule == null) {
-            log.error("no loadDispatchRule find {}", selectParamter.getDispatchRule());
+            log.error("LoadDispatchRule init fail {} {}", selectParamter.getDispatchRule(), selectParamter.getDispatchLoadParam());
             throw new UtopiaRunTimeException(ErrorCode.LOAD_RULE_CREATE_FAIL);
         }
+        return super.startTask(pipelineId);
     }
 
     @Override
@@ -173,26 +173,35 @@ public class LoadTaskImpl extends TaskImpl implements LoadTransferFacade {
     }
 
     @Override
-    public CompletableFuture<UtopiaResponseModel> transfer(TransferData transferData) {
-//                    //首先判断是否还允许load
-////                    //开始select的时间
-////                    long startTime = System.currentTimeMillis();
-////                    //10s取一次一定执行完成
-////                    if(lastUpdateTime + pipeline.getParams().getResourceTimeout() * 1000
-////                            - pipeline.getParams().getProcessTimeout() * 1000
-////                            - 1000 <= startTime) {
-////                        //如果时间不够的话
-////                        return CompletableFuture.completedFuture(false);
-////                    }
-////
-////                    return null;
-        Thread.currentThread().setName(createTaskName(pipelineId, "DubboWorker"));
+    public CompletableFuture<UtopiaResponseModel> transfer(Message<TransferEventDataTransaction> transferData) {
+        Thread.currentThread().setName(createTaskName(pipelineId, "TransferWorker"));
         if(!running){
             return CompletableFuture.completedFuture(CLOSED);
         }
 
         try{
             UtopiaErrorCodeClass load = loadRun.load(transferData);
+            if(load.getCode() != ErrorCode.CODE_SUCCESS.getCode()){
+                loadTaskPrometheus.getLoadError().increment();
+                return CompletableFuture.completedFuture(UtopiaResponseModel.fail(load));
+            }
+        } catch(ServiceException e){
+            loadTaskPrometheus.getLoadException().increment();
+            log.error("load exception {}", e.getCode(), e);
+            return CompletableFuture.completedFuture(EXCEPTION);
+        }
+        return CompletableFuture.completedFuture(SUCCESS);
+    }
+
+    @Override
+    public CompletableFuture<UtopiaResponseModel> inner(Message<EventDataTransaction> message) {
+        Thread.currentThread().setName(createTaskName(pipelineId, "InnerWorker"));
+        if(!running){
+            return CompletableFuture.completedFuture(CLOSED);
+        }
+
+        try{
+            UtopiaErrorCodeClass load = loadRun.loadInner(message);
             if(load.getCode() != ErrorCode.CODE_SUCCESS.getCode()){
                 loadTaskPrometheus.getLoadError().increment();
                 return CompletableFuture.completedFuture(UtopiaResponseModel.fail(load));

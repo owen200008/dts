@@ -4,6 +4,7 @@ import com.utopia.data.transfer.core.code.service.impl.task.load.db.DbRuleTempla
 import com.utopia.data.transfer.core.code.service.impl.task.load.db.SqlRunTemplate;
 import com.utopia.data.transfer.model.code.data.media.DataMediaRulePair;
 import com.utopia.data.transfer.model.code.entity.EventColumn;
+import com.utopia.data.transfer.model.code.transfer.EventDataInterface;
 import com.utopia.data.transfer.model.code.transfer.TransferEventData;
 import com.utopia.string.UtopiaStringUtil;
 import org.springframework.util.CollectionUtils;
@@ -24,7 +25,7 @@ public class DbRuleMapping implements DbRuleTemplate {
     private static final String SQL_SPLITE = ",";
 
     @Override
-    public List<SqlRunTemplate> create(DataMediaRulePair pair, TransferEventData data) {
+    public List<SqlRunTemplate> create(DataMediaRulePair pair, EventDataInterface data) {
         List<SqlRunTemplate> ret = new ArrayList<>();
         if(data.getEventType().isInsert()){
             //insert

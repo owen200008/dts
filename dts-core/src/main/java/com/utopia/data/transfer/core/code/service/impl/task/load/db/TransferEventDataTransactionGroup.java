@@ -1,6 +1,6 @@
 package com.utopia.data.transfer.core.code.service.impl.task.load.db;
 
-import com.utopia.data.transfer.model.code.transfer.TransferEventDataTransaction;
+import com.utopia.data.transfer.model.code.transfer.EventDataTransactionInterface;
 import lombok.Data;
 
 import java.util.List;
@@ -14,5 +14,5 @@ import java.util.List;
 @Data
 public class TransferEventDataTransactionGroup {
     private boolean isDdl;
-    private List<TransferEventDataTransaction> ayList;
+    private List<EventDataTransactionInterface> ayList;
 }

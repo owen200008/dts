@@ -20,10 +20,12 @@ package com.utopia.data.transfer.model.code.data.media;
  * @author jianghang 2011-9-2 上午11:36:21
  */
 public enum DataMediaType {
-    /** mysql DB */
-    MYSQL,;
-
-    public boolean isMysql() {
-        return this == DataMediaType.MYSQL;
-    }
+    /**
+     * mysql DB
+     * */
+    MYSQL,
+    /**
+     * kafka
+     */
+    KAFKA;
 }

@@ -88,7 +88,7 @@ public class DbSyncRuleMapping implements SyncRuleTemplate {
             sql.append(" set gtid = ? where pipeline_id = ?");
             //更新数据库
             dbDialect.getJdbcTemplate().update(sql.toString(), ps->{
-                StatementCreatorUtils.setParameterValue(ps, 1, Types.VARCHAR, null, start.getWriteString());
+                StatementCreatorUtils.setParameterValue(ps, 1, Types.VARCHAR, null, start.createUniqueWriteString());
                 StatementCreatorUtils.setParameterValue(ps, 2, Types.BIGINT, null, this.pipelineId.intValue());
             });
         }

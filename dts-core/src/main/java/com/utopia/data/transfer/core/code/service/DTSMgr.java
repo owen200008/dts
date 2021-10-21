@@ -197,7 +197,11 @@ public class DTSMgr implements UtopiaShutdownHook.ShutdownCallbackFunc, LocalCac
                     //分配给自己的任务
                     if(stageTypeStringEntry.getValue().equals(selfRegion)) {
                         Task task = taskFactory.createTaskByType(stageTypeStringEntry.getKey());
-                        task.startTask(nodeTask.getId());
+                        if(!task.startTask(nodeTask.getId())){
+                            log.error("pipeline {} start fail task = {} ", nodeTask.getId(), stageTypeStringEntry.getKey().name());
+                            task.shutdown();
+                            continue;
+                        }
                         loadingCacheTasks.put(stageTypeStringEntry.getKey(), task);
                         log.info("pipeline {} start this task = {} success", nodeTask.getId(), stageTypeStringEntry.getKey().name());
                     }

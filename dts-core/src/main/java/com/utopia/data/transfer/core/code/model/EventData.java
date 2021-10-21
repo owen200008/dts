@@ -2,6 +2,7 @@ package com.utopia.data.transfer.core.code.model;
 
 import com.utopia.data.transfer.model.code.entity.EventColumn;
 import com.utopia.data.transfer.model.code.event.EventType;
+import com.utopia.data.transfer.model.code.transfer.EventDataInterface;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -15,7 +16,7 @@ import java.util.Map;
  * @alter_date
  */
 @Data
-public class EventData implements Serializable {
+public class EventData implements EventDataInterface, Serializable {
 
     /**
      * dts内部维护的一套tableId，与manager中得到的table Id对应

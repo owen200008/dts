@@ -1,9 +1,9 @@
-package com.utopia.data.transfer.core.code.service.impl.task.select;
+package com.utopia.data.transfer.core.code.service.impl.task.dispatch;
 
 import com.utopia.data.transfer.core.code.model.EventDataTransaction;
 import com.utopia.data.transfer.core.code.model.Message;
+import com.utopia.data.transfer.core.code.service.impl.task.SelectTaskImpl;
 import com.utopia.data.transfer.model.code.pipeline.Pipeline;
-import com.utopia.extension.UtopiaSPI;
 import com.utopia.model.rsp.UtopiaResponseModel;
 
 import java.util.concurrent.CompletableFuture;
@@ -14,13 +14,12 @@ import java.util.concurrent.CompletableFuture;
  * @alter_author
  * @alter_date
  */
-@UtopiaSPI
 public interface SelectDispatchRule {
     /**
      * 初始化
-     * @param dispatchRuleParam
+     * @param selectTask
      */
-    boolean init(String dispatchRuleParam);
+    boolean start(SelectTaskImpl selectTask);
 
     /**
      *

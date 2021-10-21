@@ -2,11 +2,9 @@ package com.utopia.data.transfer.core.code.service.impl;
 
 import com.utopia.data.transfer.core.code.service.ArbitrateEventService;
 import com.utopia.data.transfer.core.code.service.ConfigService;
-import com.utopia.data.transfer.core.code.service.MessageParser;
 import com.utopia.data.transfer.core.code.service.Task;
 import com.utopia.data.transfer.model.code.entity.EntityDesc;
 import com.utopia.data.transfer.model.code.pipeline.Pipeline;
-import com.utopia.extension.UtopiaSPIInject;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ClassUtils;
@@ -46,7 +44,7 @@ public abstract class TaskImpl implements Runnable, Task {
     }
 
     @Override
-    public void startTask(Long pipelineId) {
+    public boolean startTask(Long pipelineId) {
         this.pipelineId = pipelineId;
         this.pipeline = configService.getPipeline(pipelineId);
         this.sourceEntityDesc = configService.getEntityDesc(this.pipeline.getSourceEntityId());
@@ -55,6 +53,7 @@ public abstract class TaskImpl implements Runnable, Task {
         thread.setName(createTaskName(pipelineId, ClassUtils.getShortClassName(this.getClass())));
 
         thread.start();
+        return true;
     }
 
     @Override
@@ -85,6 +84,4 @@ public abstract class TaskImpl implements Runnable, Task {
         }
         return false;
     }
-
-
 }

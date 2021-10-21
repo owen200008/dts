@@ -1,6 +1,7 @@
 package com.utopia.data.transfer.core.code.service.impl.task;
 
 import com.alibaba.fastjson.JSON;
+import com.utopia.data.transfer.core.code.service.impl.task.dispatch.DispatchFactory;
 import com.utopia.data.transfer.core.code.service.impl.task.select.SelectDataFactory;
 import com.utopia.data.transfer.core.code.service.impl.task.select.SelectDataRule;
 import com.utopia.data.transfer.model.archetype.ErrorCode;
@@ -9,7 +10,7 @@ import com.utopia.data.transfer.core.code.model.Message;
 import com.utopia.data.transfer.core.code.service.ArbitrateEventService;
 import com.utopia.data.transfer.core.code.service.ConfigService;
 import com.utopia.data.transfer.core.code.service.impl.TaskImpl;
-import com.utopia.data.transfer.core.code.service.impl.task.select.SelectDispatchRule;
+import com.utopia.data.transfer.core.code.service.impl.task.dispatch.SelectDispatchRule;
 import com.utopia.data.transfer.model.archetype.ServiceException;
 import com.utopia.data.transfer.model.code.pipeline.Pipeline;
 import com.utopia.data.transfer.model.code.pipeline.DispatchParamter;
@@ -54,23 +55,25 @@ public class SelectTaskImpl extends TaskImpl {
     }
 
     @Override
-    public void startTask(Long pipelineId) {
+    public boolean startTask(Long pipelineId) {
         selectTaskPrometheus = new SelectTaskPrometheus(pipelineId);
         Pipeline pipeline = configService.getPipeline(pipelineId);
 
         DispatchParamter selectParamter = pipeline.getParams().getDispatchParamter();
         //
-        this.selectDispatchRule = UtopiaExtensionLoader.getExtensionLoader(SelectDispatchRule.class)
+        DispatchFactory extension = UtopiaExtensionLoader.getExtensionLoader(DispatchFactory.class)
                 .getExtension(selectParamter.getDispatchRule());
-        if(this.selectDispatchRule == null) {
+        if(Objects.isNull(extension)) {
             log.error("no SelectDispatchRule find {}", selectParamter.getDispatchRule());
             throw new UtopiaRunTimeException(ErrorCode.SELECT_RULE_NO_FIND);
         }
-        if(!this.selectDispatchRule.init(selectParamter.getDispatchRuleParam())){
-            log.error("SelectDispatchRule init fail {} {}", selectParamter.getDispatchRule(), selectParamter.getDispatchRuleParam());
+
+        this.selectDispatchRule = extension.createSelectDispatchRule(selectParamter.getDispatchSelectParam());
+        if(this.selectDispatchRule == null) {
+            log.error("SelectDispatchRule init fail {} {}", selectParamter.getDispatchRule(), selectParamter.getDispatchSelectParam());
             throw new UtopiaRunTimeException(ErrorCode.SELECT_RULE_INIT_FAIL);
         }
-        super.startTask(pipelineId);
+        return super.startTask(pipelineId);
     }
 
     @Override
