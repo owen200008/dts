@@ -3,7 +3,7 @@ package com.utopia.data.transfer.admin.vo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.omg.PortableInterceptor.INACTIVE;
+
 
 /**
  * describe:
