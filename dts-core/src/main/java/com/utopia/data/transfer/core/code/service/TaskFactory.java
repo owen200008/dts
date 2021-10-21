@@ -23,11 +23,6 @@ public class TaskFactory {
     @Autowired
     private ArbitrateEventService arbitrateEventService;
 
-    @Autowired
-    private ApplicationContext applicationContext;
-    @Autowired
-    private ApplicationEventPublisher applicationEventPublisher;
-
     /**
      * 开始
      */
@@ -36,7 +31,7 @@ public class TaskFactory {
             case SELECT:
                 return new SelectTaskImpl(configService, arbitrateEventService);
             case LOAD:
-                return new LoadTaskImpl(configService, arbitrateEventService, applicationContext, applicationEventPublisher);
+                return new LoadTaskImpl(configService, arbitrateEventService);
         }
         return null;
     }

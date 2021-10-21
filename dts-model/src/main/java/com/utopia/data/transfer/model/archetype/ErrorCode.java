@@ -40,6 +40,8 @@ public class ErrorCode extends BaseErrorCode {
 
     public final static UtopiaErrorCodeClass LOAD_DML_RUN_ERROR = new UtopiaErrorCodeClass(24389, "");
 
+    public final static UtopiaErrorCodeClass LOAD_RULE_CREATE_FAIL = new UtopiaErrorCodeClass(24393, "");
+    public final static UtopiaErrorCodeClass LOAD_RULE_NO_FIND = new UtopiaErrorCodeClass(24394, "");
     public final static UtopiaErrorCodeClass LOAD_CREATE_SYNCRULE_ERR = new UtopiaErrorCodeClass(24395, "");
     public final static UtopiaErrorCodeClass LOAD_CREATE_ERR = new UtopiaErrorCodeClass(24396, "");
     public final static UtopiaErrorCodeClass LOAD_DDL_RUN_ERROR = new UtopiaErrorCodeClass(24397, "");

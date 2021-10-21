@@ -1,5 +1,6 @@
 package com.utopia.data.transfer.core.code.service.impl.task.select.dispatch;
 
+import com.utopia.data.transfer.core.code.service.impl.task.load.dispatch.LoadDispatchFactoryDubbo;
 import com.utopia.data.transfer.model.archetype.ErrorCode;
 import com.utopia.data.transfer.core.code.model.EventDataTransaction;
 import com.utopia.data.transfer.core.code.model.Message;
@@ -45,7 +46,7 @@ public class SelectDispatchDubbo implements SelectDispatchRule {
         try{
             LoadTransferFacade loadTransferFacade = mapTransfer.get(pipeline.getId());
             if(Objects.isNull(loadTransferFacade)){
-                loadTransferFacade = getFacadeObject(LoadTransferFacade.class, LoadTaskImpl.TRANSFER_VERSION, String.valueOf(pipeline.getId()));
+                loadTransferFacade = getFacadeObject(LoadTransferFacade.class, LoadDispatchFactoryDubbo.TRANSFER_VERSION, String.valueOf(pipeline.getId()));
                 if(Objects.isNull(loadTransferFacade)) {
                     log.error("no facade find {}", pipeline.getId());
                     return CompletableFuture.completedFuture(DUBBO_FACADE_ERROR);

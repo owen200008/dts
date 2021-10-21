@@ -12,7 +12,7 @@ import com.utopia.data.transfer.core.code.service.impl.TaskImpl;
 import com.utopia.data.transfer.core.code.service.impl.task.select.SelectDispatchRule;
 import com.utopia.data.transfer.model.archetype.ServiceException;
 import com.utopia.data.transfer.model.code.pipeline.Pipeline;
-import com.utopia.data.transfer.model.code.pipeline.SelectParamter;
+import com.utopia.data.transfer.model.code.pipeline.DispatchParamter;
 import com.utopia.exception.UtopiaRunTimeException;
 import com.utopia.extension.UtopiaExtensionLoader;
 import com.utopia.model.rsp.UtopiaResponseModel;
@@ -58,7 +58,7 @@ public class SelectTaskImpl extends TaskImpl {
         selectTaskPrometheus = new SelectTaskPrometheus(pipelineId);
         Pipeline pipeline = configService.getPipeline(pipelineId);
 
-        SelectParamter selectParamter = pipeline.getParams().getSelectParamter();
+        DispatchParamter selectParamter = pipeline.getParams().getDispatchParamter();
         //
         this.selectDispatchRule = UtopiaExtensionLoader.getExtensionLoader(SelectDispatchRule.class)
                 .getExtension(selectParamter.getDispatchRule());

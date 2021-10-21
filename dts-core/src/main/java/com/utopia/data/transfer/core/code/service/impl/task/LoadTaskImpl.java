@@ -1,5 +1,7 @@
 package com.utopia.data.transfer.core.code.service.impl.task;
 
+import com.utopia.data.transfer.core.code.service.impl.task.load.LoadDispatchFactory;
+import com.utopia.data.transfer.core.code.service.impl.task.load.LoadDispatchRule;
 import com.utopia.data.transfer.model.archetype.ServiceException;
 import com.utopia.data.transfer.model.archetype.ErrorCode;
 import com.utopia.data.transfer.core.code.service.ArbitrateEventService;
@@ -7,6 +9,7 @@ import com.utopia.data.transfer.core.code.service.ConfigService;
 import com.utopia.data.transfer.core.code.service.impl.TaskImpl;
 import com.utopia.data.transfer.core.code.service.impl.task.load.LoadRun;
 import com.utopia.data.transfer.core.code.service.impl.task.load.LoadTransferFacade;
+import com.utopia.data.transfer.model.code.pipeline.DispatchParamter;
 import com.utopia.data.transfer.model.code.transfer.TransferData;
 import com.utopia.exception.UtopiaRunTimeException;
 import com.utopia.extension.UtopiaExtensionLoader;
@@ -37,14 +40,9 @@ public class LoadTaskImpl extends TaskImpl implements LoadTransferFacade {
     private static UtopiaResponseModel EXCEPTION = UtopiaResponseModel.fail(ErrorCode.LOAD_RUN_EXCEPTION);
     private static UtopiaResponseModel CLOSED = UtopiaResponseModel.fail(ErrorCode.LOAD_RUN_CLOSED);
 
-    public static String TRANSFER_VERSION = "1.0.0";
-
-    private final ApplicationContext applicationContext;
-    private final ApplicationEventPublisher applicationEventPublisher;
-
-    private ServiceBean<LoadTransferFacade> serviceBean;
-
     private LoadRun.LoadRunItem loadRun;
+
+    private LoadDispatchRule loadDispatchRule;
 
     private LoadTaskPrometheus loadTaskPrometheus;
 
@@ -52,18 +50,28 @@ public class LoadTaskImpl extends TaskImpl implements LoadTransferFacade {
     private volatile boolean            isStart             = false;
     private volatile long               lastUpdateTime      = System.currentTimeMillis();
 
-    public LoadTaskImpl(ConfigService configService, ArbitrateEventService arbitrateEventService,
-                        ApplicationContext applicationContext,
-                        ApplicationEventPublisher applicationEventPublisher) {
+    public LoadTaskImpl(ConfigService configService, ArbitrateEventService arbitrateEventService) {
         super(configService, arbitrateEventService);
-        this.applicationContext = applicationContext;
-        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     @Override
     public void startTask(Long pipelineId) {
         super.startTask(pipelineId);
         loadTaskPrometheus = new LoadTaskPrometheus(pipelineId);
+
+        DispatchParamter selectParamter = pipeline.getParams().getDispatchParamter();
+
+        LoadDispatchFactory extension = UtopiaExtensionLoader.getExtensionLoader(LoadDispatchFactory.class)
+                .getExtension(selectParamter.getDispatchRule());
+        if(Objects.isNull(extension)) {
+            log.error("loadDispatchRule find {}", selectParamter.getDispatchRule());
+            throw new UtopiaRunTimeException(ErrorCode.LOAD_RULE_NO_FIND);
+        }
+        this.loadDispatchRule = extension.create(selectParamter.getDispatchRuleParam());
+        if(this.loadDispatchRule == null) {
+            log.error("no loadDispatchRule find {}", selectParamter.getDispatchRule());
+            throw new UtopiaRunTimeException(ErrorCode.LOAD_RULE_CREATE_FAIL);
+        }
     }
 
     @Override
@@ -109,27 +117,7 @@ public class LoadTaskImpl extends TaskImpl implements LoadTransferFacade {
         }
     }
 
-    public static <T> ServiceBean<T> createGlobalService(ApplicationContext applicationContext,
-                                                         ApplicationEventPublisher applicationEventPublisher,
-                                                         Class<T> create,
-                                                         String version,
-                                                         String group){
-        ServiceBean<T> tmpService = new ServiceBean();
-        // 弱类型接口名
-        tmpService.setApplicationEventPublisher(applicationEventPublisher);
-        tmpService.setApplicationContext(applicationContext);
-        tmpService.setInterface(create);
-        tmpService.setBeanName("dts");
-        tmpService.setVersion(version);
-        tmpService.setGroup(group);
-        try {
-            tmpService.afterPropertiesSet();
-            return tmpService;
-        } catch (Exception e) {
-            BasicLogUtil.errorFormat(log, "dubbo dts afterPropertiesSet error", e);
-        }
-        return null;
-    }
+
 
     private boolean startup() {
         //获取资源
@@ -143,15 +131,11 @@ public class LoadTaskImpl extends TaskImpl implements LoadTransferFacade {
             }
             this.loadRun = extension.createItem(pipeline, sourceEntityDesc, targetEntityDesc);
             if(this.loadRun == null){
-                log.error("get load extension createItem error {}", String.valueOf(this.targetEntityDesc.getType()));
+                log.error("get load extension createItem error {}", this.targetEntityDesc.getType());
                 throw new UtopiaRunTimeException(ErrorCode.LOAD_GET_EXTENSION_FAIL);
             }
 
-            //启动dubbo服务
-            serviceBean = createGlobalService(applicationContext, applicationEventPublisher, LoadTransferFacade.class, TRANSFER_VERSION, String.valueOf(pipelineId));
-
-            serviceBean.setRef(this);
-            serviceBean.export();
+            loadDispatchRule.start(this);
 
             isStart = true;
             return true;
@@ -169,8 +153,7 @@ public class LoadTaskImpl extends TaskImpl implements LoadTransferFacade {
     private void stopup() {
         if (isStart) {
             //先注销
-            serviceBean.unexport();
-            serviceBean = null;
+            loadDispatchRule.stop();
 
             this.loadRun.close();
             this.loadRun = null;

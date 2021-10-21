@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @alter_date
  */
 @Data
-public class SelectParamter implements Serializable {
+public class DispatchParamter implements Serializable {
     private String dispatchRule;
     private String dispatchRuleParam;
 }
