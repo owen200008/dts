@@ -4,6 +4,7 @@ import com.utopia.string.UtopiaStringUtil;
 import lombok.Data;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.Objects;
  * @alter_date
  */
 @Data
-public class TransferUniqueDesc {
+public class TransferUniqueDesc implements Serializable {
     private static String SIGN_SPLITE = ":";
 
     private String key;
