@@ -25,7 +25,7 @@ export default {
     * fetch(params, { call, put }) {
       const { payload } = params;
       const json = yield call(getAllActions, payload);
-      if (json.code === 200) {
+      if (json.code === '200') {
         let { page, dataList } = json.data;
 
         let arr = [];
@@ -36,7 +36,7 @@ export default {
         let pluginData = {};
 
         respArr.forEach(item => {
-          if (item.code === 200) {
+          if (item.code === '200') {
             let list = item.data.dataList || [];
             list.forEach(o => {              
                 pluginData[o.id] = o.name;
@@ -62,7 +62,7 @@ export default {
     * add(params, { call, put }) {
       const { payload, callback, fetchValue } = params;
       const json = yield call(addAction, payload);
-      if (json.code === 200) {
+      if (json.code === '200') {
         message.success("添加成功");
         callback();
         yield put({ type: "reload", fetchValue });
@@ -72,7 +72,7 @@ export default {
     },
     * changeStatus({ payload }, { call, put }) {
       const json = yield call(updateAction, payload);
-      if (json.code === 200) {
+      if (json.code === '200') {
         message.success("修改成功");
         yield put({
           type: "updataActions",
@@ -86,7 +86,7 @@ export default {
       const { payload, fetchValue, callback } = params;
       const { id } = payload;
       const json = yield call(deleteAction, { id });
-      if (json.code === 200) {
+      if (json.code === '200') {
         message.success("删除成功");
         callback();
         yield put({ type: "reload", fetchValue });
@@ -97,7 +97,7 @@ export default {
     * update(params, { call, put }) {
       const { payload, callback, fetchValue } = params;
       const json = yield call(updateAction, payload);
-      if (json.code === 200) {
+      if (json.code === '200') {
         message.success("修改成功");
         callback();
         yield put({ type: "reload", fetchValue });

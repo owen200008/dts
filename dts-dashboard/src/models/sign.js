@@ -26,7 +26,7 @@ export default {
   effects: {
     *fetchSelector({ payload }, { call, put }) {
       const json = yield call(getAllSelectors, { ...payload});
-      if (json.code === 200) {
+      if (json.code === '200') {
         let { page, dataList } = json.data;
         dataList = dataList.map(item => {
           item.key = item.id;
@@ -61,7 +61,7 @@ export default {
     },
     *fetchRule({ payload }, { call, put }) {
       const json = yield call(getAllRules, payload);
-      if (json.code === 200) {
+      if (json.code === '200') {
         let { page, dataList } = json.data;
         dataList = dataList.map(item => {
           item.key = item.id;
@@ -79,7 +79,7 @@ export default {
     *addSelector(params, { call, put }) {
       const { payload, callback, fetchValue } = params;
       const json = yield call(addSelector, payload);
-      if (json.code === 200) {
+      if (json.code === '200') {
         message.success("添加成功");
         callback();
         yield put({ type: "reload", fetchValue });
@@ -91,7 +91,7 @@ export default {
     *addRule(params, { call, put }) {
       const { payload, callback, fetchValue } = params;
       const json = yield call(addRule, payload);
-      if (json.code === 200) {
+      if (json.code === '200') {
         message.success("添加成功");
         callback();
         yield put({ type: "reloadRule", fetchValue });
@@ -103,7 +103,7 @@ export default {
     *fetchSeItem(params, { call }) {
       const { payload, callback } = params;
       const json = yield call(findSelector, payload);
-      if (json.code === 200) {
+      if (json.code === '200') {
         const selector = json.data;
         callback(selector);
       }
@@ -112,7 +112,7 @@ export default {
       const { payload, fetchValue } = params;
       const { list } = payload;
       const json = yield call(deleteSelector, { list });
-      if (json.code === 200) {
+      if (json.code === '200') {
         message.success("删除成功");
         yield put({
           type: "saveRule",
@@ -129,7 +129,7 @@ export default {
     *updateSelector(params, { call, put }) {
       const { payload, callback, fetchValue } = params;
       const json = yield call(updateSelector, payload);
-      if (json.code === 200) {
+      if (json.code === '200') {
         message.success("修改成功");
         callback();
         yield put({ type: "reloadRule", fetchValue });
@@ -141,7 +141,7 @@ export default {
       const { payload, fetchValue } = params;
       const { list } = payload;
       const json = yield call(deleteRule, { list });
-      if (json.code === 200) {
+      if (json.code === '200') {
         message.success("删除成功");
         yield put({ type: "reloadRule", fetchValue });
       } else {
@@ -151,7 +151,7 @@ export default {
     *fetchRuleItem(params, { call }) {
       const { payload, callback } = params;
       const json = yield call(findRule, payload);
-      if (json.code === 200) {
+      if (json.code === '200') {
         const rule = json.data;
         callback(rule);
       }
@@ -159,7 +159,7 @@ export default {
     *updateRule(params, { call, put }) {
       const { payload, callback, fetchValue } = params;
       const json = yield call(updateRule, payload);
-      if (json.code === 200) {
+      if (json.code === '200') {
         message.success("修改成功");
         callback();
         yield put({ type: "reload", fetchValue });

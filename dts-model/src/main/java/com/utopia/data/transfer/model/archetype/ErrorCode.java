@@ -49,6 +49,7 @@ public class ErrorCode extends BaseErrorCode {
     public final static UtopiaErrorCodeClass LOAD_GET_EXTENSION_FAIL = new UtopiaErrorCodeClass(24399, "");
     public final static  UtopiaErrorCodeClass PARSE_OBJECT_FAIL = new UtopiaErrorCodeClass(24400, "");
 
+    public static final UtopiaErrorCodeClass LOGIN_FAIL = new UtopiaErrorCodeClass(24493,"login fail");
     public final static UtopiaErrorCodeClass SELECT_RULE_NO_SELECT_DATA = new UtopiaErrorCodeClass(24494, "");
 
     public final static UtopiaErrorCodeClass SELECT_DISPATH_EXCEPTION = new UtopiaErrorCodeClass(24495, "");

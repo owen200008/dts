@@ -22,7 +22,7 @@ export default {
     * fetch(params, { call, put }) {
       const { payload } = params;
       const json = yield call(listItems, payload);
-      if (json.code === 200) {
+      if (json.code === '200') {
         let { totalCount, entityList } = json.data;
         let dataList = entityList.map(item => {
           item.key = item.id;
@@ -40,16 +40,16 @@ export default {
     * switchItem(params, { call, put }) {
       const { payload, callback, fetchValue } = params;
       const json = yield call(switchItem, payload);
-      if (json.code === 200) {
+      if (json.code === '200') {
         callback(json.data);
-        yield put({ type: "reload", fetchValue });
+        if (fetchValue) yield put({ type: "reload", fetchValue });
       }
     },
 
     * add(params, { call, put }) {
       const { payload, callback, fetchValue } = params;
       const json = yield call(addItem, payload);
-      if (json.code === 200) {
+      if (json.code === '200') {
         message.success("添加成功");
         callback(json.data);
         yield put({ type: "reload", fetchValue });
@@ -61,7 +61,7 @@ export default {
     * delete(params, { call, put }) {
       const { payload, fetchValue, callback } = params;
       const json = yield call(deleteItem, payload);
-      if (json.code === 200) {
+      if (json.code === '200') {
         message.success("删除成功");
         callback();
         yield put({ type: "reload", fetchValue });
@@ -85,11 +85,11 @@ export default {
         total: payload.total
       };
     },
-    updataItem(state, { payload }) {
+    updateItem(state, { payload }) {
       let dataList = state.dataList;
       dataList = dataList.map((item) => {
         if (item.id === payload.id) {
-          item.enabled = payload.enabled;
+          item.valid = payload.valid;
         }
         return item;
       })

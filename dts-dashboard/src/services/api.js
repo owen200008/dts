@@ -1,4 +1,4 @@
-import {stringify} from "qs";
+import { stringify } from "qs";
 import request from "../utils/request";
 
 const baseUrl = document.getElementById("httpPath").innerHTML;
@@ -36,12 +36,12 @@ export async function updateUser(params) {
 
 /* 查询所有用户 */
 export async function getAllUsers(params) {
-  const {userName, currentPage, pageSize} = params;
+  const { userName, currentPage, pageSize } = params;
   let myParams = params;
   if (userName) {
     myParams = params;
   } else {
-    myParams = {currentPage, pageSize};
+    myParams = { currentPage, pageSize };
   }
   return request(`${baseUrl}/dashboardUser?${stringify(myParams)}`, {
     method: `GET`
@@ -52,5 +52,17 @@ export async function getAllUsers(params) {
 export async function findUser(params) {
   return request(`${baseUrl}/dashboardUser/${params.id}`, {
     method: `GET`
+  });
+}
+
+
+/* 登录 */
+export async function queryLogin(params) {
+  // ?${stringify(params)}
+  return request(`${baseUrl}/dts/login`, {
+    method: `POST`,
+    body: {
+      ...params
+    }
   });
 }

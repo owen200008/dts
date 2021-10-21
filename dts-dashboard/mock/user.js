@@ -1,6 +1,6 @@
 export const getUsers = () => {
   return {
-    code: 200,
+    code: '200',
     data: {
       page: {
         currentPage: 1,

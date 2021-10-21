@@ -22,7 +22,7 @@ export default {
     * fetch(params, { call, put }) {
       const { payload } = params;
       const json = yield call(listItems, payload);
-      if (json.code === 200) {
+      if (json.code === '200') {
         let { total, data } = json.data;
         let dataList = data.map(item => {
           item.key = item.id;
@@ -40,7 +40,7 @@ export default {
     * fetchItem(params, { call }) {
       const { payload, callback } = params;
       const json = yield call(getItem, payload);
-      if (json.code === 200) {
+      if (json.code === '200') {
         callback(json.data);
       }
     },
@@ -48,7 +48,7 @@ export default {
     * add(params, { call, put }) {
       const { payload, callback, fetchValue } = params;
       const json = yield call(addItem, payload);
-      if (json.code === 200) {
+      if (json.code === '200') {
         message.success("添加成功");
         callback(json.data);
         yield put({ type: "reload", fetchValue });
@@ -60,7 +60,7 @@ export default {
     * delete(params, { call, put }) {
       const { payload, fetchValue, callback } = params;
       const json = yield call(deleteItem, payload);
-      if (json.code === 200) {
+      if (json.code === '200') {
         message.success("删除成功");
         callback();
         yield put({ type: "reload", fetchValue });
@@ -79,17 +79,19 @@ export default {
 
   reducers: {
     saveList(state, { payload }) {
+
       return {
         ...state,
         dataList: payload.dataList,
         total: payload.total
       };
     },
-    updataItem(state, { payload }) {
+    updateItem(state, { payload }) {
       let dataList = state.dataList;
       dataList = dataList.map((item) => {
         if (item.id === payload.id) {
-          item.enabled = payload.enabled;
+          item.extraInfo = payload.extraInfo;
+          item.loading = payload.loading;
         }
         return item;
       })
