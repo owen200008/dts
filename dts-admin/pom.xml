@@ -76,10 +76,6 @@
 
         <dependency>
             <groupId>com.utopia</groupId>
-            <artifactId>utopia-log-starter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.utopia</groupId>
             <artifactId>utopia-log-logback</artifactId>
         </dependency>
         <dependency>

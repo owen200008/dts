@@ -51,6 +51,7 @@ public class RegionServiceImpl implements RegionService {
         if (queryRegionVo.getRegion() != null) {
             regionBeanDal.createCriteria().andRegionEqualTo(queryRegionVo.getRegion());
         }
+        regionBeanDal.setOrderByClause(" create_time");
         List<RegionBean> regionBeans = regionBeanMapper.selectByExample(regionBeanDal);
         PageRes<List<RegionBean>> pageRes = PageRes.getPage(page.getTotal(), page.getPageSize(), regionBeans);
         return pageRes;

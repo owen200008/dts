@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 
 /**
  * describe:
@@ -24,5 +25,16 @@ public class CommonUtil {
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         T res = mapper.readValue(reqJson,tClass);
         return res;
+    }
+
+
+    public static <T> boolean fieldAllowClass(String fieldName,T t){
+        Field[] fields = t.getClass().getFields();
+        for (Field field : fields) {
+            if (field.getName().equals(fieldName)){
+                return true;
+            }
+        }
+        return false;
     }
 }

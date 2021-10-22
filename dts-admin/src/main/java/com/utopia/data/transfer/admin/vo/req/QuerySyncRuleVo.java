@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class QuerySyncRuleVo {
 
 
-    private Integer pageSize = 1;
+    private Integer pageSize = 10;
 
-    private Integer pageNum = 10;
+    private Integer pageNum = 1;
 }

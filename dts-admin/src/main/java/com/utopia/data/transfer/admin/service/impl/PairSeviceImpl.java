@@ -60,8 +60,8 @@ public class PairSeviceImpl implements PairService {
         Page<Object> page = PageHelper.startPage(queryPairVo.getPageNum(), queryPairVo.getPageSize(), true);
 
         PairBeanDal pairBeanDal = new PairBeanDal();
+        pairBeanDal.setOrderByClause(" create_time");
         List<PairBean> pairBeans = pairBeanMapper.selectByExample(pairBeanDal);
-
         PageRes<List<PairBean>> pageRes = PageRes.getPage(page.getTotal(), page.getPageSize(), pairBeans);
 
         return pageRes;

@@ -59,6 +59,7 @@ public class TargetDataMediaServiceImpl implements TargetDataMediaService {
         if (StringUtils.isNotBlank(queryDataMediaVo.getName())){
             targetDataMediaBeanDal.createCriteria().andNameEqualTo(queryDataMediaVo.getName());
         }
+        targetDataMediaBeanDal.setOrderByClause(" create_time");
         List<TargetDataMediaBean> targetDataMediaBeans = targetDataMediaBeanMapper.selectByExample(targetDataMediaBeanDal);
         PageRes<List<TargetDataMediaBean>> pageRes = PageRes.getPage(page.getTotal(), page.getPageSize(), targetDataMediaBeans);
         return pageRes;

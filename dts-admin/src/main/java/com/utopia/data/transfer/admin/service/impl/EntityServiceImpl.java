@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -78,6 +79,16 @@ public class EntityServiceImpl implements EntityService {
         EntityBeanDal.Criteria criteria = entityBeanDal.createCriteria();
         if (Objects.nonNull(queryEntityVo.getName())){
             criteria.andNameEqualTo(queryEntityVo.getName());
+        }
+        if (Objects.nonNull(queryEntityVo.getField()) && Objects.nonNull(queryEntityVo.getSort())){
+            // 判断 fieldName是否属于类中属性
+            if (CommonUtil.fieldAllowClass(queryEntityVo.getField(),EntityBean.class)){
+                entityBeanDal.setOrderByClause(queryEntityVo.getField() + " " + (queryEntityVo.getSort() == 1 ? "asc" :" desc"));
+            }else {
+                throw new UtopiaRunTimeException(ErrorCode.FIELD_NAME_IS_FAIL);
+            }
+        }else {
+            entityBeanDal.setOrderByClause("create_time desc");
         }
         criteria.andTypeEqualTo(queryEntityVo.getType());
         List<EntityBean> entityBeans = entityBeanMapper.selectByExample(entityBeanDal);

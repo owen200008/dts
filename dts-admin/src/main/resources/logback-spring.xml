@@ -7,7 +7,7 @@
     <include resource="com/utopia/log/logback/defaults.xml"/>
     <include resource="com/utopia/log/logback/console-appender.xml"/>
 
-    <property name="LOG_FILE" value="/opt/logs/dts"/>
+    <property name="LOG_FILE" value="/opt/logs/dts-admin"/>
 
     <property name="MAX_FILESIZE" value="20"/>
     <property name="MAX_HISTORY_DAY" value="7"/>
