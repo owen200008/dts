@@ -2,7 +2,7 @@
 
 export const listItems = (req, res) => {
   res.json({
-    "code": '200',
+    "code": 200,
     "message": "success",
     "data": {
       "pageSize": 1,
@@ -11,12 +11,12 @@ export const listItems = (req, res) => {
         {
           "id": 2,
           "name": "123任务abc",
-          "valid": 1
+          "valid": true
         },
         {
           "id": 3,
           "name": "456任务efg",
-          "valid": 0
+          "valid": false
         },
 
 

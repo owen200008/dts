@@ -1,6 +1,6 @@
 export const getItem = (req, res) => {
   res.json({
-    "code": '200',
+    "code": 200,
     "message": "success",
     "data": {
       "id": 122,
@@ -19,7 +19,7 @@ export const getItem = (req, res) => {
 
 export const listItems = (req, res) => {
   res.json({
-    "code": '200',
+    "code": 200,
     "message": "success",
     "data": {
       "pageSize": 12,

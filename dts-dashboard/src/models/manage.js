@@ -19,7 +19,7 @@ export default {
     *fetch(params, { call, put }) {
       const { payload } = params;
       const json = yield call(getAllUsers, payload);
-      if (json.code === '200') {
+      if (json.code === 200) {
         let { page, dataList } = json.data;
         dataList = dataList.map(item => {
           item.key = item.id;
@@ -37,7 +37,7 @@ export default {
     *fetchItem(params, { call }) {
       const { payload, callback } = params;
       const json = yield call(findUser, payload);
-      if (json.code === '200') {
+      if (json.code === 200) {
         const user = json.data;
         callback(user);
       }
@@ -45,7 +45,7 @@ export default {
     *add(params, { call, put }) {
       const { payload, callback, fetchValue } = params;
       const json = yield call(addUser, payload);
-      if (json.code === '200') {
+      if (json.code === 200) {
         message.success("添加成功");
         callback();
         yield put({ type: "reload", fetchValue });
@@ -57,7 +57,7 @@ export default {
       const { payload, fetchValue, callback } = params;
       const { list } = payload;
       const json = yield call(deleteUser, { list });
-      if (json.code === '200') {
+      if (json.code === 200) {
         message.success("删除成功");
         callback();
         yield put({ type: "reload", fetchValue });
@@ -68,7 +68,7 @@ export default {
     *update(params, { call, put }) {
       const { payload, callback, fetchValue } = params;
       const json = yield call(updateUser, payload);
-      if (json.code === '200') {
+      if (json.code === 200) {
         message.success("修改成功");
         callback();
         yield put({ type: "reload", fetchValue });

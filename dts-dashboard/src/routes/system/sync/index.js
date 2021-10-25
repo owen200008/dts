@@ -14,8 +14,6 @@ export default class Sync extends PureComponent {
     this.state = {
       currentPage: 1,
       selectedRowKeys: [],
-      name: '',
-      type: '',
       popup: ""
     };
     this.pageSize = 10;
@@ -32,12 +30,9 @@ export default class Sync extends PureComponent {
 
   listItems = page => {
     const { dispatch } = this.props;
-    const { name, type } = this.state;
     dispatch({
       type: "sync/fetch",
       payload: {
-        name,
-        type,
         pageNum: page,
         pageSize: this.pageSize
       }
@@ -55,7 +50,7 @@ export default class Sync extends PureComponent {
 
   editClick = item => {
     const { dispatch } = this.props;
-    const { currentPage, name, type } = this.state;
+    const { currentPage } = this.state;
 
     this.setState({
       popup: (
@@ -69,10 +64,8 @@ export default class Sync extends PureComponent {
                 ...values
               },
               fetchValue: {
-                type,
-                name,
                 pageNum: currentPage,
-                pageSize: 12
+                pageSize: this.pageSize
               },
               callback: () => {
                 this.setState({ selectedRowKeys: [] });
@@ -100,14 +93,13 @@ export default class Sync extends PureComponent {
 
   deleteClick = (sync) => {
     const { dispatch } = this.props;
-    const { name, type, currentPage } = this.state;
+    const { currentPage } = this.state;
     dispatch({
       type: "sync/delete",
       payload: {
         id: sync.id
       },
       fetchValue: {
-        name, type,
         pageNum: currentPage,
         pageSize: this.pageSize
       },
@@ -118,7 +110,7 @@ export default class Sync extends PureComponent {
   };
 
   addClick = () => {
-    const { currentPage, name, type } = this.state;
+    const { currentPage } = this.state;
     this.setState({
       popup: (
         <AddModal
@@ -131,7 +123,6 @@ export default class Sync extends PureComponent {
                 ...values
               },
               fetchValue: {
-                name, type,
                 pageNum: currentPage,
                 pageSize: this.pageSize
               },
@@ -162,7 +153,7 @@ export default class Sync extends PureComponent {
 
     const { sync, loading } = this.props;
     const { dataList, total } = sync;
-    const { currentPage, name, popup } = this.state;
+    const { currentPage, popup } = this.state;
 
     const tableColumns = [
       {
@@ -252,14 +243,14 @@ export default class Sync extends PureComponent {
                 onChange={this.searchOnchange.bind(this, 'type')}
                 placeholder="请输入数据类型"
                 style={{ width: 240 }}
-              /> */}
+              /> 
               <Button
                 type="primary"
                 style={{ marginLeft: 20, marginTop: 0 }}
                 onClick={this.searchClick}
               >
                 查询
-              </Button>
+              </Button>*/}
 
 
               <Button

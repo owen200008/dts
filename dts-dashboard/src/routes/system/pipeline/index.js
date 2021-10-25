@@ -68,7 +68,7 @@ export default class Pipeline extends PureComponent {
 
   editClick = item => {
     const { dispatch } = this.props;
-    const { currentPage, name, type } = this.state;
+    const { currentPage, taskId } = this.state;
 
     this.setState({
       popup: (
@@ -82,10 +82,9 @@ export default class Pipeline extends PureComponent {
                 ...values
               },
               fetchValue: {
-                type,
-                name,
+                taskId,
                 pageNum: currentPage,
-                pageSize: 12
+                pageSize: this.pageSize
               },
               callback: () => {
                 this.setState({ selectedRowKeys: [] });
@@ -117,14 +116,14 @@ export default class Pipeline extends PureComponent {
 
   deleteClick = (pipeline) => {
     const { dispatch } = this.props;
-    const { name, type, currentPage } = this.state;
+    const { taskId, currentPage } = this.state;
     dispatch({
       type: "pipeline/delete",
       payload: {
-        id: pipeline.id
+        pipelineId: pipeline.id
       },
       fetchValue: {
-        name, type,
+        taskId,
         pageNum: currentPage,
         pageSize: this.pageSize
       },
@@ -135,7 +134,7 @@ export default class Pipeline extends PureComponent {
   };
 
   addClick = () => {
-    const { currentPage, name, type, taskId } = this.state;
+    const { currentPage, taskId } = this.state;
     this.setState({
       popup: (
         <AddModal
@@ -149,19 +148,12 @@ export default class Pipeline extends PureComponent {
                 ...values
               },
               fetchValue: {
-                name, type,
+                taskId,
                 pageNum: currentPage,
                 pageSize: this.pageSize
               },
               callback: () => {
                 this.closeModal();
-                /* dispatch({
-                  type: "global/fetchPlugins",
-                  payload: {
-                    callback: () => {
-                    }
-                  }
-                }); */
               }
             });
           }}
@@ -174,7 +166,6 @@ export default class Pipeline extends PureComponent {
   };
 
   addRegion = (item) => {
-    // const { currentPage, name, type } = this.state;
     this.setState({
       popup: (
         <AddRegionModal
@@ -187,11 +178,6 @@ export default class Pipeline extends PureComponent {
               payload: {
                 ...values
               },
-              /* fetchValue: {
-                name, type,
-                pageNum: currentPage,
-                pageSize: this.pageSize
-              }, */
               callback: () => {
                 this.closeModal();
               }
@@ -206,7 +192,6 @@ export default class Pipeline extends PureComponent {
   };
 
   addPair = (item) => {
-    // const { currentPage, name, type } = this.state;
     this.setState({
       popup: (
         <AddPairModal
@@ -219,13 +204,6 @@ export default class Pipeline extends PureComponent {
               payload: {
                 ...values
               },
-              /* 
-                            fetchValue: {
-                              name, type,
-                              pageNum: currentPage,
-                              pageSize: this.pageSize
-                            },
-               */
               callback: () => {
                 this.closeModal();
               }
@@ -253,13 +231,6 @@ export default class Pipeline extends PureComponent {
               payload: {
                 ...values
               },
-              /* 
-                            fetchValue: {
-                              name, type,
-                              pageNum: currentPage,
-                              pageSize: this.pageSize
-                            },
-               */
               callback: () => {
                 this.closeModal();
               }
@@ -275,7 +246,7 @@ export default class Pipeline extends PureComponent {
 
   onTableExpand = (expanded, record) => {
     const { loading, id } = record;
-    if (!expanded || loading && loading !== 3) return;
+    if (!expanded || loading && loading === 1) return;
     let payload = {
       pipelineId: id
     };
@@ -302,23 +273,26 @@ export default class Pipeline extends PureComponent {
           payload,
           callback: resolve
         })
-      }).then(pair => {
-        return Promise.all([
-          new Promise((resolve) => {
-            dispatch({
-              type: 'sourceData/fetchItem',
-              payload: { sourceId: pair.sourceDatamediaId },
-              callback: resolve
-            })
-          }),
-          new Promise((resolve) => {
-            dispatch({
-              type: 'targetData/fetchItem',
-              payload: { sourceId: pair.targetDatamediaId },
-              callback: resolve
-            })
-          }),
-        ]);
+      }).then(pairs => {
+
+        return Promise.all(pairs.map(pair => {
+          return Promise.all([
+            new Promise((resolve) => {
+              dispatch({
+                type: 'sourceData/fetchItem',
+                payload: { sourceId: pair.sourceDatamediaId },
+                callback: resolve
+              })
+            }),
+            new Promise((resolve) => {
+              dispatch({
+                type: 'targetData/fetchItem',
+                payload: { targetId: pair.targetDatamediaId },
+                callback: resolve
+              })
+            }),
+          ]);
+        }));
       }),
       new Promise((resolve) => {
         dispatch({
@@ -338,12 +312,12 @@ export default class Pipeline extends PureComponent {
           callback: resolve
         })
       })
-    ]).then(([sync, region, pair, sourceEntity, targetEntity]) => {
+    ]).then(([sync, region, pairs, sourceEntity, targetEntity]) => {
       this.updateItem({
         id,
         loading: 2,
         extraInfo: {
-          sync, region, pair, sourceEntity, targetEntity
+          sync, region, pairs, sourceEntity, targetEntity
         }
       });
     }).catch(() => {
@@ -357,60 +331,80 @@ export default class Pipeline extends PureComponent {
   expandedRowRender = record => {
     const { loading, extraInfo } = record;
     if (loading === 2) {
-      const { sync, region, pair, sourceEntity, targetEntity } = extraInfo;
-      let syncList = sync.map(item => {
+      const { sync, region, pairs, sourceEntity, targetEntity } = extraInfo;
+      let syncList = sync?.map(item => {
         item.key = item.id;
         return item;
-      })
+      }) || [];
       return (
-        <p>
+        <>
           <Descriptions style={{ marginBottom: 20 }} title="数据源" size="small">
             <Descriptions.Item label="同步源">{sourceEntity.name}</Descriptions.Item>
             <Descriptions.Item label="同步目标">{targetEntity.name}</Descriptions.Item>
           </Descriptions>
-          <Descriptions style={{ marginBottom: 20 }} title="Region" size="small">
-            <Descriptions.Item label={region[0].mode}>{region[0].region}</Descriptions.Item>
-            <Descriptions.Item label={region[1].mode}>{region[1].region}</Descriptions.Item>
-          </Descriptions>
-          <Descriptions style={{ marginBottom: 20 }} title="数据映射关系" size="small">
-            <Descriptions.Item label="源数据">{pair[0].name}</Descriptions.Item>
-            <Descriptions.Item label="目标数据">{pair[1].name}</Descriptions.Item>
-          </Descriptions>
-          <Descriptions title="同步规则" size="small">
-            <Descriptions.Item>
-              <Table
+          {region?.length ?
+            (
+              <Descriptions
+                style={{ marginBottom: 20 }}
+                title="Region"
                 size="small"
-                bordered
-                columns={[{
-                  align: "center",
-                  title: "同步规则类型",
-                  dataIndex: "syncRuleType",
-                  key: "syncRuleType",
-                },
-                {
-                  align: "center",
-                  title: "数据库名",
-                  dataIndex: "namespace",
-                  key: "namespace",
-                },
-                {
-                  align: "center",
-                  title: "数据表名",
-                  dataIndex: "table",
-                  key: "table",
-                },
-                {
-                  align: "center",
-                  title: "同步位置标识",
-                  dataIndex: "startGtid",
-                  key: "startGtid",
-                },]}
-                dataSource={syncList}
-                pagination={false}
-              />
-            </Descriptions.Item>
-          </Descriptions>
-        </p>
+              >
+                <Descriptions.Item label={region[0].mode}>{region[0].region}</Descriptions.Item>
+                <Descriptions.Item label={region[1].mode}>{region[1].region}</Descriptions.Item>
+              </Descriptions>
+            )
+            : null}
+          {pairs?.length ?
+            (
+              <Descriptions style={{ marginBottom: 20 }} title="数据映射关系" size="small">
+                {pairs.map(pair => (
+                  <>
+                    <Descriptions.Item label="源数据">{pair[0].name}</Descriptions.Item>
+                    <Descriptions.Item label="目标数据">{pair[1].name}</Descriptions.Item>
+                  </>
+                ))
+                }
+              </Descriptions>
+            ) : null
+          }
+          {syncList?.length ? (
+            <Descriptions title="同步规则" size="small">
+              <Descriptions.Item>
+                <Table
+                  size="small"
+                  bordered
+                  columns={[{
+                    align: "center",
+                    title: "同步规则类型",
+                    dataIndex: "syncRuleType",
+                    key: "syncRuleType",
+                  },
+                  {
+                    align: "center",
+                    title: "数据库名",
+                    dataIndex: "namespace",
+                    key: "namespace",
+                  },
+                  {
+                    align: "center",
+                    title: "数据表名",
+                    dataIndex: "table",
+                    key: "table",
+                  },
+                  {
+                    align: "center",
+                    title: "同步位置标识",
+                    dataIndex: "startGtid",
+                    key: "startGtid",
+                  },]}
+                  dataSource={syncList}
+                  pagination={false}
+                />
+              </Descriptions.Item>
+            </Descriptions>
+          ) : null
+          }
+        </>
       );
     } else if (loading === 3) {
       return <p>加载失败，请重试</p>
@@ -431,8 +425,8 @@ export default class Pipeline extends PureComponent {
   render() {
 
     const { pipeline, task, loading } = this.props;
-    const { dataList } = pipeline;
-    let { taskId, popup } = this.state;
+    const { dataList, total } = pipeline;
+    let { taskId, popup, currentPage } = this.state;
     const taskList = task.dataList;
 
     const tableColumns = [
@@ -553,7 +547,12 @@ export default class Pipeline extends PureComponent {
               loading={loading}
               columns={tableColumns}
               dataSource={dataList}
-              pagination={false}
+              pagination={{
+                total,
+                current: currentPage,
+                pageSize: this.pageSize,
+                onChange: this.pageOnchange
+              }}
               onExpand={this.onTableExpand}
               expandedRowRender={this.expandedRowRender}
             />

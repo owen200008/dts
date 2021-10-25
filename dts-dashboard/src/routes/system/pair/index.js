@@ -32,12 +32,9 @@ export default class Pair extends PureComponent {
 
   listItems = page => {
     const { dispatch } = this.props;
-    const { name, type } = this.state;
     dispatch({
       type: "pair/fetch",
       payload: {
-        name,
-        type,
         pageNum: page,
         pageSize: this.pageSize
       }
@@ -55,7 +52,7 @@ export default class Pair extends PureComponent {
 
   editClick = item => {
     const { dispatch } = this.props;
-    const { currentPage, name, type } = this.state;
+    const { currentPage } = this.state;
 
     this.setState({
       popup: (
@@ -69,10 +66,8 @@ export default class Pair extends PureComponent {
                 ...values
               },
               fetchValue: {
-                type,
-                name,
                 pageNum: currentPage,
-                pageSize: 12
+                pageSize: this.pageSize
               },
               callback: () => {
                 this.setState({ selectedRowKeys: [] });
@@ -100,14 +95,13 @@ export default class Pair extends PureComponent {
 
   deleteClick = (pair) => {
     const { dispatch } = this.props;
-    const { name, type, currentPage } = this.state;
+    const { currentPage } = this.state;
     dispatch({
       type: "pair/delete",
       payload: {
-        id: pair.id
+        pairId: pair.id
       },
       fetchValue: {
-        name, type,
         pageNum: currentPage,
         pageSize: this.pageSize
       },
@@ -118,7 +112,7 @@ export default class Pair extends PureComponent {
   };
 
   addClick = () => {
-    const { currentPage, name, type } = this.state;
+    const { currentPage } = this.state;
     this.setState({
       popup: (
         <AddModal
@@ -131,7 +125,6 @@ export default class Pair extends PureComponent {
                 ...values
               },
               fetchValue: {
-                name, type,
                 pageNum: currentPage,
                 pageSize: this.pageSize
               },
