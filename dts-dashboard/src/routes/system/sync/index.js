@@ -254,7 +254,7 @@ export default class Sync extends PureComponent {
 
 
               <Button
-                style={{ marginLeft: 20, marginTop: 0 }}
+                style={{ marginLeft: 0, marginTop: 0 }}
                 type="primary"
                 onClick={this.addClick}
               >
