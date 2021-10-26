@@ -18,6 +18,8 @@ public class QueryRegionVo {
 
     private String region;
 
+    private Long pipelineId;
+
     private Integer pageSize = 10;
 
     private Integer pageNum = 1;

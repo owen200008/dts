@@ -4,9 +4,11 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.Objects;
 
 /**
  * describe:
@@ -14,6 +16,7 @@ import java.lang.reflect.Field;
  * @author niuyaze
  * @date 2021/10/15
  */
+@Slf4j
 public class CommonUtil {
 
     public static <T> T snakeObjectToUnderline(Object object,Class<T> tClass) throws IOException {
@@ -28,13 +31,5 @@ public class CommonUtil {
     }
 
 
-    public static <T> boolean fieldAllowClass(String fieldName,T t){
-        Field[] fields = t.getClass().getFields();
-        for (Field field : fields) {
-            if (field.getName().equals(fieldName)){
-                return true;
-            }
-        }
-        return false;
-    }
+
 }

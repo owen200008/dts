@@ -61,4 +61,10 @@ public class DtsSourceDataMediaController {
         return  UtopiaResponseModel.create(UtopiaErrorCode.CODE_SUCCESS.getCode(), PathConstants.SUC_MSG,page);
     }
 
+    @PostMapping("/sourceData/modify")
+    public UtopiaResponseModel<Void> sourceDataMediaModify(SourceDataMediaBean sourceDataMediaBean){
+        sourceDataMediaService.sourceDataMediaModify(sourceDataMediaBean);
+        return UtopiaResponseModel.success();
+    }
+
 }

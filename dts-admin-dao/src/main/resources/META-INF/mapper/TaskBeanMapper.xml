@@ -103,6 +103,9 @@
       #{createTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.utopia.data.transfer.admin.dao.entity.TaskBean">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
     insert into u_task
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">

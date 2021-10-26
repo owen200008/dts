@@ -30,6 +30,7 @@ public class SourceDataMediaServiceImpl  implements SourceDataMediaService {
     @Autowired
     SourceDataMediaBeanMapper sourceDataMediaBeanMapper;
 
+
     @Override
     public SourceDataMediaBean sourceDataMediaGet(Long id) {
         SourceDataMediaBeanDal sourceDataMediaBeanDal = new SourceDataMediaBeanDal();
@@ -67,5 +68,10 @@ public class SourceDataMediaServiceImpl  implements SourceDataMediaService {
         sourceDataMediaBean.setModifyTime(LocalDateTime.now());
         sourceDataMediaBeanMapper.insert(sourceDataMediaBean);
         return sourceDataMediaBean.getId();
+    }
+
+    @Override
+    public void sourceDataMediaModify(SourceDataMediaBean sourceDataMediaBean) {
+        sourceDataMediaBeanMapper.updateByPrimaryKeySelective(sourceDataMediaBean);
     }
 }

@@ -83,6 +83,37 @@
     mysql
   </sql>
 
+  <update id="updateByUniqueKey" parameterType="com.utopia.data.transfer.admin.dao.entity.EntityBean">
+    update u_entity set modify_time=now()
+    <if test="name != null and name != ''">
+      ,name= #{name}
+    </if>
+    <if test="type != null and type != ''">
+      ,type = #{type}
+    </if>
+    <if test="encode != null  and encode != ''">
+      ,encode = #{encode}
+    </if>
+    <if test="slave_id != null">
+      ,slave_id = #{slaveId}
+    </if>
+    <if test="url != null and url != ''" >
+      ,url = #{url}
+    </if>
+    <if test="driver != null and driver != ''" >
+      ,driver = #{driver}
+    </if>
+    <if test="username != null and username != ''" >
+      ,username = #{username}
+    </if>
+    <if test="password != null and password != ''" >
+      ,password = #{password}
+    </if>
+    <if test="mysql != null and mysql != ''" >
+      ,mysql = #{mysql}
+    </if>
+    where id = #{id}
+  </update>
 
 
 </mapper>

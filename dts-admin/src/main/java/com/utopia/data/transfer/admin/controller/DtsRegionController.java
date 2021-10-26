@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.utopia.data.transfer.admin.contants.PathConstants;
 import com.utopia.data.transfer.admin.dao.entity.PipelineBean;
 import com.utopia.data.transfer.admin.dao.entity.RegionBean;
+import com.utopia.data.transfer.admin.dao.mapper.base.RegionBeanRepository;
 import com.utopia.data.transfer.admin.service.RegionService;
 import com.utopia.data.transfer.admin.vo.PageRes;
 import com.utopia.data.transfer.admin.vo.req.PipelineAddVo;
@@ -35,6 +36,8 @@ public class DtsRegionController {
 
     @Autowired
     RegionService regionService;
+    @Autowired
+    RegionBeanRepository regionBeanRepository;
 
     @PostMapping("/region/add")
     public UtopiaResponseModel<Void> regionAdd(RegionBean regionBean){
@@ -75,6 +78,10 @@ public class DtsRegionController {
         return UtopiaResponseModel.create(UtopiaErrorCode.CODE_SUCCESS.getCode(), PathConstants.SUC_MSG,all);
     }
 
-
+    @PostMapping("/region/modify")
+    public UtopiaResponseModel<Void> regionModify(RegionBean regionBean){
+        regionService.regionModify(regionBean);
+        return UtopiaResponseModel.success();
+    }
 
 }

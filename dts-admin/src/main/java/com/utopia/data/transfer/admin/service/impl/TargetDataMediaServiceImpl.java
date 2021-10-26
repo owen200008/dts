@@ -72,4 +72,9 @@ public class TargetDataMediaServiceImpl implements TargetDataMediaService {
         targetDataMediaBeanMapper.insert(targetDataMediaBean);
         return targetDataMediaBean.getId();
     }
+
+    @Override
+    public void targetDataMediaModify(TargetDataMediaBean targetDataMediaBean) {
+        targetDataMediaBeanMapper.updateByPrimaryKeySelective(targetDataMediaBean);
+    }
 }

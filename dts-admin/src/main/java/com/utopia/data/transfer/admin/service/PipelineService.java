@@ -46,4 +46,6 @@ public interface PipelineService {
     Long pipelineSyncRuleAdd(SyncRuleBean syncRule);
 
     PageRes<List<PipelineBean>> pipelineList(QueryPipelineVo queryPipelineVo);
+
+    void pipelineModify(PipelineBean pipelineBean);
 }

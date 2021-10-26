@@ -57,7 +57,7 @@ public class TaskServiceImpl implements TaskService {
     public void taskDelete(Long id) {
         //检查所有pipeline是否都已经删除
         List<PipelineBean> pipeDetailRes = pipelineService.pipelineParamsList(id);
-        if(!CollectionUtils.isEmpty(pipeDetailRes)){
+        if (!CollectionUtils.isEmpty(pipeDetailRes)) {
             throw new UtopiaRunTimeException(ErrorCode.CHILD_NEED_DELETE_FIRST);
         }
         taskBeanMapper.deleteByPrimaryKey(id);
@@ -67,7 +67,7 @@ public class TaskServiceImpl implements TaskService {
     public PageRes<List<TaskBean>> taskList(QueryTaskVo queryTaskVo) {
         Page<Object> page = PageHelper.startPage(queryTaskVo.getPageNum(), queryTaskVo.getPageSize(), true);
         TaskBeanDal taskBeanDal = new TaskBeanDal();
-        if (!StringUtils.isEmpty(queryTaskVo.getName())){
+        if (!StringUtils.isEmpty(queryTaskVo.getName())) {
             taskBeanDal.createCriteria().andNameEqualTo(queryTaskVo.getName());
         }
         taskBeanDal.setOrderByClause(" create_time");
@@ -78,17 +78,27 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @EventCut(key = PathConstants.CONFIG_KEY)
-    public int taskSwitch(Long id,Integer valid) {
+    public int taskSwitch(Long id, Integer valid) {
         TaskBeanDal taskBeanDal = new TaskBeanDal();
         taskBeanDal.createCriteria().andIdEqualTo(id);
         TaskBean taskBean = new TaskBean();
         taskBean.setValid(valid > 0 ? true : false);
         int i = taskBeanMapper.updateByExampleSelective(taskBean, taskBeanDal);
-        return i;
+        if (valid > 0) {
+            return i;
+        }
+        return 0;
     }
 
     @Override
     public List<TaskBean> getAll() {
         return taskBeanMapper.selectByExample(new TaskBeanDal());
+    }
+
+    @Override
+    public void taskModify(TaskBean taskBean) {
+        TaskBeanDal taskBeanDal = new TaskBeanDal();
+        taskBeanDal.createCriteria().andIdEqualTo(taskBean.getId());
+        taskBeanMapper.updateByExampleSelective(taskBean,taskBeanDal);
     }
 }

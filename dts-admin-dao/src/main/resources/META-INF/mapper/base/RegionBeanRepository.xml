@@ -85,4 +85,18 @@
 	    pi.id = #{id};
 
   </select>
+
+  <update id="updateByUniqueKey" parameterType="com.utopia.data.transfer.admin.dao.mapper.base.RegionBeanRepository">
+    update u_pipeline
+    <if test="region != null and region != ''">
+      region = #{region}
+    </if>
+    <if test="mode != null and mode != ''">
+      ,mode = #{mode}
+    </if>
+    <if test="pipelineId != null and pipelineId != ''">
+      ,pipeline_id = #{pipelineId}
+    </if>
+    where id = #{id}
+  </update>
 </mapper>

@@ -141,7 +141,7 @@ public class DataChangedListenerImpl implements DataChangedListener, Initializin
                 ret.setUsername(item.getUsername());
                 ret.setPassword(item.getPassword());
                 ret.setDriver(item.getDriver());
-                ret.setMysql(JSON.parseObject(item.getMysql(), MysqlProperty.class));
+                ret.setMysql(JSON.parseObject(item.getProperty(), MysqlProperty.class));
                 return ret;
             }).collect(Collectors.toList());
 

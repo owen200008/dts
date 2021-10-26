@@ -47,4 +47,6 @@ public interface PairService {
     PageRes<List<PairBean>> pairList(QueryPairVo queryPairVo);
 
     PairBean pairGet(Long id);
+
+    void pairModify(PairBean pairBean);
 }

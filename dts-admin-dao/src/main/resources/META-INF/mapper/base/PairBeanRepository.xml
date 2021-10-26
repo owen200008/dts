@@ -70,7 +70,19 @@
   <sql id="Base_Column_List">
     id, pipeline_id, source_datamedia_id, target_datamedia_id
   </sql>
-
+  <update id="updateByUniqueKey" parameterType="com.utopia.data.transfer.admin.dao.entity.PairBean">
+    update u_pair set
+    <if test="pipelineId !=null">
+      pipeline_id = #{pipelineId}
+    </if>
+    <if test=" sourceDatamediaId !=null">
+     , source_datamedia_id = #{sourceDatamediaId}
+    </if>
+    <if test=" targetDatamediaId !=null">
+      , target_datamedia_id = #{targetDatamediaId}
+    </if>
+    where id = #{id}
+  </update>
 
 
 

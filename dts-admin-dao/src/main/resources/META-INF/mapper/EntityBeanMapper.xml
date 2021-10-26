@@ -15,7 +15,7 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.utopia.data.transfer.admin.dao.entity.EntityBean">
-    <result column="mysql" jdbcType="LONGVARCHAR" property="mysql" />
+    <result column="property" jdbcType="LONGVARCHAR" property="property" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -80,7 +80,7 @@
     create_time
   </sql>
   <sql id="Blob_Column_List">
-    mysql
+    property
   </sql>
   <select id="selectByExampleWithBLOBs" parameterType="com.utopia.data.transfer.admin.dao.entity.EntityBeanDal" resultMap="ResultMapWithBLOBs">
     select
@@ -129,11 +129,11 @@
     insert into u_entity (`name`, `type`, encode, 
       slave_id, url, driver, 
       username, `password`, modify_time, 
-      create_time, mysql)
+      create_time, property)
     values (#{name,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{encode,jdbcType=VARCHAR}, 
       #{slaveId,jdbcType=BIGINT}, #{url,jdbcType=VARCHAR}, #{driver,jdbcType=VARCHAR}, 
       #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{modifyTime,jdbcType=TIMESTAMP}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{mysql,jdbcType=LONGVARCHAR})
+      #{createTime,jdbcType=TIMESTAMP}, #{property,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.utopia.data.transfer.admin.dao.entity.EntityBean">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
@@ -171,8 +171,8 @@
       <if test="createTime != null">
         create_time,
       </if>
-      <if test="mysql != null">
-        mysql,
+      <if test="property != null">
+        property,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -206,8 +206,8 @@
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="mysql != null">
-        #{mysql,jdbcType=LONGVARCHAR},
+      <if test="property != null">
+        #{property,jdbcType=LONGVARCHAR},
       </if>
     </trim>
   </insert>
@@ -247,8 +247,8 @@
       <if test="record.createTime != null">
         create_time = #{record.createTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="record.mysql != null">
-        mysql = #{record.mysql,jdbcType=LONGVARCHAR},
+      <if test="record.property != null">
+        property = #{record.property,jdbcType=LONGVARCHAR},
       </if>
     </set>
     <if test="_parameter != null">
@@ -268,7 +268,7 @@
       `password` = #{record.password,jdbcType=VARCHAR},
       modify_time = #{record.modifyTime,jdbcType=TIMESTAMP},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
-      mysql = #{record.mysql,jdbcType=LONGVARCHAR}
+      property = #{record.property,jdbcType=LONGVARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>

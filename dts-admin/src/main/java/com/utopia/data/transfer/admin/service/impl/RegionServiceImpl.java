@@ -48,8 +48,12 @@ public class RegionServiceImpl implements RegionService {
     public PageRes<List<RegionBean>> regionList(QueryRegionVo queryRegionVo) {
         Page<Object> page = PageHelper.startPage(queryRegionVo.getPageNum(), queryRegionVo.getPageSize(), true);
         RegionBeanDal regionBeanDal = new RegionBeanDal();
+        RegionBeanDal.Criteria criteria = regionBeanDal.createCriteria();
         if (queryRegionVo.getRegion() != null) {
-            regionBeanDal.createCriteria().andRegionEqualTo(queryRegionVo.getRegion());
+            criteria.andRegionEqualTo(queryRegionVo.getRegion());
+        }
+        if (queryRegionVo.getPipelineId() != null){
+            criteria.andPipelineIdEqualTo(queryRegionVo.getPipelineId());
         }
         regionBeanDal.setOrderByClause(" id asc");
         List<RegionBean> regionBeans = regionBeanMapper.selectByExample(regionBeanDal);
@@ -73,5 +77,12 @@ public class RegionServiceImpl implements RegionService {
         RegionBeanDal regionBeanDal = new RegionBeanDal();
         regionBeanDal.createCriteria().andIdEqualTo(id.intValue());
         regionBeanMapper.deleteByExample(regionBeanDal);
+    }
+
+    @Override
+    public void regionModify(RegionBean regionBean){
+        RegionBeanDal regionBeanDal = new RegionBeanDal();
+        regionBeanDal.createCriteria().andIdEqualTo(regionBean.getId());
+        regionBeanMapper.updateByExampleSelective(regionBean,regionBeanDal);
     }
 }

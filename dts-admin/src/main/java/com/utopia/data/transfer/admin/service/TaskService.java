@@ -38,4 +38,6 @@ public interface TaskService {
      * @return
      */
     List<TaskBean> getAll();
+
+    void taskModify(TaskBean taskBean);
 }

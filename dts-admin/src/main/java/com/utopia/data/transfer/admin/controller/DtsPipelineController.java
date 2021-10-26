@@ -1,6 +1,8 @@
 package com.utopia.data.transfer.admin.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.utopia.data.transfer.admin.contants.PathConstants;
 import com.utopia.data.transfer.admin.dao.entity.PipelineBean;
 import com.utopia.data.transfer.admin.dao.entity.SyncRuleBean;
@@ -9,6 +11,7 @@ import com.utopia.data.transfer.admin.vo.PageRes;
 import com.utopia.data.transfer.admin.vo.ResponseModel;
 import com.utopia.data.transfer.admin.vo.req.*;
 import com.utopia.data.transfer.model.archetype.ErrorCode;
+import com.utopia.data.transfer.model.code.pipeline.PipelineParameter;
 import com.utopia.model.rsp.UtopiaErrorCode;
 import com.utopia.model.rsp.UtopiaResponseModel;
 import lombok.extern.slf4j.Slf4j;
@@ -86,6 +89,18 @@ public class DtsPipelineController {
     @PostMapping("/pipeline/delete")
     public UtopiaResponseModel<Void> pipelineDelete(@RequestParam(value = "pipelineId",required = true) Long id){
         pipelineService.pipelineDelete(id);
+        return UtopiaResponseModel.success();
+    }
+
+    @PostMapping("/pipeline/defaultParams")
+    public UtopiaResponseModel<String> defaultParams(){
+        String s = JSON.toJSONString(new PipelineParameter(), SerializerFeature.WriteMapNullValue,SerializerFeature.WriteNullStringAsEmpty);
+        return UtopiaResponseModel.success(s);
+    }
+
+    @PostMapping("/pipeline/modify")
+    public UtopiaResponseModel<Void> pipelineModify(PipelineBean pipelineBean){
+        pipelineService.pipelineModify(pipelineBean);
         return UtopiaResponseModel.success();
     }
 }

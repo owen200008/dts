@@ -59,6 +59,9 @@ public class SyncRuleServiceImpl implements SyncRuleService {
     public PageRes<List<SyncRuleBean>> syncRuleList(QuerySyncRuleVo querySyncRuleVo) {
         Page<Object> page = PageHelper.startPage(querySyncRuleVo.getPageNum(), querySyncRuleVo.getPageSize(), true);
         SyncRuleBeanDal syncRuleBeanDal = new SyncRuleBeanDal();
+        if (querySyncRuleVo.getPipelineId() != null){
+            syncRuleBeanDal.createCriteria().andPipelineIdEqualTo(querySyncRuleVo.getPipelineId());
+        }
         syncRuleBeanDal.setOrderByClause(" id asc");
         List<SyncRuleBean> syncRuleBeans = syncRuleBeanMapper.selectByExample(syncRuleBeanDal);
         if (CollectionUtils.isEmpty(syncRuleBeans)){
@@ -73,6 +76,13 @@ public class SyncRuleServiceImpl implements SyncRuleService {
         SyncRuleBeanDal syncRuleBeanDal = new SyncRuleBeanDal();
         syncRuleBeanDal.createCriteria().andIdEqualTo(id);
         syncRuleBeanMapper.deleteByExample(syncRuleBeanDal);
+    }
+
+    @Override
+    public void syncRuleModify(SyncRuleBean syncRuleBean) {
+        SyncRuleBeanDal syncRuleBeanDal = new SyncRuleBeanDal();
+        syncRuleBeanDal.createCriteria().andIdEqualTo(syncRuleBean.getId());
+        syncRuleBeanMapper.updateByExampleSelective(syncRuleBean,syncRuleBeanDal);
     }
 
 

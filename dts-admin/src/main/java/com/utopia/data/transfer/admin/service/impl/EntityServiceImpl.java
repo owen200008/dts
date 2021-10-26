@@ -1,11 +1,14 @@
 package com.utopia.data.transfer.admin.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.utopia.data.transfer.admin.contants.CommonUtil;
 import com.utopia.data.transfer.admin.dao.entity.EntityBean;
 import com.utopia.data.transfer.admin.dao.entity.EntityBeanDal;
 import com.utopia.data.transfer.admin.dao.mapper.EntityBeanMapper;
+import com.utopia.data.transfer.admin.dao.mapper.base.EntityBeanRepository;
 import com.utopia.data.transfer.admin.service.EntityService;
 import com.utopia.data.transfer.admin.vo.EntityAddVo;
 import com.utopia.data.transfer.admin.vo.PageRes;
@@ -37,6 +40,9 @@ public class EntityServiceImpl implements EntityService {
 
     @Autowired
     EntityBeanMapper entityBeanMapper;
+
+    @Autowired
+    EntityBeanRepository entityBeanRepository;
 
     @Override
     public Long addEntity(EntityAddVo entityAddVo) {
@@ -82,7 +88,8 @@ public class EntityServiceImpl implements EntityService {
         }
         if (Objects.nonNull(queryEntityVo.getField()) && Objects.nonNull(queryEntityVo.getSort())){
             // 判断 fieldName是否属于类中属性
-            if (CommonUtil.fieldAllowClass(queryEntityVo.getField(),EntityBean.class)){
+            String entityStr = JSONObject.toJSONString(new EntityBean(), SerializerFeature.WriteMapNullValue);
+            if (entityStr.contains(queryEntityVo.getField())){
                 entityBeanDal.setOrderByClause(queryEntityVo.getField() + " " + (queryEntityVo.getSort() == 1 ? "asc" :" desc"));
             }else {
                 throw new UtopiaRunTimeException(ErrorCode.FIELD_NAME_IS_FAIL);
@@ -101,7 +108,10 @@ public class EntityServiceImpl implements EntityService {
         return entityBeanMapper.selectByExample(new EntityBeanDal());
     }
 
-
+    @Override
+    public void entityModify(EntityBean entityBean) {
+        entityBeanRepository.updateByUniqueKey(entityBean);
+    }
 
 
 }

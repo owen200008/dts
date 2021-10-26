@@ -12,4 +12,6 @@ public interface RegionBeanRepository extends RegionBeanMapper {
 
 
     List<RegionBean> selectByPipelineId(@Param("id") Long pipelineId);
+
+    void updateByUniqueKey(RegionBean regionBean);
 }

@@ -102,6 +102,9 @@
       #{targetDatamediaId,jdbcType=BIGINT})
   </insert>
   <insert id="insertSelective" parameterType="com.utopia.data.transfer.admin.dao.entity.PairBean">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
     insert into u_pair
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">

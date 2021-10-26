@@ -59,4 +59,10 @@ public class DtsSyncRuleController {
         return UtopiaResponseModel.success();
     }
 
+    @PostMapping("/syncRule/modify")
+    public UtopiaResponseModel<Void> syncRuleModify(SyncRuleBean syncRuleBean){
+        syncRuleService.syncRuleModify(syncRuleBean);
+        return UtopiaResponseModel.success();
+    }
+
 }

@@ -18,4 +18,6 @@ public interface SyncRuleService {
     PageRes<List<SyncRuleBean>> syncRuleList(QuerySyncRuleVo querySyncRuleVo);
 
     void syncRuleDelete(Long id);
+
+    void syncRuleModify(SyncRuleBean syncRuleBean);
 }

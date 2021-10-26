@@ -196,6 +196,13 @@ public class PipelineServiceImpl implements PipelineService {
     }
 
     @Override
+    public void pipelineModify(PipelineBean pipelineBean) {
+        PipelineBeanDal pipelineBeanDal = new PipelineBeanDal();
+        pipelineBeanDal.createCriteria().andIdEqualTo(pipelineBean.getId());
+        pipelineBeanMapper.updateByExampleSelective(pipelineBean,pipelineBeanDal);
+    }
+
+    @Override
     public List<PipelineBean> getAll() {
         return pipelineBeanRepository.selectByExample(new PipelineBeanDal());
     }

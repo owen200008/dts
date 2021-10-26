@@ -21,4 +21,6 @@ public interface SourceDataMediaService {
     PageRes<List<SourceDataMediaBean>> sourceDataMediaList(QueryDataMediaVo queryDataMediaVo);
 
     Long sourceDataMediaAdd(SourceDataMediaBean sourceDataMediaBean);
+
+    void sourceDataMediaModify(SourceDataMediaBean sourceDataMediaBean);
 }

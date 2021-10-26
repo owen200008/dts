@@ -6,6 +6,7 @@ import com.github.pagehelper.PageHelper;
 import com.utopia.data.transfer.admin.dao.entity.PairBean;
 import com.utopia.data.transfer.admin.dao.entity.PairBeanDal;
 import com.utopia.data.transfer.admin.dao.mapper.PairBeanMapper;
+import com.utopia.data.transfer.admin.dao.mapper.base.PairBeanRepository;
 import com.utopia.data.transfer.admin.service.PairService;
 
 import com.utopia.data.transfer.admin.vo.PageRes;
@@ -15,13 +16,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class PairSeviceImpl implements PairService {
 
     @Autowired
     PairBeanMapper pairBeanMapper;
-
+    @Autowired
+    PairBeanRepository pairBeanRepository;
     @Override
     public void pairAdd(Long pipelineId, Long sourceMediaId, Long targetMediaId) {
         PairBean pairBean = new PairBean();
@@ -58,12 +61,13 @@ public class PairSeviceImpl implements PairService {
     @Override
     public PageRes<List<PairBean>> pairList(QueryPairVo queryPairVo) {
         Page<Object> page = PageHelper.startPage(queryPairVo.getPageNum(), queryPairVo.getPageSize(), true);
-
         PairBeanDal pairBeanDal = new PairBeanDal();
+        if (Objects.nonNull(queryPairVo.getPipelineId())){
+            pairBeanDal.createCriteria().andPipelineIdEqualTo(queryPairVo.getPipelineId());
+        }
         pairBeanDal.setOrderByClause(" id asc");
         List<PairBean> pairBeans = pairBeanMapper.selectByExample(pairBeanDal);
         PageRes<List<PairBean>> pageRes = PageRes.getPage(page.getTotal(), page.getPageSize(), pairBeans);
-
         return pageRes;
     }
 
@@ -76,5 +80,10 @@ public class PairSeviceImpl implements PairService {
             return null;
         }
         return pairBeans.get(0);
+    }
+
+    @Override
+    public void pairModify(PairBean pairBean) {
+        pairBeanRepository.updateByUniqueKey(pairBean);
     }
 }

@@ -27,7 +27,7 @@ public class EntityBean extends BaseModel implements Serializable {
 
     private LocalDateTime createTime;
 
-    private String mysql;
+    private String property;
 
     private static final long serialVersionUID = 1L;
 
@@ -119,12 +119,12 @@ public class EntityBean extends BaseModel implements Serializable {
         this.createTime = createTime;
     }
 
-    public String getMysql() {
-        return mysql;
+    public String getProperty() {
+        return property;
     }
 
-    public void setMysql(String mysql) {
-        this.mysql = mysql == null ? null : mysql.trim();
+    public void setProperty(String property) {
+        this.property = property == null ? null : property.trim();
     }
 
     @Override
@@ -144,7 +144,7 @@ public class EntityBean extends BaseModel implements Serializable {
         sb.append(", password=").append(password);
         sb.append(", modifyTime=").append(modifyTime);
         sb.append(", createTime=").append(createTime);
-        sb.append(", mysql=").append(mysql);
+        sb.append(", property=").append(property);
         sb.append("]");
         return sb.toString();
     }
@@ -172,7 +172,7 @@ public class EntityBean extends BaseModel implements Serializable {
             && (this.getPassword() == null ? other.getPassword() == null : this.getPassword().equals(other.getPassword()))
             && (this.getModifyTime() == null ? other.getModifyTime() == null : this.getModifyTime().equals(other.getModifyTime()))
             && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
-            && (this.getMysql() == null ? other.getMysql() == null : this.getMysql().equals(other.getMysql()));
+            && (this.getProperty() == null ? other.getProperty() == null : this.getProperty().equals(other.getProperty()));
     }
 
     @Override
@@ -190,7 +190,7 @@ public class EntityBean extends BaseModel implements Serializable {
         result = prime * result + ((getPassword() == null) ? 0 : getPassword().hashCode());
         result = prime * result + ((getModifyTime() == null) ? 0 : getModifyTime().hashCode());
         result = prime * result + ((getCreateTime() == null) ? 0 : getCreateTime().hashCode());
-        result = prime * result + ((getMysql() == null) ? 0 : getMysql().hashCode());
+        result = prime * result + ((getProperty() == null) ? 0 : getProperty().hashCode());
         return result;
     }
 }

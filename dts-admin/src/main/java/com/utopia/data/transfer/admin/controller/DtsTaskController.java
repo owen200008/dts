@@ -54,4 +54,10 @@ public class DtsTaskController {
         taskSevice.taskSwitch(id,valid);
         return UtopiaResponseModel.success();
     }
+
+    @PostMapping("/task/modify")
+    public UtopiaResponseModel<Void> taskModify(TaskBean taskBean){
+        taskSevice.taskModify(taskBean);
+        return UtopiaResponseModel.success();
+    }
 }

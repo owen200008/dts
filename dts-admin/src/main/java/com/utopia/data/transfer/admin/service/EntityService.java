@@ -28,4 +28,5 @@ public interface EntityService {
 
     List<EntityBean> getAll();
 
+    void entityModify(EntityBean entityBean);
 }

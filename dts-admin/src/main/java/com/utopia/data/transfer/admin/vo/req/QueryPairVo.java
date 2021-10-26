@@ -14,6 +14,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class QueryPairVo {
+    private Long pipelineId;
+
     private Integer pageSize = 10;
 
     private Integer pageNum = 1;

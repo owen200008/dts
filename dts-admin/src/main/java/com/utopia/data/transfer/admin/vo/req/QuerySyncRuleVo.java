@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class QuerySyncRuleVo {
 
+    private Long pipelineId;
 
     private Integer pageSize = 10;
 

@@ -75,4 +75,10 @@ public class DtsPairController {
         return UtopiaResponseModel.success(page);
     }
 
+    @PostMapping("/pair/modify")
+    public UtopiaResponseModel<Void> pairModify(PairBean pairBean){
+        pairService.pairModify(pairBean);
+        return UtopiaResponseModel.success();
+    }
+
 }

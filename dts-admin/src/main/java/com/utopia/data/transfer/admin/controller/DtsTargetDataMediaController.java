@@ -61,4 +61,10 @@ public class DtsTargetDataMediaController {
 
         return UtopiaResponseModel.success(jsonObject);
     }
+
+    @PostMapping("/targetData/modify")
+    public UtopiaResponseModel<Void> targetDataModify(TargetDataMediaBean targetDataMediaBean){
+        targetDataMediaService.targetDataMediaModify(targetDataMediaBean);
+        return UtopiaResponseModel.success();
+    }
 }

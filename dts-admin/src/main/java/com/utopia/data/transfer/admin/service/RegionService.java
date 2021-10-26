@@ -32,4 +32,6 @@ public interface RegionService {
     RegionBean regionGet(Long id);
 
     void pipelineDelete(Long id);
+
+    void regionModify(RegionBean regionBean);
 }
