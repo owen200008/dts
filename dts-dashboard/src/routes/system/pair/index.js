@@ -227,29 +227,23 @@ export default class Pair extends PureComponent {
               </Breadcrumb>
             </div>
             <div className="table-header" style={{ justifyContent: "normal" }}>
-              <Input
+              {/* <Input
                 value={name}
                 onChange={this.searchOnchange.bind(this, 'name')}
                 placeholder="请输入名称"
                 style={{ width: 240 }}
               />
-              {/* <Input
-                value={type}
-                onChange={this.searchOnchange.bind(this, 'type')}
-                placeholder="请输入数据类型"
-                style={{ width: 240 }}
-              /> */}
               <Button
                 type="primary"
                 style={{ marginLeft: 20, marginTop: 0 }}
                 onClick={this.searchClick}
               >
                 查询
-              </Button>
+    </Button> */}
 
 
               <Button
-                style={{ marginLeft: 20, marginTop: 0 }}
+                style={{ marginLeft: 0, marginTop: 0 }}
                 type="primary"
                 onClick={this.addClick}
               >
