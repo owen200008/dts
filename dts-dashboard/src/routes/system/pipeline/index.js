@@ -133,6 +133,20 @@ export default class Pipeline extends PureComponent {
     });
   };
 
+  deleteSyncClick = (item, pipeline) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: "sync/delete",
+      payload: {
+        id: item.id
+      },
+      callback: () => {
+        pipeline.extraInfo.sync.splice(pipeline.extraInfo.sync.findIndex(s => s.id === item.id), 1);
+        this.updateItem(pipeline);
+      }
+    });
+  };
+
   addClick = () => {
     const { currentPage, taskId } = this.state;
     this.setState({
@@ -358,10 +372,10 @@ export default class Pipeline extends PureComponent {
             (
               <Descriptions style={{ marginBottom: 20 }} title="数据映射关系" size="small">
                 {pairs.map(pair => (
-                  <>
+                  <React.Fragment key={`${pair.id}_0`}>
                     <Descriptions.Item label="源数据">{pair[0].name}</Descriptions.Item>
                     <Descriptions.Item label="目标数据">{pair[1].name}</Descriptions.Item>
-                  </>
+                  </React.Fragment>
                 ))
                 }
               </Descriptions>
@@ -396,7 +410,32 @@ export default class Pipeline extends PureComponent {
                     title: "同步位置标识",
                     dataIndex: "startGtid",
                     key: "startGtid",
-                  },]}
+                  },
+                  {
+                    align: "center",
+                    title: "操作",
+                    dataIndex: "id",
+                    key: "id",
+                    width: 120,
+                    render: (text, syncRecord) => {
+                      return (
+                        <div>
+                          <Popconfirm
+                            title="你确认删除吗"
+                            placement='bottom'
+                            onConfirm={() => {
+                              this.deleteSyncClick(syncRecord, record)
+                            }}
+                            okText="确认"
+                            cancelText="取消"
+                          >
+                            <Icon title='删除' type="delete" style={{ marginLeft: 0, color: 'red' }} />
+                          </Popconfirm>
+                        </div>
+                      );
+                    }
+                  }
+                  ]}
                   dataSource={syncList}
                   pagination={false}
                 />

@@ -90,7 +90,7 @@ export default {
       let dataList = state.dataList;
       dataList = dataList.map((item) => {
         if (item.id === payload.id) {
-          item.extraInfo = payload.extraInfo;
+          item.extraInfo = { ...payload.extraInfo };
           item.loading = payload.loading;
         }
         return item;
