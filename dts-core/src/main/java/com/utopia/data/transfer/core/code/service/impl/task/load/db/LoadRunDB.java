@@ -89,14 +89,18 @@ public class LoadRunDB implements LoadRun {
             switch(sourceEntityDesc.getType()){
                 case MYSQL:
                     return loadDb(message);
-
+                case KAFKA:{
+                    switch(sourceEntityDesc.getDataType()){
+                        case MYSQL:
+                            return loadDb(message);
+                    }
+                }
             }
             return ErrorCode.LOAD_SOURCE_DATA_NO_SUPPORT;
         }
 
         protected UtopiaErrorCodeClass loadDb(Message<? extends EventDataTransactionInterface> transferData){
             List<? extends EventDataTransactionInterface> datas = transferData.getDatas();
-
 
             //首先基于数据分组
             boolean isDdl = false;

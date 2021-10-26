@@ -1,12 +1,12 @@
 package com.utopia.data.transfer.model.code.entity;
 
 import com.utopia.data.transfer.model.code.data.media.DataMediaType;
+import com.utopia.data.transfer.model.code.entity.kafka.KafkaProperty;
 import lombok.Data;
 
 import com.utopia.data.transfer.model.code.entity.mysql.MysqlProperty;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 /**
  * @author owen.cai
@@ -26,6 +26,10 @@ public class EntityDesc implements Serializable {
      * 实体类型
      */
     private DataMediaType       type;
+    /**
+     * 如果type为kafka的话，需要通过dataType来确定数据类型
+     */
+    private DataMediaType       dataType;
 
     /**
      * 编码方式
@@ -56,4 +60,6 @@ public class EntityDesc implements Serializable {
     private String              driver;
 
     private MysqlProperty       mysql;
+
+    private KafkaProperty       kafka;
 }

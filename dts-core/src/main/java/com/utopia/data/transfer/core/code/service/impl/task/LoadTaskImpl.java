@@ -117,8 +117,6 @@ public class LoadTaskImpl extends TaskImpl implements LoadTransferFacade {
         }
     }
 
-
-
     private boolean startup() {
         //获取资源
         try {
@@ -126,7 +124,7 @@ public class LoadTaskImpl extends TaskImpl implements LoadTransferFacade {
 
             LoadRun extension = UtopiaExtensionLoader.getExtensionLoader(LoadRun.class).getExtension(this.targetEntityDesc.getType().name());
             if(Objects.isNull(extension)) {
-                log.error("get load extension error {}", String.valueOf(this.targetEntityDesc.getType()));
+                log.error("get load extension error {}", this.targetEntityDesc.getType());
                 throw new UtopiaRunTimeException(ErrorCode.LOAD_GET_EXTENSION_FAIL);
             }
             this.loadRun = extension.createItem(pipeline, sourceEntityDesc, targetEntityDesc);
