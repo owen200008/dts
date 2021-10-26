@@ -34,11 +34,22 @@ class AddModal extends PureComponent {
         let { sourceRegion, targetRegion } = values;
 
         pipelineId = pipelineId || values.pipelineId;
-        handleOk({ pipelineId, sourceRegion, targetRegion });
+        handleOk({
+          sourceRegion: {
+            pipelineId,
+            mode: 'SELECT',
+            region: sourceRegion
+          },
+          targetRegion: {
+            pipelineId,
+            mode: 'LOAD',
+            region: targetRegion
+          }
+        });
       }
     });
   };
-  
+
   filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
 
   render() {
@@ -72,6 +83,7 @@ class AddModal extends PureComponent {
         cancelText="取消"
         onOk={this.handleSubmit}
         onCancel={handleCancel}
+        maskClosable={false}
       >
         <Form onSubmit={this.handleSubmit} className="login-form">
           <FormItem label="通道" {...formItemLayout}>

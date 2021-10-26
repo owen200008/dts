@@ -73,7 +73,7 @@ export default class Task extends PureComponent {
                 type,
                 name,
                 pageNum: currentPage,
-                pageSize: 12
+                pageSize: this.pageSize
               },
               callback: () => {
                 this.setState({ selectedRowKeys: [] });
@@ -163,11 +163,11 @@ export default class Task extends PureComponent {
   onItemUpdate = (item, checked, e) => {
     let params = {
       id: item.id,
-      valid: checked ? 0 : 1
+      valid: checked
     }
 
     const { dispatch } = this.props;
-    const { name, type, currentPage } = this.state;
+    //const { name, type, currentPage } = this.state;
     dispatch({
       type: "task/updateItem",
       payload: params,
@@ -220,7 +220,7 @@ export default class Task extends PureComponent {
         dataIndex: "valid",
         key: "valid",
         render: (text, record) => {
-          let valid = (record.valid).toString() !== '1';
+          let valid = record.valid;
           return (<Switch disabled={valid} onChange={this.onItemUpdate.bind(this, record)} checked={valid} />)
         }
       },
@@ -283,17 +283,21 @@ export default class Task extends PureComponent {
                   this.toPipeline(record);
                 }}
               />
-              <Popconfirm
-                title="你确认删除吗"
-                placement='bottom'
-                onConfirm={() => {
-                  this.deleteClick(record)
-                }}
-                okText="确认"
-                cancelText="取消"
-              >
-                <Icon title='删除' type="delete" style={{ marginLeft: 20, color: 'red' }} />
-              </Popconfirm>
+              {
+                !record.valid ? (
+                  <Popconfirm
+                    title="你确认删除吗"
+                    placement='bottom'
+                    onConfirm={() => {
+                      this.deleteClick(record)
+                    }}
+                    okText="确认"
+                    cancelText="取消"
+                  >
+                    <Icon title='删除' type="delete" style={{ marginLeft: 20, color: 'red' }} />
+                  </Popconfirm>
+                ) : null
+              }
               {/* <Icon
                 title='查看配置'
                 type="dash"

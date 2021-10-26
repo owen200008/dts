@@ -14,7 +14,7 @@ export default {
   effects: {
     *fetchPlatform(_, { call, put }) {
       const json = yield call(queryPlatform);
-      if (json.code === '200') {
+      if (json.code === 200) {
         yield put({
           type: "savePlatform",
           payload: json.data
@@ -28,7 +28,7 @@ export default {
         pageSize: 50
       };
       const json = yield call(getAllPlugins, params);
-      if (json.code === '200') {
+      if (json.code === 200) {
         let { dataList } = json.data;
 
         callback(dataList)
@@ -43,7 +43,7 @@ export default {
     *asyncPlugin(params, { call }) {
       const { payload } = params;
       const json = yield call(asyncOnePlugin, payload);
-      if (json.code === '200') {
+      if (json.code === 200) {
         message.success("同步成功");
       } else {
         message.warn(json.msg || json.data);

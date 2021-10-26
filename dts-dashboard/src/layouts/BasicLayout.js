@@ -110,7 +110,7 @@ class BasicLayout extends React.PureComponent {
   getPageTitle() {
     const { routerData, location } = this.props;
     const { pathname } = location;
-    let title = "网关管理";
+    let title = "DTS管理系统";
     let currRouterData = null;
     // match params path
     Object.keys(routerData).forEach(key => {
@@ -119,7 +119,7 @@ class BasicLayout extends React.PureComponent {
       }
     });
     if (currRouterData && currRouterData.name) {
-      title = `soul - 网关管理`;
+      title = `DTS管理系统`;
     }
     return title;
   }

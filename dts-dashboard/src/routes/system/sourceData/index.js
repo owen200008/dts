@@ -70,7 +70,7 @@ export default class SourceData extends PureComponent {
               fetchValue: {
                 name,
                 pageNum: currentPage,
-                pageSize: 12
+                pageSize: this.pageSize
               },
               callback: () => {
                 this.setState({ selectedRowKeys: [] });
@@ -102,7 +102,7 @@ export default class SourceData extends PureComponent {
     dispatch({
       type: "sourceData/delete",
       payload: {
-        id: sourceData.id
+        sourceId: sourceData.id
       },
       fetchValue: {
         name,

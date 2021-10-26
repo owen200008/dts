@@ -72,7 +72,7 @@ export default class TargetData extends PureComponent {
               fetchValue: {
                 name,
                 pageNum: currentPage,
-                pageSize: 12
+                pageSize: this.pageSize
               },
               callback: () => {
                 this.setState({ selectedRowKeys: [] });
@@ -104,7 +104,7 @@ export default class TargetData extends PureComponent {
     dispatch({
       type: "targetData/delete",
       payload: {
-        id: targetData.id
+        targetId: targetData.id
       },
       fetchValue: {
         name,

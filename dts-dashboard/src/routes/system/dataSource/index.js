@@ -37,8 +37,8 @@ export default class DataSource extends PureComponent {
     dispatch({
       type: "dataSource/fetch",
       payload: {
-        name,
-        type,
+        name: name || undefined,
+        type: type || undefined,
         pageNum: page,
         pageSize: this.pageSize
       }
@@ -70,10 +70,10 @@ export default class DataSource extends PureComponent {
                 ...values
               },
               fetchValue: {
-                type,
-                name,
+                name: name || undefined,
+                type: type || undefined,
                 pageNum: currentPage,
-                pageSize: 12
+                pageSize: this.pageSize
               },
               callback: () => {
                 this.setState({ selectedRowKeys: [] });
@@ -108,7 +108,8 @@ export default class DataSource extends PureComponent {
         id: dataSource.id
       },
       fetchValue: {
-        name, type,
+        name: name || undefined,
+        type: type || undefined,
         pageNum: currentPage,
         pageSize: this.pageSize
       },
@@ -132,7 +133,8 @@ export default class DataSource extends PureComponent {
                 ...values
               },
               fetchValue: {
-                name, type,
+                name: name || undefined,
+                type: type || undefined,
                 pageNum: currentPage,
                 pageSize: this.pageSize
               },
@@ -299,7 +301,7 @@ export default class DataSource extends PureComponent {
                 value={type}
                 onChange={this.searchOnchange.bind(this, 'type')}
                 placeholder="请输入数据类型"
-                style={{ width: 240 }}
+                style={{ width: 240, marginLeft: 5 }}
               />
               <Button
                 type="primary"

@@ -32,7 +32,7 @@ export async function getItem(params) {
       ...params
     }
   }).then(resp => {
-    if (resp.code === '200') {
+    if (resp.code === 200) {
       self.CACHE_MEMORY[key] = resp;
     }
     return resp;

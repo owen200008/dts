@@ -25,12 +25,11 @@ export default {
   disableDynamicImport: true,
   publicPath: "/",
   hash: true,
-  /* proxy: {
+  proxy: {
     "/": {
-      // target: "http://172.26.13.8:8887",
-      target:"http://global-dts-admin.blurams.vip",
+      target:"http://172.28.9.2:8112",
       changeOrigin: true,
       pathRewrite: { "^/": "" }
     }
-  } */
+  }
 };

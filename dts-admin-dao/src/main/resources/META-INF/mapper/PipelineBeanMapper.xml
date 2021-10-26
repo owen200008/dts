@@ -7,11 +7,12 @@
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="source_entity_id" jdbcType="BIGINT" property="sourceEntityId" />
     <result column="target_entity_id" jdbcType="BIGINT" property="targetEntityId" />
+    <result column="pipeline_params" jdbcType="VARCHAR" property="pipelineParams" />
     <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.utopia.data.transfer.admin.dao.entity.PipelineBean">
-    <result column="pipeline_params" jdbcType="LONGVARCHAR" property="pipelineParams" />
+    <result column="pipeline_params" jdbcType="VARCHAR" property="pipelineParams" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -72,7 +73,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, task_id, `name`, source_entity_id, target_entity_id, modify_time, create_time
+    id, task_id, `name`, source_entity_id, target_entity_id, pipeline_params,modify_time, create_time
   </sql>
   <sql id="Blob_Column_List">
     pipeline_params

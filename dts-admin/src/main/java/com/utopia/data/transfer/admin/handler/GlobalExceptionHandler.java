@@ -21,7 +21,7 @@ public class GlobalExceptionHandler {
 		if (e instanceof DataAccessException) {
 			//数据库异常处理
 			rm.setCode(ErrorCode.DB_ERROR.getCode());
-
+			rm.setMsg(ErrorCode.DB_ERROR.getMessage());
 		} else if (e instanceof UtopiaRunTimeException) {
 			UtopiaRunTimeException exception = ((UtopiaRunTimeException) e);
 			//数据库异常处理

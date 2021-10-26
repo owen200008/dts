@@ -59,6 +59,7 @@ public class SyncRuleServiceImpl implements SyncRuleService {
     public PageRes<List<SyncRuleBean>> syncRuleList(QuerySyncRuleVo querySyncRuleVo) {
         Page<Object> page = PageHelper.startPage(querySyncRuleVo.getPageNum(), querySyncRuleVo.getPageSize(), true);
         SyncRuleBeanDal syncRuleBeanDal = new SyncRuleBeanDal();
+        syncRuleBeanDal.setOrderByClause(" id asc");
         List<SyncRuleBean> syncRuleBeans = syncRuleBeanMapper.selectByExample(syncRuleBeanDal);
         if (CollectionUtils.isEmpty(syncRuleBeans)){
             return null;

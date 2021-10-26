@@ -70,6 +70,7 @@ public class TaskServiceImpl implements TaskService {
         if (!StringUtils.isEmpty(queryTaskVo.getName())){
             taskBeanDal.createCriteria().andNameEqualTo(queryTaskVo.getName());
         }
+        taskBeanDal.setOrderByClause(" create_time");
         List<TaskBean> taskBeans = taskBeanMapper.selectByExample(taskBeanDal);
         PageRes<List<TaskBean>> pageRes = PageRes.getPage(page.getTotal(), page.getPageSize(), taskBeans);
         return pageRes;

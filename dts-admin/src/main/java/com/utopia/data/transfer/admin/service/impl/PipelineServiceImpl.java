@@ -183,7 +183,12 @@ public class PipelineServiceImpl implements PipelineService {
     public PageRes<List<PipelineBean>> pipelineList(QueryPipelineVo queryPipelineVo) {
         Page<Object> page = PageHelper.startPage(queryPipelineVo.getPageNum(), queryPipelineVo.getPageSize(), true);
         PipelineBeanDal pipelineBeanDal = new PipelineBeanDal();
+        if (queryPipelineVo.getTaskId() != null){
+            pipelineBeanDal.createCriteria().andTaskIdEqualTo(queryPipelineVo.getTaskId());
+        }
+        pipelineBeanDal.setOrderByClause(" create_time desc");
         List<PipelineBean> pipelineBeans = pipelineBeanMapper.selectByExample(pipelineBeanDal);
+        log.info("sout pipeline {}",pipelineBeans.get(0));
         if (CollectionUtils.isEmpty(pipelineBeans)){
             return null;
         }

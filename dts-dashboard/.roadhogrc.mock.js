@@ -37,7 +37,7 @@ const proxy = {
   },
 
   'GET /dashboardUser/1': {
-    "code": '200',
+    "code": 200,
     "message": "detail dashboard user success",
     "data": {
       "id": "1",
@@ -51,24 +51,24 @@ const proxy = {
   },
   'POST /dashboardUser': {
     $body: {
-      code: '200'
+      code: 200
     },
   },
   'PUT /dashboardUser/1': {
     $body: {
-      code: '200'
+      code: 200
     },
   },
   'POST /dashboardUser/delete': {
     $body: {
-      code: '200'
+      code: 200
     },
   },
 
 
 
   'GET /plugin/1': {
-    "code": '200',
+    "code": 200,
     "message": "detail dashboard user success",
     "data": {
       "id": "1",
@@ -78,17 +78,17 @@ const proxy = {
   },
   'POST /plugin': {
     $body: {
-      code: '200'
+      code: 200
     },
   },
   'PUT /plugin/1': {
     $body: {
-      code: '200'
+      code: 200
     },
   },
   'POST /plugin/delete': {
     $body: {
-      code: '200'
+      code: 200
     },
   },
   'GET /api/notices': getNotices,
@@ -124,7 +124,7 @@ const proxy = {
   },
   'POST /dts/entity/add': {
     $body: {
-      code: '200',
+      code: 200,
       data: {
         entityId: 222
       }
@@ -132,7 +132,7 @@ const proxy = {
   },
   'POST /dts/entity/delete': {
     $body: {
-      code: '200'
+      code: 200
     },
   },
   'POST /dts/entity/get': {
@@ -144,7 +144,7 @@ const proxy = {
   },
   'POST /dts/task/add': {
     $body: {
-      code: '200',
+      code: 200,
       data: {
         entityId: 222
       }
@@ -152,12 +152,12 @@ const proxy = {
   },
   'POST /dts/task/delete': {
     $body: {
-      code: '200'
+      code: 200
     },
   },
   'POST /dts/task/switch': {
     $body: {
-      code: '200'
+      code: 200
     },
   },
   'POST /dts/pipeline/get': {
@@ -168,7 +168,7 @@ const proxy = {
   },
   'POST /dts/pipeline/add': {
     $body: {
-      "code": '200',
+      "code": 200,
       "msg": "success",
       "data": {
         "pipelineId": 1223
@@ -177,7 +177,7 @@ const proxy = {
   },
   'POST /dts/pipeline/delete': {
     $body: {
-      "code": '200',
+      "code": 200,
       "msg": "success",
       "data": {
         "pipelineId": 1223
@@ -186,7 +186,7 @@ const proxy = {
   },
   'POST /dts/pipeline/region/add': {
     $body: {
-      "code": '200',
+      "code": 200,
       "msg": "success",
       "data": {
         "pipelineId": 1223
@@ -196,7 +196,7 @@ const proxy = {
 
   'POST /dts/sourceData/add': {
     $body: {
-      "code": '200',
+      "code": 200,
       "msg": "success",
       "data": {
         "sourceDataId": 1223
@@ -211,12 +211,12 @@ const proxy = {
   },
   'POST /dts/sourceData/delete': {
     $body: {
-      "code": '200',
+      "code": 200,
     },
   },
   'POST /dts/targetData/add': {
     $body: {
-      "code": '200',
+      "code": 200,
       "msg": "success",
       "data": {
         "sourceDataId": 1223
@@ -231,12 +231,12 @@ const proxy = {
   },
   'POST /dts/targetData/delete': {
     $body: {
-      "code": '200',
+      "code": 200,
     },
   },
   'POST /dts/region/add': {
     $body: {
-      "code": '200',
+      "code": 200,
       "msg": "success",
       "data": {
         "sourceDataId": 1223
@@ -248,12 +248,12 @@ const proxy = {
   },
   'POST /dts/region/delete': {
     $body: {
-      "code": '200',
+      "code": 200,
     },
   },
   'POST /dts/pair/add': {
     $body: {
-      "code": '200',
+      "code": 200,
       "msg": "success",
       "data": {
         "sourceDataId": 1223
@@ -265,30 +265,30 @@ const proxy = {
   },
   'POST /dts/pair/delete': {
     $body: {
-      "code": '200',
+      "code": 200,
     },
   },
-  'POST /dts/sync/add': {
+  'POST /dts/syncRule/add': {
     $body: {
-      "code": '200',
+      "code": 200,
       "msg": "success",
       "data": {
         "sync": 1223
       }
     },
   },
-  'POST /dts/sync/list': {
+  'POST /dts/syncRule/list': {
     $body: sync.listItems,
   },
-  'POST /dts/sync/delete': {
+  'POST /dts/syncRule/delete': {
     $body: {
-      "code": '200',
+      "code": 200,
     },
   },
   'POST /dts/pair/get/pipelineId': {
     $body: pair.listItemsById
   },
-  'POST /dts/sync/get/pipelineId': {
+  'POST /dts/syncRule/get/pipelineId': {
     $body: sync.listItemsById
   },
   'POST /dts/region/get/pipelineId': {

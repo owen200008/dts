@@ -36,7 +36,7 @@ export default class Region extends PureComponent {
     dispatch({
       type: "region/fetch",
       payload: {
-        region,
+        region: region || undefined,
         pageNum: page,
         pageSize: this.pageSize
       }
@@ -70,10 +70,10 @@ export default class Region extends PureComponent {
     dispatch({
       type: "region/delete",
       payload: {
-        id: item.id
+        regionId: item.id
       },
       fetchValue: {
-        region,
+        region: region || undefined,
         pageNum: currentPage,
         pageSize: this.pageSize
       },
@@ -85,7 +85,7 @@ export default class Region extends PureComponent {
 
 
   addClick = () => {
-    const { currentPage, name } = this.state;
+    const { currentPage, region } = this.state;
     this.setState({
       popup: (
         <AddModal
@@ -94,29 +94,16 @@ export default class Region extends PureComponent {
             const { dispatch } = this.props;
             dispatch({
               type: "region/add",
-              payload: {
-                ...values
-              },
+              payload: { ...values },
               fetchValue: {
-                name,
+                region: region || undefined,
                 pageNum: currentPage,
                 pageSize: this.pageSize
               },
-              callback: () => {
-                this.closeModal();
-                /* dispatch({
-                  type: "global/fetchPlugins",
-                  payload: {
-                    callback: () => {
-                    }
-                  }
-                }); */
-              }
+              callback: this.closeModal
             });
           }}
-          handleCancel={() => {
-            this.closeModal();
-          }}
+          handleCancel={this.closeModal}
         />
       )
     });

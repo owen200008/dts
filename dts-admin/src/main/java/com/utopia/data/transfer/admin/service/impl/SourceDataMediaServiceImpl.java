@@ -55,6 +55,7 @@ public class SourceDataMediaServiceImpl  implements SourceDataMediaService {
         if (StringUtils.isNotBlank(queryDataMediaVo.getName())){
             sourceDataMediaBeanDal.createCriteria().andNameEqualTo(queryDataMediaVo.getName());
         }
+        sourceDataMediaBeanDal.setOrderByClause(" create_time");
         List<SourceDataMediaBean> sourceDataMediaBeans = sourceDataMediaBeanMapper.selectByExample(sourceDataMediaBeanDal);
         PageRes<List<SourceDataMediaBean>> pageRes = PageRes.getPage(page.getTotal(), page.getPageSize(), sourceDataMediaBeans);
         return pageRes;

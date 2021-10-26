@@ -149,12 +149,13 @@ class AddModal extends PureComponent {
       <Modal
         width={520}
         centered
-        title="数据源"
+        title="通道"
         visible
         okText="确定"
         cancelText="取消"
         onOk={this.handleSubmit}
         onCancel={handleCancel}
+        maskClosable={false}
       >
         <Form onSubmit={this.handleSubmit} className="login-form">
           <FormItem label="名称" {...formItemLayout}>
