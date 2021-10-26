@@ -188,7 +188,6 @@ public class PipelineServiceImpl implements PipelineService {
         }
         pipelineBeanDal.setOrderByClause(" create_time desc");
         List<PipelineBean> pipelineBeans = pipelineBeanMapper.selectByExample(pipelineBeanDal);
-        log.info("sout pipeline {}",pipelineBeans.get(0));
         if (CollectionUtils.isEmpty(pipelineBeans)){
             return null;
         }
