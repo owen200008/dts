@@ -14,14 +14,18 @@ import com.utopia.algorithm.UtopiaAlgorithm;
 import com.utopia.data.transfer.admin.contants.PathConstants;
 import com.utopia.data.transfer.admin.dao.entity.PipelineBean;
 import com.utopia.data.transfer.admin.dao.entity.RegionBean;
+import com.utopia.data.transfer.admin.dao.entity.SyncRuleBean;
 import com.utopia.data.transfer.admin.dao.entity.TaskBean;
 import com.utopia.data.transfer.admin.service.EntityService;
 import com.utopia.data.transfer.admin.service.PipelineService;
 import com.utopia.data.transfer.admin.service.RegionService;
+import com.utopia.data.transfer.admin.service.SyncRuleService;
 import com.utopia.data.transfer.admin.service.TaskService;
 import com.utopia.data.transfer.model.code.DTSServiceConf;
 import com.utopia.data.transfer.model.code.bean.StageType;
 import com.utopia.data.transfer.model.code.data.media.DataMediaType;
+import com.utopia.data.transfer.model.code.data.media.SyncRuleTarget;
+import com.utopia.data.transfer.model.code.data.media.SyncRuleType;
 import com.utopia.data.transfer.model.code.entity.EntityDesc;
 import com.utopia.data.transfer.model.code.entity.mysql.MysqlProperty;
 import com.utopia.data.transfer.model.code.pipeline.Pipeline;
@@ -60,7 +64,10 @@ public class DataChangedListenerImpl implements DataChangedListener, Initializin
     @Autowired
     Registration registration;
     @Autowired
+    SyncRuleService syncRuleService;
+    @Autowired
     LocalCacheManager localCacheManager;
+
     @Value("${utopia.channel.datachange.exporttime:60000}")
     Integer exporttime;
 
@@ -128,6 +135,8 @@ public class DataChangedListenerImpl implements DataChangedListener, Initializin
             Map<Long, TaskBean> mapTasks = taskSevice.getAll().stream().collect(Collectors.toMap(TaskBean::getId, item -> item));
             List<PipelineBean> ayPipeline = pipelineService.getAll();
             Map<Long, List<RegionBean>> mapRegion = regionService.getAll().stream().collect(Collectors.groupingBy(RegionBean::getPipelineId));
+            Map<Long, SyncRuleBean> mapSyncRuleBean = syncRuleService.getAll().stream().collect(Collectors.toMap(SyncRuleBean::getPipelineId, item -> item));
+
             List<EntityDesc> ayEntity = entityService.getAll().stream().map(item -> {
                 var ret = new EntityDesc();
                 ret.setId(item.getId());
@@ -174,6 +183,18 @@ public class DataChangedListenerImpl implements DataChangedListener, Initializin
 
                 pipeline.setParams(JSON.parseObject(item.getPipelineParams(), PipelineParameter.class));
                 pipeline.setStage(stageTypeStringMap);
+
+                SyncRuleBean syncRuleBean = mapSyncRuleBean.get(pipeline);
+                if(Objects.isNull(syncRuleBean)){
+                    return null;
+                }
+
+                SyncRuleTarget syncRuleTarget = new SyncRuleTarget();
+                syncRuleTarget.setSyncRuleType(SyncRuleType.valueOf(syncRuleBean.getSyncRuleType()));
+                syncRuleTarget.setNamespace(syncRuleBean.getNamespace());
+                syncRuleTarget.setValue(syncRuleBean.getTable());
+                syncRuleTarget.setStartGtid(syncRuleBean.getStartGtid());
+                pipeline.setSyncRuleTarget(syncRuleTarget);
 
                 return pipeline;
             }).filter(item->item!=null).collect(Collectors.toList());

@@ -54,7 +54,7 @@ public class EntityDesc implements Serializable {
     private String              password;
     private String              driver;
 
-    private MysqlProperty       mysql;
+    private MysqlProperty       mysql = new MysqlProperty();
 
-    private KafkaProperty       kafka;
+    private KafkaProperty       kafka = new KafkaProperty();
 }

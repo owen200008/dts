@@ -85,5 +85,8 @@ public class SyncRuleServiceImpl implements SyncRuleService {
         syncRuleBeanMapper.updateByExampleSelective(syncRuleBean,syncRuleBeanDal);
     }
 
-
+    @Override
+    public List<SyncRuleBean> getAll() {
+        return syncRuleBeanMapper.selectByExample(new SyncRuleBeanDal());
+    }
 }

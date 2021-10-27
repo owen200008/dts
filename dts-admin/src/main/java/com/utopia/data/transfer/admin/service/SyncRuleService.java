@@ -20,4 +20,6 @@ public interface SyncRuleService {
     void syncRuleDelete(Long id);
 
     void syncRuleModify(SyncRuleBean syncRuleBean);
+
+    List<SyncRuleBean> getAll();
 }
