@@ -75,7 +75,7 @@ public class LoadRunKafka implements LoadRun {
             UtopiaProviderKafkaConf kafkaConf = new UtopiaProviderKafkaConf();
             kafkaConf.setByteArray(true);
             kafkaConf.setKafkaTemplateInjectName(KAFKA_BYTEARRAY_TEMPLATE);
-            kafkaConf.setProviderTopic(targetEntityDesc.getKafka().getProviderTopic());
+            kafkaConf.setProviderTopic(targetEntityDesc.getKafka().getTopic());
 
             String keyName = String.format("loadRunKafkaItem_Template_%d", pipeline.getId());
             Supplier<UtopiaProviderByteArrayApi> supplier = () -> kafka.createProviderByteArray((JSONObject) JSON.toJSON(kafkaConf));
@@ -84,7 +84,7 @@ public class LoadRunKafka implements LoadRun {
 
             utopiaProviderByteArrayApi = (UtopiaProviderByteArrayApi) beanDefinitionRegistry.getBean(keyName);
             if(Objects.isNull(utopiaProviderByteArrayApi)){
-                log.error("utopiaProviderByteArrayApi topic {}", targetEntityDesc.getKafka().getProviderTopic());
+                log.error("utopiaProviderByteArrayApi topic {}", targetEntityDesc.getKafka().getTopic());
                 throw new ServiceException(ErrorCode.LOAD_NO_KAFKA);
             }
         }
@@ -127,6 +127,7 @@ public class LoadRunKafka implements LoadRun {
             this.params = evaluateClosureParam.getParams();
             return true;
         }
+
         public Closure<?> evaluateClosure(String inlineExpression) {
             return (Closure)this.evaluate(Joiner.on("").join("{it -> \"", inlineExpression, new Object[]{"\"}"}));
         }

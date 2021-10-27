@@ -62,7 +62,6 @@ public class CanalEmbedSelector {
     private EntityDesc              source;
     private ConfigService           configService;
     private MessageParser           messageParser;
-    private CanalDownStreamHandler  handler;
     private ZookeeperConfig zookeeperConfig;
 
     private CanalServerWithEmbedded canalServer = new CanalServerWithEmbedded();
@@ -128,12 +127,12 @@ public class CanalEmbedSelector {
 
                 CanalEventSink eventSink = instance.getEventSink();
                 if (eventSink instanceof AbstractCanalEventSink) {
-                    handler = new CanalDownStreamHandler();
-                    handler.setPipelineId(pipeline.getId());
-                    handler.setDetectingIntervalInSeconds(canal.getCanalParameter().getDetectingIntervalInSeconds());
-//                    OtterContextLocator.autowire(handler); // 注入一下spring资源
-                    ((AbstractCanalEventSink) eventSink).addHandler(handler, 0); // 添加到开头
-                    handler.start();
+//                    handler = new CanalDownStreamHandler();
+//                    handler.setPipelineId(pipeline.getId());
+//                    handler.setDetectingIntervalInSeconds(canal.getCanalParameter().getDetectingIntervalInSeconds());
+//                    // 添加到开头
+//                    ((AbstractCanalEventSink) eventSink).addHandler(handler, 0);
+//                    handler.start();
                 }
                 return instance;
             }
@@ -158,13 +157,6 @@ public class CanalEmbedSelector {
             return;
         }
         running = false;
-        try {
-            handler.stop();
-        } catch (Exception e) {
-            log.warn("failed destory handler", e);
-        }
-
-        handler = null;
         canalServer.stop(this.source.getName());
         canalServer.stop();
     }
@@ -174,11 +166,8 @@ public class CanalEmbedSelector {
         canal.setId(entityDesc.getId());
         canal.setName(entityDesc.getName());
         //canal.setStatus(CanalStatus.START);
-        // 默认基数
-        long slaveId = 10000;
-        if (entityDesc.getSlaveId() != null) {
-            slaveId = entityDesc.getSlaveId();
-        }
+        // slaveId = 10000 + pipelineid
+        long slaveId = 10000 + pipeline.getId();
         CanalParameter canalParameter = new CanalParameter();
         canalParameter.setZkClusterId(1L);
         canalParameter.setZkClusters(Arrays.asList(zookeeperConfig.getUrl().split(",")));
@@ -203,7 +192,6 @@ public class CanalEmbedSelector {
         canalParameter.setDdlIsolation(true);
         canalParameter.setFilterTableError(false);
         canalParameter.setMemoryStorageRawEntry(false);
-
 
         //使用gtid
         canalParameter.setGtidEnable(true);

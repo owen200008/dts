@@ -18,5 +18,5 @@ public class KafkaProperty {
     /**
      * topic
      */
-    private String providerTopic;
+    private String topic;
 }

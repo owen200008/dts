@@ -1,6 +1,5 @@
 package com.utopia.data.transfer.web.code.web;
 
-import java.util.List;
 import java.util.concurrent.Executor;
 
 import com.alibaba.ttl.threadpool.TtlExecutors;

@@ -47,11 +47,6 @@ public class EntityDesc implements Serializable {
     private LocalDateTime       modifyTime;
 
     /**
-     * 链接到mysql的slaveId
-     */
-    private Long                slaveId;
-
-    /**
      * db的配置
      */
     private String              url;

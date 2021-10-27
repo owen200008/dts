@@ -136,7 +136,6 @@ public class DataChangedListenerImpl implements DataChangedListener, Initializin
                 ret.setEncode(item.getEncode());
                 ret.setCreateTime(item.getCreateTime());
                 ret.setModifyTime(item.getModifyTime());
-                ret.setSlaveId(item.getSlaveId());
                 ret.setUrl(item.getUrl());
                 ret.setUsername(item.getUsername());
                 ret.setPassword(item.getPassword());
