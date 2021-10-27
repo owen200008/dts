@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.utopia.data.transfer.admin.dao.mapper.PairBeanMapper">
+  <resultMap id="BaseResultMap" type="com.utopia.data.transfer.admin.dao.entity.PairBean">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="pipeline_id" jdbcType="BIGINT" property="pipelineId" />
+    <result column="source_datamedia_id" jdbcType="BIGINT" property="sourceDatamediaId" />
+    <result column="target_datamedia_id" jdbcType="BIGINT" property="targetDatamediaId" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, pipeline_id, source_datamedia_id, target_datamedia_id
+  </sql>
+  <select id="selectByExample" parameterType="com.utopia.data.transfer.admin.dao.entity.PairBeanDal" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from u_pair
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from u_pair
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.utopia.data.transfer.admin.dao.entity.PairBeanDal">
+    delete from u_pair
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.utopia.data.transfer.admin.dao.entity.PairBean">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into u_pair (id, pipeline_id, source_datamedia_id, 
+      target_datamedia_id)
+    values (#{id,jdbcType=BIGINT}, #{pipelineId,jdbcType=BIGINT}, #{sourceDatamediaId,jdbcType=BIGINT}, 
+      #{targetDatamediaId,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.utopia.data.transfer.admin.dao.entity.PairBean">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into u_pair
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="pipelineId != null">
+        pipeline_id,
+      </if>
+      <if test="sourceDatamediaId != null">
+        source_datamedia_id,
+      </if>
+      <if test="targetDatamediaId != null">
+        target_datamedia_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="pipelineId != null">
+        #{pipelineId,jdbcType=BIGINT},
+      </if>
+      <if test="sourceDatamediaId != null">
+        #{sourceDatamediaId,jdbcType=BIGINT},
+      </if>
+      <if test="targetDatamediaId != null">
+        #{targetDatamediaId,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByExampleSelective" parameterType="map">
+    update u_pair
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.pipelineId != null">
+        pipeline_id = #{record.pipelineId,jdbcType=BIGINT},
+      </if>
+      <if test="record.sourceDatamediaId != null">
+        source_datamedia_id = #{record.sourceDatamediaId,jdbcType=BIGINT},
+      </if>
+      <if test="record.targetDatamediaId != null">
+        target_datamedia_id = #{record.targetDatamediaId,jdbcType=BIGINT},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update u_pair
+    set id = #{record.id,jdbcType=BIGINT},
+      pipeline_id = #{record.pipelineId,jdbcType=BIGINT},
+      source_datamedia_id = #{record.sourceDatamediaId,jdbcType=BIGINT},
+      target_datamedia_id = #{record.targetDatamediaId,jdbcType=BIGINT}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+</mapper>
