@@ -16,7 +16,6 @@ export default class Task extends PureComponent {
       currentPage: 1,
       selectedRowKeys: [],
       name: '',
-      type: '',
       popup: ""
     };
     this.pageSize = 10;
@@ -33,12 +32,11 @@ export default class Task extends PureComponent {
 
   listItems = page => {
     const { dispatch } = this.props;
-    const { name, type } = this.state;
+    const { name } = this.state;
     dispatch({
       type: "task/fetch",
       payload: {
         name,
-        type,
         pageNum: page,
         pageSize: this.pageSize
       }
@@ -56,7 +54,7 @@ export default class Task extends PureComponent {
 
   editClick = item => {
     const { dispatch } = this.props;
-    const { currentPage, name, type } = this.state;
+    const { currentPage, name } = this.state;
 
     this.setState({
       popup: (
@@ -70,7 +68,6 @@ export default class Task extends PureComponent {
                 ...values
               },
               fetchValue: {
-                type,
                 name,
                 pageNum: currentPage,
                 pageSize: this.pageSize
@@ -101,14 +98,14 @@ export default class Task extends PureComponent {
 
   deleteClick = (task) => {
     const { dispatch } = this.props;
-    const { name, type, currentPage } = this.state;
+    const { name, currentPage } = this.state;
     dispatch({
       type: "task/delete",
       payload: {
         id: task.id
       },
       fetchValue: {
-        name, type,
+        name,
         pageNum: currentPage,
         pageSize: this.pageSize
       },
@@ -119,7 +116,6 @@ export default class Task extends PureComponent {
   };
 
   addClick = () => {
-    const { currentPage, name, type } = this.state;
     this.setState({
       popup: (
         <AddModal
@@ -131,20 +127,9 @@ export default class Task extends PureComponent {
               payload: {
                 ...values
               },
-              fetchValue: {
-                name, type,
-                pageNum: currentPage,
-                pageSize: this.pageSize
-              },
               callback: () => {
                 this.closeModal();
-                /* dispatch({
-                  type: "global/fetchPlugins",
-                  payload: {
-                    callback: () => {
-                    }
-                  }
-                }); */
+                this.searchClick();
               }
             });
           }}
@@ -167,7 +152,6 @@ export default class Task extends PureComponent {
     }
 
     const { dispatch } = this.props;
-    //const { name, type, currentPage } = this.state;
     dispatch({
       type: "task/updateItem",
       payload: params,
@@ -175,11 +159,6 @@ export default class Task extends PureComponent {
     dispatch({
       type: "task/switchItem",
       payload: params,
-      /* fetchValue: {
-        name, type,
-        pageNum: currentPage,
-        pageSize: this.pageSize
-      }, */
       callback: () => {
         this.setState({ selectedRowKeys: [] });
       }
@@ -221,7 +200,7 @@ export default class Task extends PureComponent {
         key: "valid",
         render: (text, record) => {
           let valid = record.valid;
-          return (<Switch disabled={valid} onChange={this.onItemUpdate.bind(this, record)} checked={valid} />)
+          return (<Switch onChange={this.onItemUpdate.bind(this, record)} checked={valid} />)
         }
       },
       /* {
@@ -273,37 +252,37 @@ export default class Task extends PureComponent {
         key: "time",
         width: 120,
         render: (text, record) => {
+          if (record.valid) return null;
           return (
             <div>
               <Icon
+                title='编辑'
+                type="edit"
+                style={{ color: 'orange' }}
+                onClick={() => {
+                  this.editClick(record);
+                }}
+              />
+              <Icon
                 title='添加通道'
                 type="retweet"
-                style={{ color: 'orange' }}
+                style={{ marginLeft: 20, color: 'green' }}
                 onClick={() => {
                   this.toPipeline(record);
                 }}
               />
-              {
-                !record.valid ? (
-                  <Popconfirm
-                    title="你确认删除吗"
-                    placement='bottom'
-                    onConfirm={() => {
-                      this.deleteClick(record)
-                    }}
-                    okText="确认"
-                    cancelText="取消"
-                  >
-                    <Icon title='删除' type="delete" style={{ marginLeft: 20, color: 'red' }} />
-                  </Popconfirm>
-                ) : null
-              }
-              {/* <Icon
-                title='查看配置'
-                type="dash"
-                style={{ marginLeft: 20, color: 'blue' }}
-                onClick={this.viewPluginConfig.bind(this, record)}
-              /> */}
+              <Popconfirm
+                title="你确认删除吗"
+                placement='bottom'
+                onConfirm={() => {
+                  this.deleteClick(record)
+                }}
+                okText="确认"
+                cancelText="取消"
+              >
+                <Icon title='删除' type="delete" style={{ marginLeft: 20, color: 'red' }} />
+              </Popconfirm>
+
             </div>
           );
         }

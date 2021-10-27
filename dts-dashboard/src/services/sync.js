@@ -12,6 +12,15 @@ export async function addItem(params) {
   });
 }
 
+export async function updateItem(params) {
+  return request(`${baseUrl}/dts/syncRule/modify`, {
+    method: `POST`,
+    body: {
+      ...params
+    }
+  });
+}
+
 export async function deleteItem(params) {
   return request(`${baseUrl}/dts/syncRule/delete`, {
     method: `POST`,
@@ -32,6 +41,15 @@ export async function getItem(params) {
 
 export async function listItems(params) {
   return request(`${baseUrl}/dts/syncRule/list`, {
+    method: `POST`,
+    body: {
+      ...params
+    }
+  });
+}
+
+export async function listTypes(params) {
+  return request(`${baseUrl}/dts/syncRule/type`, {
     method: `POST`,
     body: {
       ...params

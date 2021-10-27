@@ -75,6 +75,10 @@ const menuData = [
         path: 'region',
       },
       {
+        name: 'Region映射管理',
+        path: 'regionPipe',
+      },
+      {
         name: '源数据管理',
         path: 'sourceData',
       },
@@ -82,7 +86,7 @@ const menuData = [
         name: '目标数据管理',
         path: 'targetData',
       }, {
-        name: '映射关系管理',
+        name: '数据映射管理',
         path: 'pair',
       }, {
         name: '同步规则管理',

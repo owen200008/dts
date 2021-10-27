@@ -5,15 +5,14 @@ import {
   deleteItem,
   getItem,
   listItems,
-  listItemsById,
   updateItem
-} from "../services/pair";
+} from "../services/regionPipe";
+
 import * as pipeline from '../services/pipeline';
-import * as sourceData from '../services/sourceData';
-import * as targetData from '../services/targetData';
+import * as region from '../services/region';
 
 export default {
-  namespace: "pair",
+  namespace: "regionPipe",
 
   state: {
     dataList: [],
@@ -25,26 +24,23 @@ export default {
       yield put(routerRedux.push(location));
     },
     * fetch(params, { call, put }) {
-      const { payload } = params;
+      const { payload, callback } = params;
       const json = yield call(listItems, payload);
       if (json.code === 200) {
         let { total, data = [] } = json.data || {};
+
         let promiseArr = (data.map(async item => {
           item.key = item.id;
-          let [pipeResp, sourceResp, targeResp] = await Promise.all([
+          let [pipeResp, regionResp] = await Promise.all([
             pipeline.getItem({ pipelineId: item.pipelineId }),
-            sourceData.getItem({ sourceId: item.sourceDatamediaId }),
-            targetData.getItem({ targetId: item.targetDatamediaId }),
+            region.getItem({ regionId: item.regionId }),
           ]);
           item.pipelineName = pipeResp?.data?.name;
-          item.sourceData = [sourceResp?.data?.name, sourceResp?.data?.namespace, sourceResp?.data?.table].join('->');
-          item.targetData = [targeResp?.data?.name, targeResp?.data?.namespace, targeResp?.data?.table].join('->');
+          item.region = regionResp?.data?.region;
           return item;
         }));
-
         let dataList = yield call(async () => { let result = await Promise.all(promiseArr); return result; });
-
-
+        if (callback) callback(dataList);
         yield put({
           type: "saveList",
           payload: {
@@ -54,14 +50,7 @@ export default {
         });
       }
     },
-    * fetchById(params, { call }) {
-      const { payload, callback } = params;
-      const json = yield call(listItemsById, payload);
-      if (json.code === 200) {
-        callback(json.data)
-      }
 
-    },
     * fetchItem(params, { call }) {
       const { payload, callback } = params;
       const json = yield call(getItem, payload);
@@ -72,6 +61,7 @@ export default {
     },
     * add(params, { call, put }) {
       const { payload, callback, fetchValue } = params;
+
       const json = yield call(addItem, payload);
       if (json.code === 200) {
         message.success("添加成功");
@@ -83,6 +73,7 @@ export default {
     },
     * update(params, { call, put }) {
       const { payload, callback, fetchValue } = params;
+
       const json = yield call(updateItem, payload);
       if (json.code === 200) {
         message.success("更新成功");
@@ -92,13 +83,14 @@ export default {
         message.warn(json.msg || json.data);
       }
     },
+
     * delete(params, { call, put }) {
       const { payload, fetchValue, callback } = params;
       const json = yield call(deleteItem, payload);
       if (json.code === 200) {
         message.success("删除成功");
         callback();
-        yield put({ type: "reload", fetchValue });
+        if (fetchValue) yield put({ type: "reload", fetchValue });
       } else {
         message.warn(json.msg || json.data);
       }

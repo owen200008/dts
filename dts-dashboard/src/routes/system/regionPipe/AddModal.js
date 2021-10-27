@@ -1,80 +1,66 @@
 import React, { PureComponent, Fragment } from "react";
-import { Modal, Form, Switch, Input, Select, Divider, Button } from "antd";
+import { Modal, Form, Switch, Input, Select, Button } from "antd";
 import { connect } from "dva";
-
-import AddDataMediaModal from '../sourceData/AddModal';
+import AddRegionModal from "../region/AddModal";
 
 const { Option } = Select;
 const FormItem = Form.Item;
 
-const labelMaps = {
-  sourceDatamediaId: '源数据',
-  targetDatamediaId: '目标数据'
-}
-
-
-@connect(({ global, pipeline, sourceData, targetData }) => ({
-  platform: global.platform,
+@connect(({ pipeline, region }) => ({
   pipelineList: pipeline.dataList,
-  sourceDataList: sourceData.dataList,
-  targetDataList: targetData.dataList,
+  modeList: region.modeList,
+  regionList: region.dataList
 }))
 class AddModal extends PureComponent {
   constructor(props) {
     super(props);
-    const { sourceDatamediaId, targetDatamediaId, dispatch } = props;
+    const { dispatch, regionId } = props;
     this.state = {
       popup: null,
-      sourceDatamediaId,
-      targetDatamediaId
+      regionId
     }
-
     dispatch({
-      type: "sourceData/fetch",
+      type: 'region/fetchMode'
+    })
+    dispatch({
+      type: 'region/fetch',
       payload: {
         pageNum: 1,
         pageSize: 10000
       }
-    });
-    dispatch({
-      type: "targetData/fetch",
-      payload: {
-        pageNum: 1,
-        pageSize: 10000
-      }
-    });
+    })
   }
-
 
   handleSubmit = e => {
     let { form, handleOk, id } = this.props;
     e.preventDefault();
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        let { sourceDatamediaId, targetDatamediaId, pipelineId } = values;
 
-        handleOk({ pipelineId, sourceDatamediaId, targetDatamediaId, id });
+        let { regionId, mode, pipelineId } = values;
+
+        handleOk({
+          id, pipelineId, regionId, mode
+        });
       }
     });
   };
 
+  filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
 
   closeModal = () => {
     this.setState({ popup: null });
   };
 
-  filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-
-  addDataSource = (key) => {
+  addRegion = (key) => {
     const { dispatch } = this.props;
     this.setState({
       popup: (
-        <AddDataMediaModal
+        <AddRegionModal
           disabled={false}
-          title={labelMaps[key]}
           handleOk={values => {
             dispatch({
-              type: `${key.replace('mediaId', '')}/add`,
+              type: "region/add",
               payload: {
                 ...values
               },
@@ -82,9 +68,9 @@ class AddModal extends PureComponent {
                 pageNum: 1,
                 pageSize: 10000
               },
-              callback: ({ sourceDataId, targetDataId }) => {
+              callback: ({ regionId }) => {
                 this.setState({
-                  [key]: sourceDataId || targetDataId
+                  [key]: regionId
                 })
                 this.closeModal();
               }
@@ -99,25 +85,30 @@ class AddModal extends PureComponent {
   }
 
   render() {
-    let { pipelineList, sourceDataList, targetDataList, handleCancel, form, pipelineId } = this.props;
-    let { sourceDatamediaId, targetDatamediaId, popup } = this.state;
+    let { regionList, modeList, pipelineList, handleCancel, form, mode, pipelineId } = this.props;
+
+    let { regionId, popup } = this.state;
 
     const { getFieldDecorator } = form;
 
     const formItemLayout = {
       labelCol: {
-        sm: { span: 5 }
+        sm: { span: 6 }
       },
       wrapperCol: {
-        sm: { span: 19 }
+        sm: { span: 18 }
       }
     };
+
+
+
+
 
     return (
       <Modal
         width={520}
         centered
-        title="通道与数据映射"
+        title="Region"
         visible
         okText="确定"
         cancelText="取消"
@@ -142,16 +133,16 @@ class AddModal extends PureComponent {
               </Select>
             )}
           </FormItem>
-          <FormItem label={labelMaps.sourceDatamediaId} {...formItemLayout}>
-            {getFieldDecorator("sourceDatamediaId", {
-              rules: [{ required: true, message: `请选择${labelMaps.sourceDatamediaId}` }],
-              initialValue: sourceDatamediaId
+          <FormItem label="Region" {...formItemLayout}>
+            {getFieldDecorator("regionId", {
+              rules: [{ required: true, message: "请选择Region" }],
+              initialValue: regionId || ''
             })(
               <Select style={{ width: '70%' }} allowClear={true} showSearch={true} filterOption={this.filterOption}>
-                {sourceDataList.map((item, index) => {
+                {regionList.map((item, index) => {
                   return (
                     <Option key={index} value={item.id}>
-                      {item.name}
+                      {item.region}
                     </Option>
                   );
                 })}
@@ -159,36 +150,79 @@ class AddModal extends PureComponent {
             )}
             <Button
               style={{ marginLeft: 20, marginTop: 0 }}
-              onClick={this.addDataSource.bind(this, 'sourceDatamediaId')}
+              onClick={this.addRegion.bind(this, 'regionId')}
               icon="plus"
             >
               添加
             </Button>
           </FormItem>
-          <FormItem label={labelMaps.targetDatamediaId} {...formItemLayout}>
-            {getFieldDecorator("targetDatamediaId", {
-              rules: [{ required: true, message: `请选择${labelMaps.targetDatamediaId}` }],
-              initialValue: targetDatamediaId// pluginTypeEnums[typePlugin].name
+          <FormItem label="类型" {...formItemLayout}>
+            {getFieldDecorator("mode", {
+              rules: [{ required: true, message: "请选择类型" }],
+              initialValue: mode
             })(
-              <Select style={{ width: '70%' }} allowClear={true} showSearch={true} filterOption={this.filterOption}>
-                {targetDataList.map((item, index) => {
+              <Select>
+                {modeList.map((item, index) => {
                   return (
-                    <Option key={index} value={item.id}>
-                      {item.name}
+                    <Option key={index} value={item}>
+                      {item}
                     </Option>
                   );
                 })}
               </Select>
             )}
-            <Button
-              style={{ marginLeft: 20, marginTop: 0 }}
-              onClick={this.addDataSource.bind(this, 'targetDatamediaId')}
-              icon="plus"
-            >
-              添加
-            </Button>
           </FormItem>
-          {/* <FormItem label="类型" {...formItemLayout}>
+
+
+          {/* <FormItem label="组类型	" {...formItemLayout}>
+            {getFieldDecorator("slaveId", {
+              rules: [{ required: true, message: "请输入组类型" }],
+              initialValue: slaveId,
+            })(
+              <Input placeholder="请输入组类型" disabled={disable}  />
+            )}
+          </FormItem>
+          <FormItem label="JDBC URL" {...formItemLayout}>
+            {getFieldDecorator("url", {
+              rules: [{ required: true, message: "请输入jdbc url" }],
+              initialValue: url,
+            })(
+              <Input placeholder="请输入jdbc url" disabled={disable}  />
+            )}
+          </FormItem>
+          <FormItem label="驱动" {...formItemLayout}>
+            {getFieldDecorator("driver", {
+              rules: [{ required: true, message: "请输入驱动" }],
+              initialValue: driver,
+            })(
+              <Input placeholder="请输入驱动" disabled={disable}  />
+            )}
+          </FormItem>
+          <FormItem label="账号" {...formItemLayout}>
+            {getFieldDecorator("username", {
+              rules: [{ required: true, message: "请输入账号" }],
+              initialValue: username,
+            })(
+              <Input placeholder="请输入账号" disabled={disable}  />
+            )}
+          </FormItem>
+          <FormItem label="密码" {...formItemLayout}>
+            {getFieldDecorator("password", {
+              rules: [{ required: true, message: "请输入密码" }],
+              initialValue: password,
+            })(
+              <Input placeholder="请输入密码" disabled={disable}  />
+            )}
+          </FormItem>
+          <FormItem label="mysql" {...formItemLayout}>
+            {getFieldDecorator("mysql", {
+              rules: [{ required: false, message: "请输入mysql" }],
+              initialValue: mysql,
+            })(
+              <Input placeholder="请输入mysql" disabled={disable}  />
+            )}
+          </FormItem>
+           <FormItem label="类型" {...formItemLayout}>
             {getFieldDecorator("typePlugin", {
               rules: [{required: true, message: "请选择类型"}],
               initialValue: typePlugin// pluginTypeEnums[typePlugin].name

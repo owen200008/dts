@@ -1,30 +1,46 @@
 import React, { PureComponent } from "react";
-import { Table, Input, Button, Popconfirm, Icon, Col, Row, Breadcrumb, Switch } from "antd";
+import { Table, Button, Popconfirm, Icon, Col, Row, Breadcrumb, Select } from "antd";
 import { connect } from "dva";
+import { parse } from "qs";
 import AddModal from "./AddModal";
 
-@connect(({ pair, loading }) => ({
+const { Option } = Select;
+@connect(({ pair, pipeline, loading }) => ({
   pair,
+  pipeline,
   loading: loading.effects["pair/fetch"],
 }))
 export default class Pair extends PureComponent {
   constructor(props) {
     super(props);
-
+    let { pipelineId = 0, taskId = 0, } = parse(props.location.search.substring(1)) || {};
     this.state = {
+      pipelineId: +pipelineId,
+      taskId: +taskId,
       currentPage: 1,
       selectedRowKeys: [],
-      name: '',
-      type: '',
       popup: ""
     };
     this.pageSize = 10;
   }
 
   componentWillMount() {
-    const { currentPage } = this.state;
+    const { currentPage, taskId } = this.state;
+    const { dispatch } = this.props;
+    dispatch({
+      type: "pipeline/fetch",
+      payload: {
+        taskId: taskId || undefined,
+        pageNum: 1,
+        pageSize: 10000
+      }
+    });
     this.listItems(currentPage);
   }
+
+  searchOnSelectchange = (key, value) => {
+    this.setState({ [key]: value });
+  };
 
   onSelectChange = selectedRowKeys => {
     this.setState({ selectedRowKeys });
@@ -32,9 +48,12 @@ export default class Pair extends PureComponent {
 
   listItems = page => {
     const { dispatch } = this.props;
+    const { pipelineId } = this.state;
+    if (!pipelineId) return;
     dispatch({
       type: "pair/fetch",
       payload: {
+        pipelineId: pipelineId || undefined,
         pageNum: page,
         pageSize: this.pageSize
       }
@@ -65,12 +84,14 @@ export default class Pair extends PureComponent {
               payload: {
                 ...values
               },
-              fetchValue: {
-                pageNum: currentPage,
-                pageSize: this.pageSize
-              },
               callback: () => {
-                this.setState({ selectedRowKeys: [] });
+                this.setState({ pipelineId: values.pipelineId, selectedRowKeys: [] }, () => {
+                  if (values.pipelineId === item.pipelineId) {
+                    this.pageOnchange(currentPage);
+                  } else {
+                    this.searchClick();
+                  }
+                });
                 this.closeModal();
               }
             });
@@ -95,13 +116,14 @@ export default class Pair extends PureComponent {
 
   deleteClick = (pair) => {
     const { dispatch } = this.props;
-    const { currentPage } = this.state;
+    const { currentPage, pipelineId } = this.state;
     dispatch({
       type: "pair/delete",
       payload: {
         pairId: pair.id
       },
       fetchValue: {
+        pipelineId: pipelineId || undefined,
         pageNum: currentPage,
         pageSize: this.pageSize
       },
@@ -112,10 +134,11 @@ export default class Pair extends PureComponent {
   };
 
   addClick = () => {
-    const { currentPage } = this.state;
+    const { pipelineId } = this.state;
     this.setState({
       popup: (
         <AddModal
+          pipelineId={pipelineId}
           disabled={false}
           handleOk={values => {
             const { dispatch } = this.props;
@@ -124,19 +147,9 @@ export default class Pair extends PureComponent {
               payload: {
                 ...values
               },
-              fetchValue: {
-                pageNum: currentPage,
-                pageSize: this.pageSize
-              },
               callback: () => {
                 this.closeModal();
-                /* dispatch({
-                  type: "global/fetchPlugins",
-                  payload: {
-                    callback: () => {
-                    }
-                  }
-                }); */
+                this.setState({ pipelineId: values.pipelineId, selectedRowKeys: [] }, this.searchClick);
               }
             });
           }}
@@ -155,9 +168,10 @@ export default class Pair extends PureComponent {
 
   render() {
 
-    const { pair, loading } = this.props;
+    const { pair, loading, pipeline } = this.props;
     const { dataList, total } = pair;
-    const { currentPage, name, popup } = this.state;
+    const { dataList: pipelineList } = pipeline;
+    const { currentPage, popup, pipelineId } = this.state;
 
     const tableColumns = [
       {
@@ -189,7 +203,14 @@ export default class Pair extends PureComponent {
         render: (text, record) => {
           return (
             <div>
-
+              <Icon
+                title='编辑'
+                type="edit"
+                style={{ color: 'orange' }}
+                onClick={() => {
+                  this.editClick(record);
+                }}
+              />
               <Popconfirm
                 title="你确认删除吗"
                 placement='bottom'
@@ -199,7 +220,7 @@ export default class Pair extends PureComponent {
                 okText="确认"
                 cancelText="取消"
               >
-                <Icon title='删除' type="delete" style={{ marginLeft: 0, color: 'red' }} />
+                <Icon title='删除' type="delete" style={{ marginLeft: 20, color: 'red' }} />
               </Popconfirm>
               {/* <Icon
                 title='查看配置'
@@ -223,27 +244,35 @@ export default class Pair extends PureComponent {
             <div className="table-header" style={{ paddingTop: 5 }}>
               <Breadcrumb>
                 <Breadcrumb.Item><a href="#/home">Home</a></Breadcrumb.Item>
-                <Breadcrumb.Item>任务列表</Breadcrumb.Item>
+                <Breadcrumb.Item>数据映射列表</Breadcrumb.Item>
               </Breadcrumb>
             </div>
             <div className="table-header" style={{ justifyContent: "normal" }}>
-              {/* <Input
-                value={name}
-                onChange={this.searchOnchange.bind(this, 'name')}
-                placeholder="请输入名称"
-                style={{ width: 240 }}
-              />
+              <Select
+                value={pipelineId || ''}
+                style={{ width: 150 }}
+                onChange={this.searchOnSelectchange.bind(this, 'pipelineId')}
+                placeholder="请选择通道"
+              >
+                {pipelineList.map((item, index) => {
+                  return (
+                    <Option key={index} value={item.id}>
+                      {item.name}
+                    </Option>
+                  );
+                })}
+              </Select>
               <Button
                 type="primary"
                 style={{ marginLeft: 20, marginTop: 0 }}
                 onClick={this.searchClick}
               >
                 查询
-    </Button> */}
+              </Button>
 
 
               <Button
-                style={{ marginLeft: 0, marginTop: 0 }}
+                style={{ marginLeft: 20, marginTop: 0 }}
                 type="primary"
                 onClick={this.addClick}
               >

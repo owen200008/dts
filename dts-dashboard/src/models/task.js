@@ -5,6 +5,7 @@ import {
   deleteItem,
   switchItem,
   listItems,
+  updateItem,
 } from "../services/task";
 
 export default {
@@ -43,6 +44,17 @@ export default {
       if (json.code === 200) {
         callback(json.data);
         if (fetchValue) yield put({ type: "reload", fetchValue });
+      }
+    },
+    * update(params, { call, put }) {
+      const { payload, callback, fetchValue } = params;
+      const json = yield call(updateItem, payload);
+      if (json.code === 200) {
+        message.success("更新成功");
+        callback(json.data);
+        if (fetchValue) yield put({ type: "reload", fetchValue });
+      } else {
+        message.warn(json.msg || json.data);
       }
     },
 

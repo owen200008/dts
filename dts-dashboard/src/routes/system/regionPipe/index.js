@@ -1,16 +1,16 @@
 import React, { PureComponent } from "react";
-import { Table, Button, Popconfirm, Icon, Col, Row, Breadcrumb, Select } from "antd";
+import { Table, Input, Button, Popconfirm, Icon, Col, Row, Breadcrumb, Select } from "antd";
 import { connect } from "dva";
 import { parse } from "qs";
-import AddModal from "./AddModal";
+import AddModal from './AddModal';
 
 const { Option } = Select;
-@connect(({ sync, pipeline, loading }) => ({
-  sync,
+@connect(({ pipeline, regionPipe, loading }) => ({
   pipeline,
-  loading: loading.effects["sync/fetch"] || loading.effects["sync/switchItem"],
+  regionPipe,
+  loading: loading.effects["regionPipe/fetch"],
 }))
-export default class Sync extends PureComponent {
+export default class Region extends PureComponent {
   constructor(props) {
     super(props);
     let { pipelineId = 0, taskId = 0, } = parse(props.location.search.substring(1)) || {};
@@ -35,7 +35,6 @@ export default class Sync extends PureComponent {
         pageSize: 10000
       }
     });
-
     this.listItems(currentPage);
   }
 
@@ -43,12 +42,16 @@ export default class Sync extends PureComponent {
     this.setState({ selectedRowKeys });
   };
 
+  searchOnSelectchange = (key, value) => {
+    this.setState({ [key]: value });
+  };
+
   listItems = page => {
     const { dispatch } = this.props;
     const { pipelineId } = this.state;
     if (!pipelineId) return;
     dispatch({
-      type: "sync/fetch",
+      type: "regionPipe/fetch",
       payload: {
         pipelineId: pipelineId || undefined,
         pageNum: page,
@@ -66,21 +69,55 @@ export default class Sync extends PureComponent {
     this.setState({ popup: "" });
   };
 
-  editClick = item => {
+
+
+  searchOnchange = (key, e) => {
+    const value = e.target.value;
+    this.setState({ [key]: value });
+  };
+
+  searchClick = () => {
+    this.listItems(1);
+    this.setState({ currentPage: 1 });
+  };
+
+  deleteClick = (item) => {
+    const { dispatch } = this.props;
+    const { currentPage, pipelineId } = this.state;
+    dispatch({
+      type: "regionPipe/delete",
+      payload: {
+        id: item.id
+      },
+      fetchValue: {
+        pipelineId: pipelineId || undefined,
+        pageNum: currentPage,
+        pageSize: this.pageSize
+      },
+      callback: () => {
+        this.setState({ selectedRowKeys: [] });
+      }
+    });
+  };
+
+
+  editClick = (item) => {
     const { dispatch } = this.props;
     const { currentPage } = this.state;
     this.setState({
       popup: (
         <AddModal
-          disabled={true}
           {...item}
+          disabled={false}
           handleOk={values => {
             dispatch({
-              type: "sync/update",
-              payload: {
-                ...values
+              type: "regionPipe/update",
+              payload: { ...values },
+              fetchValue: {
+                pipelineId: values.pipelineId,
+                pageNum: currentPage,
+                pageSize: this.pageSize
               },
-
               callback: () => {
                 this.setState({ pipelineId: values.pipelineId, selectedRowKeys: [] }, () => {
                   if (values.pipelineId === item.pipelineId) {
@@ -93,44 +130,9 @@ export default class Sync extends PureComponent {
               }
             });
           }}
-          handleCancel={() => {
-            this.closeModal();
-          }}
+          handleCancel={this.closeModal}
         />
       )
-    });
-  };
-
-  searchOnSelectchange = (key, value) => {
-    this.setState({ [key]: value });
-  };
-
-  searchOnchange = (key, e) => {
-    const value = e.target.value;
-    this.setState({ [key]: value });
-  };
-
-  searchClick = () => {
-    this.listItems(1);
-    this.setState({ currentPage: 1 });
-  };
-
-  deleteClick = (sync) => {
-    const { dispatch } = this.props;
-    const { currentPage, pipelineId } = this.state;
-    dispatch({
-      type: "sync/delete",
-      payload: {
-        id: sync.id
-      },
-      fetchValue: {
-        pipelineId: pipelineId || undefined,
-        pageNum: currentPage,
-        pageSize: this.pageSize
-      },
-      callback: () => {
-        this.setState({ selectedRowKeys: [] });
-      }
     });
   };
 
@@ -144,21 +146,15 @@ export default class Sync extends PureComponent {
           handleOk={values => {
             const { dispatch } = this.props;
             dispatch({
-              type: "sync/add",
-              payload: {
-                ...values
-              },
-
+              type: "regionPipe/add",
+              payload: { ...values },
               callback: () => {
                 this.setState({ pipelineId: values.pipelineId, selectedRowKeys: [] }, this.searchClick);
                 this.closeModal();
-
               }
             });
           }}
-          handleCancel={() => {
-            this.closeModal();
-          }}
+          handleCancel={this.closeModal}
         />
       )
     });
@@ -167,43 +163,38 @@ export default class Sync extends PureComponent {
 
 
 
+
   render() {
 
-    const { sync, loading, pipeline } = this.props;
-    const { dataList, total } = sync;
+    const { regionPipe, loading, pipeline } = this.props;
     const { dataList: pipelineList } = pipeline;
+    const { dataList, total } = regionPipe;
     const { currentPage, popup, pipelineId } = this.state;
 
     const tableColumns = [
       {
         align: "center",
-        title: "通道",
+        title: "Region",
+        dataIndex: "region",
+        key: "region",
+      },
+      {
+        align: "center",
+        title: "Mode",
+        dataIndex: "mode",
+        key: "mode",
+      },
+      {
+        align: "center",
+        title: "通道Id",
+        dataIndex: "pipelineId",
+        key: "pipelineId",
+      },
+      {
+        align: "center",
+        title: "通道名",
         dataIndex: "pipelineName",
         key: "pipelineName",
-      },
-      {
-        align: "center",
-        title: "同步规则类型",
-        dataIndex: "syncRuleType",
-        key: "syncRuleType",
-      },
-      {
-        align: "center",
-        title: "数据库名",
-        dataIndex: "namespace",
-        key: "namespace",
-      },
-      {
-        align: "center",
-        title: "数据表名",
-        dataIndex: "table",
-        key: "table",
-      },
-      {
-        align: "center",
-        title: "同步位置标识",
-        dataIndex: "startGtid",
-        key: "startGtid",
       },
       {
         align: "center",
@@ -249,11 +240,10 @@ export default class Sync extends PureComponent {
             <div className="table-header" style={{ paddingTop: 5 }}>
               <Breadcrumb>
                 <Breadcrumb.Item><a href="#/home">Home</a></Breadcrumb.Item>
-                <Breadcrumb.Item>同步规则列表</Breadcrumb.Item>
+                <Breadcrumb.Item>Region列表</Breadcrumb.Item>
               </Breadcrumb>
             </div>
             <div className="table-header" style={{ justifyContent: "normal" }}>
-
               <Select
                 value={pipelineId || ''}
                 style={{ width: 150 }}
@@ -268,6 +258,9 @@ export default class Sync extends PureComponent {
                   );
                 })}
               </Select>
+
+
+
               <Button
                 type="primary"
                 style={{ marginLeft: 20, marginTop: 0 }}

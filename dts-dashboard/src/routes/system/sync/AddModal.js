@@ -3,48 +3,39 @@ import { Modal, Form, Switch, Input, Select, Divider } from "antd";
 import { connect } from "dva";
 
 const { Option } = Select;
-const { TextArea } = Input;
 const FormItem = Form.Item;
 
-@connect(({ pipeline }) => ({
-  pipelineList: pipeline.dataList
+@connect(({ pipeline, sync }) => ({
+  pipelineList: pipeline.dataList,
+  typeList: sync.typeList
 }))
 class AddModal extends PureComponent {
   constructor(props) {
     super(props);
-    const { dispatch, pipelineId } = this.props;
-
-    if (!pipelineId) {
-      dispatch({
-        type: "pipeline/fetch",
-        payload: {
-          pageNum: 1,
-          pageSize: 10000
-        }
-      });
-    }
+    const { dispatch } = props;
+    dispatch({
+      type: 'sync/fetchType',
+    })
   }
 
   handleSubmit = e => {
-    let { form, handleOk, pipelineId } = this.props;
+    let { form, handleOk, id } = this.props;
     e.preventDefault();
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
 
-        let { syncRuleType, namespace, table, startGtid } = values;
+        let { syncRuleType, namespace, table, startGtid, pipelineId } = values;
 
-        pipelineId = pipelineId || values.pipelineId;
-        handleOk({ pipelineId, syncRuleType, namespace, table, startGtid });
+        handleOk({ pipelineId, syncRuleType, namespace, table, startGtid, id });
       }
     });
   };
-  
+
   filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
 
   render() {
-    let { pipelineList, handleCancel, form, pipelineId, syncRuleType, namespace, table, startGtid } = this.props;
+    let { typeList, pipelineList, handleCancel, form, pipelineId, syncRuleType, namespace, table, startGtid } = this.props;
 
-    let disable = !!pipelineId;
 
 
     const { getFieldDecorator } = form;
@@ -78,9 +69,9 @@ class AddModal extends PureComponent {
           <FormItem label="通道" {...formItemLayout}>
             {getFieldDecorator("pipelineId", {
               rules: [{ required: true, message: "请选择通道" }],
-              initialValue: pipelineId
+              initialValue: pipelineId || ''
             })(
-              <Select allowClear={true} showSearch={true} filterOption={this.filterOption} disabled={disable}>
+              <Select allowClear={true} showSearch={true} filterOption={this.filterOption}>
                 {pipelineList.map((item, index) => {
                   return (
                     <Option key={index} value={item.id}>
@@ -96,8 +87,14 @@ class AddModal extends PureComponent {
               rules: [{ required: true, message: "请选择同步规则类型" }],
               initialValue: syncRuleType || 'DEFAULT'
             })(
-              <Select allowClear={true} showSearch={true} filterOption={this.filterOption}>
-                <Option value='DEFAULT'>DEFAULT</Option>
+              <Select>
+                {typeList.map((item, index) => {
+                  return (
+                    <Option key={index} value={item}>
+                      {item}
+                    </Option>
+                  );
+                })}
               </Select>
             )}
           </FormItem>
@@ -119,7 +116,6 @@ class AddModal extends PureComponent {
           </FormItem>
           <FormItem label="同步位置标识" {...formItemLayout}>
             {getFieldDecorator("startGtid", {
-              rules: [{ required: true, message: "请输入同步位置标识" }],
               initialValue: startGtid,
             })(
               <Input placeholder="请输入同步位置标识" />

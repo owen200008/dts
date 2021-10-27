@@ -5,6 +5,7 @@ import {
   deleteItem,
   getItem,
   listItems,
+  updateItem,
 } from "../services/targetData";
 
 export default {
@@ -50,6 +51,17 @@ export default {
       const json = yield call(addItem, payload);
       if (json.code === 200) {
         message.success("添加成功");
+        callback(json.data);
+        yield put({ type: "reload", fetchValue });
+      } else {
+        message.warn(json.msg || json.data);
+      }
+    },
+    * update(params, { call, put }) {
+      const { payload, callback, fetchValue } = params;
+      const json = yield call(updateItem, payload);
+      if (json.code === 200) {
+        message.success("更新成功");
         callback(json.data);
         yield put({ type: "reload", fetchValue });
       } else {

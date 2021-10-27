@@ -21,6 +21,15 @@ export async function deleteItem(params) {
   });
 }
 
+export async function updateItem(params) {
+  return request(`${baseUrl}/dts/entity/modify`, {
+    method: `POST`,
+    body: {
+      ...params
+    }
+  });
+}
+
 export async function getItem(params) {
   return request(`${baseUrl}/dts/entity/get`, {
     method: `POST`,
@@ -32,6 +41,24 @@ export async function getItem(params) {
 
 export async function listItems(params) {
   return request(`${baseUrl}/dts/entity/list`, {
+    method: `POST`,
+    body: {
+      ...params
+    }
+  });
+}
+
+export async function listTypes(params) {
+  return request(`${baseUrl}/dts/entity/dataType`, {
+    method: `POST`,
+    body: {
+      ...params
+    }
+  });
+}
+
+export async function getProperty(params) {
+  return request(`${baseUrl}/dts/entity/property`, {
     method: `POST`,
     body: {
       ...params

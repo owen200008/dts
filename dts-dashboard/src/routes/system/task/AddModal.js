@@ -16,19 +16,19 @@ class AddModal extends PureComponent {
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
 
-        let { name, type, encode, slaveId, url, driver, username, password, mysql } = values;
+        let { name, type, valid } = values;
 
 
-        handleOk({ id, name, type, encode, slaveId, url, driver, username, password, mysql });
+        handleOk({ id, name, type, valid });
       }
     });
   };
 
   render() {
-    let { handleCancel, form, id, name, /* type, encode, slaveId, url, driver, username, password, mysql */ } = this.props;
+    let { handleCancel, form, id, name, valid } = this.props;
 
     let disable = false;
-    if (id) {
+    if (!id) {
       disable = true;
     }
 
@@ -68,18 +68,16 @@ class AddModal extends PureComponent {
               rules: [{ required: true, message: "请输入任务名称" }],
               initialValue: name,
             })(
-              <Input placeholder="请输入任务名称" disabled={disable} />
+              <Input placeholder="请输入任务名称" />
             )}
           </FormItem>
-          {/* <FormItem label="数据类型" {...formItemLayout}>
-            {getFieldDecorator("type", {
-              rules: [{ required: true, message: "请输入数据类型" }],
-              initialValue: type,
-            })(
-              <Input placeholder="请输入数据类型" disabled={disable} />
-            )}
+          <FormItem {...formItemLayout} label="状态">
+            {getFieldDecorator("valid", {
+              initialValue: valid || false,
+              valuePropName: "checked"
+            })(<Switch disabled={disable} />)}
           </FormItem>
-          <FormItem label="数据编码格式" {...formItemLayout}>
+          {/* <FormItem label="数据编码格式" {...formItemLayout}>
             {getFieldDecorator("encode", {
               rules: [{ required: false, message: "请输入数据编码格式" }],
               initialValue: encode,

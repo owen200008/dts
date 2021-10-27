@@ -5,7 +5,9 @@ import {
   deleteItem,
   getItem,
   listItems,
+  listTypes,
   listItemsById,
+  updateItem,
 } from "../services/sync";
 import * as pipeline from '../services/pipeline';
 
@@ -13,6 +15,7 @@ export default {
   namespace: "sync",
 
   state: {
+    typeList: [],
     dataList: [],
     total: 0
   },
@@ -42,6 +45,19 @@ export default {
         });
       }
     },
+    * fetchType(params, { call, put }) {
+      const { payload } = params;
+      const json = yield call(listTypes, payload);
+      if (json.code === 200) {
+        yield put({
+          type: "saveTypeList",
+          payload: {
+            dataList: json.data || []
+          }
+        });
+      }
+    },
+
     * fetchById(params, { call }) {
       const { payload, callback } = params;
       const json = yield call(listItemsById, payload);
@@ -62,6 +78,17 @@ export default {
       const json = yield call(addItem, payload);
       if (json.code === 200) {
         message.success("添加成功");
+        callback(json.data);
+        if (fetchValue) yield put({ type: "reload", fetchValue });
+      } else {
+        message.warn(json.msg || json.data);
+      }
+    },
+    * update(params, { call, put }) {
+      const { payload, callback, fetchValue } = params;
+      const json = yield call(updateItem, payload);
+      if (json.code === 200) {
+        message.success("更新成功");
         callback(json.data);
         if (fetchValue) yield put({ type: "reload", fetchValue });
       } else {
@@ -93,6 +120,12 @@ export default {
         ...state,
         dataList: payload.dataList,
         total: payload.total
+      };
+    },
+    saveTypeList(state, { payload }) {
+      return {
+        ...state,
+        typeList: payload.dataList,
       };
     },
     updataItem(state, { payload }) {

@@ -25,12 +25,9 @@ class AddModal extends PureComponent {
   };
 
   render() {
-    let { title, handleCancel, form, id, name, namespace, table } = this.props;
+    let { title, handleCancel, form, name, namespace, table } = this.props;
 
     let disable = false;
-    if (id) {
-      disable = true;
-    }
 
     const { getFieldDecorator } = form;
 

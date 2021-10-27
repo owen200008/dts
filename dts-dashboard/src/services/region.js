@@ -12,6 +12,15 @@ export async function addItem(params) {
   });
 }
 
+export async function updateItem(params) {
+  return request(`${baseUrl}/dts/region/modify`, {
+    method: `POST`,
+    body: {
+      ...params
+    }
+  });
+}
+
 export async function deleteItem(params) {
   return request(`${baseUrl}/dts/region/delete`, {
     method: `POST`,
@@ -39,8 +48,8 @@ export async function listItems(params) {
   });
 }
 
-export async function listItemsById(params) {
-  return request(`${baseUrl}/dts/region/get/pipelineId`, {
+export async function listMode(params) {
+  return request(`${baseUrl}/dts/region/mode`, {
     method: `POST`,
     body: {
       ...params

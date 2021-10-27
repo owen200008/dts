@@ -5,6 +5,7 @@ import {
   deleteItem,
   getItem,
   listItems,
+  updateItem
 } from "../services/pipeline";
 
 export default {
@@ -51,7 +52,7 @@ export default {
       if (json.code === 200) {
         message.success("添加成功");
         callback(json.data);
-        yield put({ type: "reload", fetchValue });
+        if (fetchValue) yield put({ type: "reload", fetchValue });
       } else {
         message.warn(json.msg || json.data);
       }
@@ -63,7 +64,18 @@ export default {
       if (json.code === 200) {
         message.success("删除成功");
         callback();
-        yield put({ type: "reload", fetchValue });
+        if (fetchValue) yield put({ type: "reload", fetchValue });
+      } else {
+        message.warn(json.msg || json.data);
+      }
+    },
+    * update(params, { call, put }) {
+      const { payload, fetchValue, callback } = params;
+      const json = yield call(updateItem, payload);
+      if (json.code === 200) {
+        message.success("更新成功");
+        callback();
+        if (fetchValue) yield put({ type: "reload", fetchValue });
       } else {
         message.warn(json.msg || json.data);
       }

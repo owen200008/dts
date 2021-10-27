@@ -1,9 +1,9 @@
 import React, { PureComponent } from "react";
-import { Table, Input, Button, Popconfirm, Icon, Col, Row, Breadcrumb } from "antd";
+import { Table, Input, Button, Popconfirm, Icon, Col, Row, Breadcrumb, Select } from "antd";
 import { connect } from "dva";
-import { stringify } from "qs";
 import AddModal from "./AddModal";
 
+const { Option } = Select;
 @connect(({ dataSource, loading }) => ({
   dataSource,
   loading: loading.effects["dataSource/fetch"],
@@ -23,7 +23,11 @@ export default class DataSource extends PureComponent {
   }
 
   componentWillMount() {
+    const { dispatch } = this.props;
     const { currentPage } = this.state;
+    dispatch({
+      type: 'dataSource/fetchType'
+    });
     this.listItems(currentPage);
   }
 
@@ -132,21 +136,10 @@ export default class DataSource extends PureComponent {
               payload: {
                 ...values
               },
-              fetchValue: {
-                name: name || undefined,
-                type: type || undefined,
-                pageNum: currentPage,
-                pageSize: this.pageSize
-              },
+
               callback: () => {
+                this.searchClick();
                 this.closeModal();
-                /* dispatch({
-                  type: "global/fetchPlugins",
-                  payload: {
-                    callback: () => {
-                    }
-                  }
-                }); */
               }
             });
           }}
@@ -159,7 +152,9 @@ export default class DataSource extends PureComponent {
   };
 
 
-
+  searchOnSelectchange = (key, value) => {
+    this.setState({ [key]: value });
+  };
 
 
   /* viewPluginConfig = (item) => {
@@ -179,7 +174,7 @@ export default class DataSource extends PureComponent {
   render() {
 
     const { dataSource, loading } = this.props;
-    const { dataList, total } = dataSource;
+    const { dataList, total, typeList } = dataSource;
     const { currentPage, name, type, popup } = this.state;
 
     const tableColumns = [
@@ -203,7 +198,7 @@ export default class DataSource extends PureComponent {
       },
       {
         align: "center",
-        title: "组类型",
+        title: "slaveId",
         dataIndex: "slaveId",
         key: "slaveId",
       },
@@ -233,9 +228,9 @@ export default class DataSource extends PureComponent {
       },
       {
         align: "center",
-        title: "mysql",
-        dataIndex: "mysql",
-        key: "mysql",
+        title: "属性",
+        dataIndex: "property",
+        key: "property",
       },
       {
         align: "center",
@@ -248,7 +243,7 @@ export default class DataSource extends PureComponent {
             <div>
               <Icon
                 title='查看'
-                type="file"
+                type="edit"
                 style={{ color: 'orange' }}
                 onClick={() => {
                   this.editClick(record);
@@ -291,18 +286,27 @@ export default class DataSource extends PureComponent {
               </Breadcrumb>
             </div>
             <div className="table-header" style={{ justifyContent: "normal" }}>
+              <Select
+                value={type || ''}
+                style={{ width: 150 }}
+                onChange={this.searchOnSelectchange.bind(this, 'type')}
+                placeholder="请选择数据类型"
+              >
+                {typeList.map((item, index) => {
+                  return (
+                    <Option key={index} value={item}>
+                      {item}
+                    </Option>
+                  );
+                })}
+              </Select>
               <Input
                 value={name}
                 onChange={this.searchOnchange.bind(this, 'name')}
                 placeholder="请输入名称"
                 style={{ width: 240 }}
               />
-              <Input
-                value={type}
-                onChange={this.searchOnchange.bind(this, 'type')}
-                placeholder="请输入数据类型"
-                style={{ width: 240, marginLeft: 5 }}
-              />
+
               <Button
                 type="primary"
                 style={{ marginLeft: 20, marginTop: 0 }}

@@ -1,17 +1,17 @@
 import React, { PureComponent } from "react";
-import { Table, Input, Button, Popconfirm, Icon, Col, Row, Breadcrumb, Switch } from "antd";
+import { Table, Input, Button, Popconfirm, Icon, Col, Row, Breadcrumb, Select } from "antd";
 import { connect } from "dva";
-import AddModal from './AddModal'
+import AddModal from './AddModal';
 
-
-@connect(({ region, loading }) => ({
+const { Option } = Select;
+@connect(({ pipeline, region, loading }) => ({
+  pipeline,
   region,
   loading: loading.effects["region/fetch"],
 }))
 export default class Region extends PureComponent {
   constructor(props) {
     super(props);
-
     this.state = {
       currentPage: 1,
       selectedRowKeys: [],
@@ -28,6 +28,10 @@ export default class Region extends PureComponent {
 
   onSelectChange = selectedRowKeys => {
     this.setState({ selectedRowKeys });
+  };
+
+  searchOnSelectchange = (key, value) => {
+    this.setState({ [key]: value });
   };
 
   listItems = page => {
@@ -84,8 +88,36 @@ export default class Region extends PureComponent {
   };
 
 
-  addClick = () => {
+  editClick = (item) => {
+    const { dispatch } = this.props;
     const { currentPage, region } = this.state;
+    this.setState({
+      popup: (
+        <AddModal
+          {...item}
+          disabled={false}
+          handleOk={values => {
+            dispatch({
+              type: "region/update",
+              payload: { ...values },
+              fetchValue: {
+                region: region || undefined,
+                pageNum: currentPage,
+                pageSize: this.pageSize
+              },
+              callback: () => {
+                this.setState({ selectedRowKeys: [] });
+                this.closeModal();
+              }
+            });
+          }}
+          handleCancel={this.closeModal}
+        />
+      )
+    });
+  };
+
+  addClick = () => {
     this.setState({
       popup: (
         <AddModal
@@ -95,12 +127,10 @@ export default class Region extends PureComponent {
             dispatch({
               type: "region/add",
               payload: { ...values },
-              fetchValue: {
-                region: region || undefined,
-                pageNum: currentPage,
-                pageSize: this.pageSize
-              },
-              callback: this.closeModal
+              callback: () => {
+                this.searchClick();
+                this.closeModal();
+              }
             });
           }}
           handleCancel={this.closeModal}
@@ -122,27 +152,15 @@ export default class Region extends PureComponent {
     const tableColumns = [
       {
         align: "center",
+        title: "ID",
+        dataIndex: "id",
+        key: "id",
+      },
+      {
+        align: "center",
         title: "Region",
         dataIndex: "region",
         key: "region",
-      },
-      {
-        align: "center",
-        title: "Mode",
-        dataIndex: "mode",
-        key: "mode",
-      },
-      {
-        align: "center",
-        title: "通道Id",
-        dataIndex: "pipelineId",
-        key: "pipelineId",
-      },
-      {
-        align: "center",
-        title: "通道名",
-        dataIndex: "pipelineName",
-        key: "pipelineName",
       },
       {
         align: "center",
@@ -153,6 +171,14 @@ export default class Region extends PureComponent {
         render: (text, record) => {
           return (
             <div>
+              <Icon
+                title='编辑'
+                type="edit"
+                style={{ color: 'orange' }}
+                onClick={() => {
+                  this.editClick(record);
+                }}
+              />
               <Popconfirm
                 title="你确认删除吗"
                 placement='bottom'
@@ -162,7 +188,7 @@ export default class Region extends PureComponent {
                 okText="确认"
                 cancelText="取消"
               >
-                <Icon title='删除' type="delete" style={{ marginLeft: 0, color: 'red' }} />
+                <Icon title='删除' type="delete" style={{ marginLeft: 20, color: 'red' }} />
               </Popconfirm>
             </div>
           );
@@ -184,10 +210,12 @@ export default class Region extends PureComponent {
               </Breadcrumb>
             </div>
             <div className="table-header" style={{ justifyContent: "normal" }}>
+
+
               <Input
                 value={regionName}
                 onChange={this.searchOnchange.bind(this, 'region')}
-                placeholder="请输入名称"
+                placeholder="请输入Region"
                 style={{ width: 240 }}
               />
 

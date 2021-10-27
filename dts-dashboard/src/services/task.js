@@ -21,6 +21,15 @@ export async function deleteItem(params) {
   });
 }
 
+export async function updateItem(params) {
+  return request(`${baseUrl}/dts/task/modify`, {
+    method: `POST`,
+    body: {
+      ...params
+    }
+  });
+}
+
 export async function switchItem(params) {
   return request(`${baseUrl}/dts/task/switch`, {
     method: `POST`,

@@ -29,7 +29,7 @@ class AddModal extends PureComponent {
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
       type: "dataSource/fetch",
@@ -55,7 +55,7 @@ class AddModal extends PureComponent {
         try {
           pipelineParams && JSON.parse(pipelineParams);
         } catch (ex) {
-          return alert('请输入正确动作配置');
+          return alert('请输入正确配置');
         }
 
         handleOk({ id, name, taskId, sourceEntityId, targetEntityId, pipelineParams });
@@ -125,12 +125,9 @@ class AddModal extends PureComponent {
   }
 
   render() {
-    let { taskList, dataSourceList, handleCancel, form, id, name, taskId, pipelineParams } = this.props;
+    let { taskList, dataSourceList, handleCancel, form, name, taskId, pipelineParams } = this.props;
     let { sourceEntityId, targetEntityId, popup } = this.state;
-    let disable = false;
-    if (id) {
-      disable = true;
-    }
+
 
     const { getFieldDecorator } = form;
 
@@ -163,18 +160,18 @@ class AddModal extends PureComponent {
               rules: [{ required: true, message: "请输入名称" }],
               initialValue: name,
             })(
-              <Input placeholder="请输入名称" disabled={disable} />
+              <Input placeholder="请输入名称" />
             )}
           </FormItem>
           <FormItem label="任务" {...formItemLayout}>
             {getFieldDecorator("taskId", {
               rules: [{ required: true, message: "请选择任务" }],
-              initialValue: taskId
+              initialValue: taskId || ''
             })(
-              <Select allowClear={true} showSearch={true} filterOption={this.filterOption} disabled>
+              <Select allowClear={true} showSearch={true} filterOption={this.filterOption}>
                 {taskList.map((item, index) => {
                   return (
-                    <Option key={index} value={`${item.id}`}>
+                    <Option key={index} value={item.id}>
                       {item.name}
                     </Option>
                   );

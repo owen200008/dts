@@ -118,7 +118,6 @@ export default class TargetData extends PureComponent {
   };
 
   addClick = () => {
-    const { currentPage, name } = this.state;
     this.setState({
       popup: (
         <AddModal
@@ -131,20 +130,9 @@ export default class TargetData extends PureComponent {
               payload: {
                 ...values
               },
-              fetchValue: {
-                name,
-                pageNum: currentPage,
-                pageSize: this.pageSize
-              },
               callback: () => {
                 this.closeModal();
-                /* dispatch({
-                  type: "global/fetchPlugins",
-                  payload: {
-                    callback: () => {
-                    }
-                  }
-                }); */
+                this.searchClick();
               }
             });
           }}
@@ -194,7 +182,14 @@ export default class TargetData extends PureComponent {
         render: (text, record) => {
           return (
             <div>
-
+              <Icon
+                title='编辑'
+                type="edit"
+                style={{ color: 'orange' }}
+                onClick={() => {
+                  this.editClick(record);
+                }}
+              />
               <Popconfirm
                 title="你确认删除吗"
                 placement='bottom'
@@ -204,7 +199,7 @@ export default class TargetData extends PureComponent {
                 okText="确认"
                 cancelText="取消"
               >
-                <Icon title='删除' type="delete" style={{ marginLeft: 0, color: 'red' }} />
+                <Icon title='删除' type="delete" style={{ marginLeft: 20, color: 'red' }} />
               </Popconfirm>
             </div>
           );

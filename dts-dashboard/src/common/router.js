@@ -120,6 +120,9 @@ export const getRouterData = app => {
     '/system/region': {
       component: dynamicWrapper(app, ['region'], () => import('../routes/system/region')),
     },
+    '/system/regionPipe': {
+      component: dynamicWrapper(app, ['regionPipe', 'region'], () => import('../routes/system/regionPipe')),
+    },
     '/system/sourceData': {
       component: dynamicWrapper(app, ['sourceData'], () => import('../routes/system/sourceData')),
     },
@@ -127,10 +130,10 @@ export const getRouterData = app => {
       component: dynamicWrapper(app, ['targetData'], () => import('../routes/system/targetData')),
     },
     '/system/pair': {
-      component: dynamicWrapper(app, ['pair'], () => import('../routes/system/pair')),
+      component: dynamicWrapper(app, ['pair', 'sourceData', 'targetData'], () => import('../routes/system/pair')),
     },
     '/system/sync': {
-      component: dynamicWrapper(app, ['sync'], () => import('../routes/system/sync')),
+      component: dynamicWrapper(app, ['sync', 'pipeline'], () => import('../routes/system/sync')),
     },
     /*
     '/system/jar': {

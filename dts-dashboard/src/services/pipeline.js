@@ -21,6 +21,15 @@ export async function deleteItem(params) {
   });
 }
 
+export async function updateItem(params) {
+  return request(`${baseUrl}/dts/pipeline/modify`, {
+    method: `POST`,
+    body: {
+      ...params
+    }
+  });
+}
+
 export async function getItem(params) {
   let key = `pipeline_id_${params.pipelineId}`;
 

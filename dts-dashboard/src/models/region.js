@@ -5,7 +5,8 @@ import {
   deleteItem,
   getItem,
   listItems,
-  listItemsById
+  updateItem,
+  listMode
 } from "../services/region";
 
 import * as pipeline from '../services/pipeline';
@@ -14,6 +15,7 @@ export default {
   namespace: "region",
 
   state: {
+    modeList: [],
     dataList: [],
     total: 0
   },
@@ -27,14 +29,10 @@ export default {
       const json = yield call(listItems, payload);
       if (json.code === 200) {
         let { total, data = [] } = json.data || {};
-
-        let promiseArr = (data.map(async item => {
+        let dataList = data.map(item => {
           item.key = item.id;
-          let resp = await pipeline.getItem({ pipelineId: item.pipelineId });
-          item.pipelineName = resp?.data?.name;
           return item;
-        }));
-        let dataList = yield call(async () => { let result = await Promise.all(promiseArr); return result; });
+        });
         yield put({
           type: "saveList",
           payload: {
@@ -44,14 +42,20 @@ export default {
         });
       }
     },
-    * fetchById(params, { call }) {
-      const { payload, callback } = params;
-      const json = yield call(listItemsById, payload);
+    * fetchMode(params, { call, put }) {
+      const { payload, } = params;
+      const json = yield call(listMode, payload);
       if (json.code === 200) {
-        callback(json.data)
+        yield put({
+          type: "saveModeList",
+          payload: {
+            dataList: json.data || []
+          }
+        });
       }
 
     },
+
     * fetchItem(params, { call }) {
       const { payload, callback } = params;
       const json = yield call(getItem, payload);
@@ -62,12 +66,22 @@ export default {
     },
     * add(params, { call, put }) {
       const { payload, callback, fetchValue } = params;
-      const { sourceRegion, targetRegion } = payload;
 
-      yield call(addItem, sourceRegion);
-      const json = yield call(addItem, targetRegion);
+      const json = yield call(addItem, payload);
       if (json.code === 200) {
         message.success("添加成功");
+        callback(json.data);
+        if (fetchValue) yield put({ type: "reload", fetchValue });
+      } else {
+        message.warn(json.msg || json.data);
+      }
+    },
+    * update(params, { call, put }) {
+      const { payload, callback, fetchValue } = params;
+
+      const json = yield call(updateItem, payload);
+      if (json.code === 200) {
+        message.success("更新成功");
         callback(json.data);
         if (fetchValue) yield put({ type: "reload", fetchValue });
       } else {
@@ -81,7 +95,7 @@ export default {
       if (json.code === 200) {
         message.success("删除成功");
         callback();
-        yield put({ type: "reload", fetchValue });
+        if (fetchValue) yield put({ type: "reload", fetchValue });
       } else {
         message.warn(json.msg || json.data);
       }
@@ -99,6 +113,12 @@ export default {
         ...state,
         dataList: payload.dataList,
         total: payload.total
+      };
+    },
+    saveModeList(state, { payload }) {
+      return {
+        ...state,
+        modeList: payload.dataList,
       };
     },
     updataItem(state, { payload }) {

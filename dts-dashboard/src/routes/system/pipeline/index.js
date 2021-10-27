@@ -1,11 +1,8 @@
-import React, { PureComponent } from "react";
+import React, { PureComponent, Fragment } from "react";
 import { Table, Input, Button, Popconfirm, Icon, Col, Row, Breadcrumb, Select, Descriptions } from "antd";
 import { connect } from "dva";
 import { parse } from "qs";
-import AddModal from "./AddModal";
-import AddRegionModal from "../region/AddModal";
-import AddPairModal from "../pair/AddModal";
-import AddSyncModal from "../sync/AddModal";
+import AddModal from './AddModal';
 
 const { Option } = Select;
 
@@ -17,9 +14,9 @@ const { Option } = Select;
 export default class Pipeline extends PureComponent {
   constructor(props) {
     super(props);
-    let { id: taskId = '' } = parse(props.location.search.substring(1)) || {};
+    let { id = 0 } = parse(props.location.search.substring(1)) || {};
     this.state = {
-      taskId,
+      taskId: +id,
       currentPage: 1,
       selectedRowKeys: [],
       popup: ""
@@ -29,7 +26,6 @@ export default class Pipeline extends PureComponent {
 
   componentWillMount() {
     const { dispatch } = this.props;
-    const { taskId } = this.state;
     dispatch({
       type: "task/fetch",
       payload: {
@@ -37,22 +33,23 @@ export default class Pipeline extends PureComponent {
         pageSize: 10000
       }
     });
-    if (taskId) {
-      this.listItems();
-    }
+    this.listItems(1);
   }
 
   onSelectChange = selectedRowKeys => {
     this.setState({ selectedRowKeys });
   };
 
-  listItems = () => {
+  listItems = (pageNum) => {
     const { dispatch } = this.props;
     const { taskId } = this.state;
+    if (!taskId) return;
     dispatch({
       type: "pipeline/fetch",
       payload: {
-        taskId
+        taskId,
+        pageNum,
+        pageSize: this.pageSize
       }
     });
   };
@@ -68,7 +65,7 @@ export default class Pipeline extends PureComponent {
 
   editClick = item => {
     const { dispatch } = this.props;
-    const { currentPage, taskId } = this.state;
+    const { currentPage } = this.state;
 
     this.setState({
       popup: (
@@ -81,13 +78,15 @@ export default class Pipeline extends PureComponent {
               payload: {
                 ...values
               },
-              fetchValue: {
-                taskId,
-                pageNum: currentPage,
-                pageSize: this.pageSize
-              },
+
               callback: () => {
-                this.setState({ selectedRowKeys: [] });
+                this.setState({ selectedRowKeys: [], taskId: values.taskId }, () => {
+                  if (values.taskId === item.taskId) {
+                    this.pageOnchange(currentPage);
+                  } else {
+                    this.searchClick();
+                  }
+                });
                 this.closeModal();
               }
             });
@@ -148,7 +147,7 @@ export default class Pipeline extends PureComponent {
   };
 
   addClick = () => {
-    const { currentPage, taskId } = this.state;
+    const { taskId } = this.state;
     this.setState({
       popup: (
         <AddModal
@@ -161,12 +160,8 @@ export default class Pipeline extends PureComponent {
               payload: {
                 ...values
               },
-              fetchValue: {
-                taskId,
-                pageNum: currentPage,
-                pageSize: this.pageSize
-              },
               callback: () => {
+                this.setState({ selectedRowKeys: [], taskId: values.taskId }, this.searchClick);
                 this.closeModal();
               }
             });
@@ -180,82 +175,16 @@ export default class Pipeline extends PureComponent {
   };
 
   addRegion = (item) => {
-    this.setState({
-      popup: (
-        <AddRegionModal
-          pipelineId={item.id}
-          disabled={false}
-          handleOk={values => {
-            const { dispatch } = this.props;
-            dispatch({
-              type: "region/add",
-              payload: {
-                ...values
-              },
-              callback: () => {
-                this.closeModal();
-              }
-            });
-          }}
-          handleCancel={() => {
-            this.closeModal();
-          }}
-        />
-      )
-    });
+    window.open(`#/system/regionPipe?pipelineId=${item.id}&taskId=${item.taskId}`, '_blank');
   };
 
   addPair = (item) => {
-    this.setState({
-      popup: (
-        <AddPairModal
-          pipelineId={item.id}
-          disabled={false}
-          handleOk={values => {
-            const { dispatch } = this.props;
-            dispatch({
-              type: "pair/add",
-              payload: {
-                ...values
-              },
-              callback: () => {
-                this.closeModal();
-              }
-            });
-          }}
-          handleCancel={() => {
-            this.closeModal();
-          }}
-        />
-      )
-    });
+    window.open(`#/system/pair?pipelineId=${item.id}&taskId=${item.taskId}`, '_blank');
   };
 
-  addSync = (item) => {
+  toSync = (item) => {
     // const { currentPage, name, type } = this.state;
-    this.setState({
-      popup: (
-        <AddSyncModal
-          pipelineId={item.id}
-          disabled={false}
-          handleOk={values => {
-            const { dispatch } = this.props;
-            dispatch({
-              type: "sync/add",
-              payload: {
-                ...values
-              },
-              callback: () => {
-                this.closeModal();
-              }
-            });
-          }}
-          handleCancel={() => {
-            this.closeModal();
-          }}
-        />
-      )
-    });
+    window.open(`#/system/sync?pipelineId=${item.id}&taskId=${item.taskId}`, '_blank');
   };
 
   onTableExpand = (expanded, record) => {
@@ -276,7 +205,7 @@ export default class Pipeline extends PureComponent {
       }),
       new Promise((resolve) => {
         dispatch({
-          type: 'region/fetchById',
+          type: 'regionPipe/fetch',
           payload,
           callback: resolve
         })
@@ -351,8 +280,8 @@ export default class Pipeline extends PureComponent {
         return item;
       }) || [];
       return (
-        <>
-          <Descriptions style={{ marginBottom: 20 }} title="数据源" size="small">
+        <Fragment>
+          <Descriptions style={{ marginBottom: 20 }} title="数据源" size="small" column={2}>
             <Descriptions.Item label="同步源">{sourceEntity.name}</Descriptions.Item>
             <Descriptions.Item label="同步目标">{targetEntity.name}</Descriptions.Item>
           </Descriptions>
@@ -362,15 +291,17 @@ export default class Pipeline extends PureComponent {
                 style={{ marginBottom: 20 }}
                 title="Region"
                 size="small"
+                column={2}
               >
-                <Descriptions.Item label={region[0].mode}>{region[0].region}</Descriptions.Item>
-                <Descriptions.Item label={region[1].mode}>{region[1].region}</Descriptions.Item>
+                {
+                  region.map(item => <Descriptions.Item label={item.mode} key={item.id}>{item.region}</Descriptions.Item>)
+                }
               </Descriptions>
             )
             : null}
           {pairs?.length ?
             (
-              <Descriptions style={{ marginBottom: 20 }} title="数据映射关系" size="small">
+              <Descriptions style={{ marginBottom: 20 }} title="数据映射关系" size="small" column={2}>
                 {pairs.map(pair => (
                   <React.Fragment key={`${pair.id}_0`}>
                     <Descriptions.Item label="源数据">{pair[0].name}</Descriptions.Item>
@@ -443,7 +374,7 @@ export default class Pipeline extends PureComponent {
             </Descriptions>
           ) : null
           }
-        </>
+        </Fragment>
       );
     } else if (loading === 3) {
       return <p>加载失败，请重试</p>
@@ -486,14 +417,22 @@ export default class Pipeline extends PureComponent {
         title: "操作",
         dataIndex: "time",
         key: "time",
-        width: 150,
+        width: 180,
         render: (text, record) => {
           return (
             <div>
               <Icon
+                title='编辑'
+                type="edit"
+                style={{ color: 'orange' }}
+                onClick={() => {
+                  this.editClick(record);
+                }}
+              />
+              <Icon
                 title='添加region'
                 type="appstore"
-                style={{ color: 'orange' }}
+                style={{ marginLeft: 20, color: 'orange' }}
                 onClick={() => {
                   this.addRegion(record);
                 }}
@@ -511,7 +450,7 @@ export default class Pipeline extends PureComponent {
                 type="profile"
                 style={{ marginLeft: 20, color: 'green' }}
                 onClick={() => {
-                  this.addSync(record);
+                  this.toSync(record);
                 }}
               />
               <Popconfirm
@@ -531,7 +470,6 @@ export default class Pipeline extends PureComponent {
       }
     ];
 
-    taskId = taskId || '';
 
     return (
       <div className="plug-content-wrap">
@@ -546,14 +484,14 @@ export default class Pipeline extends PureComponent {
             </div>
             <div className="table-header" style={{ justifyContent: "normal" }}>
               <Select
-                defaultValue={`${taskId}`}
+                value={taskId || ''}
                 style={{ width: 150 }}
                 onChange={this.searchOnSelectchange.bind(this, 'taskId')}
                 placeholder="请选择任务"
               >
                 {taskList.map((item, index) => {
                   return (
-                    <Option key={index} value={`${item.id}`}>
+                    <Option key={index} value={item.id}>
                       {item.name}
                     </Option>
                   );
@@ -566,18 +504,13 @@ export default class Pipeline extends PureComponent {
               >
                 查询
               </Button>
-
-              {taskId ? (
-                <Button
-                  style={{ marginLeft: 20, marginTop: 0 }}
-                  type="primary"
-                  onClick={this.addClick}
-                >
-                  添加
-                </Button>
-              )
-                : null
-              }
+              <Button
+                style={{ marginLeft: 20, marginTop: 0 }}
+                type="primary"
+                onClick={this.addClick}
+              >
+                添加
+              </Button>
             </div>
             <Table
               size="small"
