@@ -15,7 +15,6 @@ import java.util.List;
  */
 public interface RegionPipelineService {
 
-
     Long regionPipelineAdd(RegionPipelineBean regionPipelineBean);
 
     void regionPipelineDelete(Long id);
@@ -29,4 +28,5 @@ public interface RegionPipelineService {
 
     List<RegionPipelineBean> regionPipelineGetByPipelineId(Long pipelineId);
 
+    List<RegionPipelineBean> getAll();
 }

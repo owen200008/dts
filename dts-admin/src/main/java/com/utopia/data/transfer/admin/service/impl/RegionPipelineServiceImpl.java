@@ -80,5 +80,9 @@ public class RegionPipelineServiceImpl implements RegionPipelineService {
         return regionPipelineBeans;
     }
 
+    @Override
+    public List<RegionPipelineBean> getAll() {
+        return regionPipelineBeanMapper.selectByExample(new RegionPipelineBeanDal());
+    }
 
 }

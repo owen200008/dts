@@ -27,7 +27,7 @@ public class RegionServiceImpl implements RegionService {
     RegionBeanMapper regionBeanMapper;
 
     @Override
-    public Integer add(RegionBean regionBean) {
+    public Long add(RegionBean regionBean) {
         regionBeanMapper.insertSelective(regionBean);
         return regionBean.getId();
     }
@@ -54,7 +54,7 @@ public class RegionServiceImpl implements RegionService {
     @Override
     public RegionBean regionGet(Long id) {
         RegionBeanDal regionBeanDal = new RegionBeanDal();
-        regionBeanDal.createCriteria().andIdEqualTo(id.intValue());
+        regionBeanDal.createCriteria().andIdEqualTo(id);
         List<RegionBean> regionBeans = regionBeanMapper.selectByExample(regionBeanDal);
         if (CollectionUtils.isEmpty(regionBeans)) {
             return null;
@@ -65,7 +65,7 @@ public class RegionServiceImpl implements RegionService {
     @Override
     public void pipelineDelete(Long id) {
         RegionBeanDal regionBeanDal = new RegionBeanDal();
-        regionBeanDal.createCriteria().andIdEqualTo(id.intValue());
+        regionBeanDal.createCriteria().andIdEqualTo(id);
         regionBeanMapper.deleteByExample(regionBeanDal);
     }
 

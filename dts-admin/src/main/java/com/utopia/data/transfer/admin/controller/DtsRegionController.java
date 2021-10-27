@@ -43,7 +43,7 @@ public class DtsRegionController {
 
     @PostMapping("/region/add")
     public UtopiaResponseModel<JSONObject> regionAdd(RegionBean regionBean){
-        Integer regionId = regionService.add(regionBean);
+        Long regionId = regionService.add(regionBean);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("regionId",regionId);
         return UtopiaResponseModel.success(jsonObject);

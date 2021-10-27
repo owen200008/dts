@@ -12,7 +12,7 @@ public interface RegionService {
      *
      * @param regionBean
      */
-    Integer add(RegionBean regionBean);
+    Long add(RegionBean regionBean);
 
     /**
      * 获取所有
