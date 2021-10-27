@@ -4,17 +4,17 @@ import com.utopia.data.transfer.admin.dao.base.BaseModel;
 import java.io.Serializable;
 
 public class RegionBean extends BaseModel implements Serializable {
-    private Integer id;
+    private Long id;
 
     private String region;
 
     private static final long serialVersionUID = 1L;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

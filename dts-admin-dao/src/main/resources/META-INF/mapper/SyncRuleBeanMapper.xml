@@ -98,12 +98,10 @@
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into u_sync_rule (id, pipeline_id, sync_rule_type, 
-      namespace, `table`, start_gtid
-      )
-    values (#{id,jdbcType=BIGINT}, #{pipelineId,jdbcType=BIGINT}, #{syncRuleType,jdbcType=VARCHAR}, 
-      #{namespace,jdbcType=VARCHAR}, #{table,jdbcType=VARCHAR}, #{startGtid,jdbcType=VARCHAR}
-      )
+    insert into u_sync_rule (pipeline_id, sync_rule_type, namespace, 
+      `table`, start_gtid)
+    values (#{pipelineId,jdbcType=BIGINT}, #{syncRuleType,jdbcType=VARCHAR}, #{namespace,jdbcType=VARCHAR}, 
+      #{table,jdbcType=VARCHAR}, #{startGtid,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.utopia.data.transfer.admin.dao.entity.SyncRuleBean">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
@@ -111,9 +109,6 @@
     </selectKey>
     insert into u_sync_rule
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
       <if test="pipelineId != null">
         pipeline_id,
       </if>
@@ -131,9 +126,6 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=BIGINT},
-      </if>
       <if test="pipelineId != null">
         #{pipelineId,jdbcType=BIGINT},
       </if>

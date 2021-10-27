@@ -96,10 +96,10 @@
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into u_pair (id, pipeline_id, source_datamedia_id, 
-      target_datamedia_id)
-    values (#{id,jdbcType=BIGINT}, #{pipelineId,jdbcType=BIGINT}, #{sourceDatamediaId,jdbcType=BIGINT}, 
-      #{targetDatamediaId,jdbcType=BIGINT})
+    insert into u_pair (pipeline_id, source_datamedia_id, target_datamedia_id
+      )
+    values (#{pipelineId,jdbcType=BIGINT}, #{sourceDatamediaId,jdbcType=BIGINT}, #{targetDatamediaId,jdbcType=BIGINT}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.utopia.data.transfer.admin.dao.entity.PairBean">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
@@ -107,9 +107,6 @@
     </selectKey>
     insert into u_pair
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
       <if test="pipelineId != null">
         pipeline_id,
       </if>
@@ -121,9 +118,6 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=BIGINT},
-      </if>
       <if test="pipelineId != null">
         #{pipelineId,jdbcType=BIGINT},
       </if>

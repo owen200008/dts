@@ -96,10 +96,10 @@
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into u_region_pipeline (id, region_id, pipeline_id, 
-      `mode`)
-    values (#{id,jdbcType=BIGINT}, #{regionId,jdbcType=BIGINT}, #{pipelineId,jdbcType=BIGINT}, 
-      #{mode,jdbcType=VARCHAR})
+    insert into u_region_pipeline (region_id, pipeline_id, `mode`
+      )
+    values (#{regionId,jdbcType=BIGINT}, #{pipelineId,jdbcType=BIGINT}, #{mode,jdbcType=VARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.utopia.data.transfer.admin.dao.entity.RegionPipelineBean">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
@@ -107,9 +107,6 @@
     </selectKey>
     insert into u_region_pipeline
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
       <if test="regionId != null">
         region_id,
       </if>
@@ -121,9 +118,6 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=BIGINT},
-      </if>
       <if test="regionId != null">
         #{regionId,jdbcType=BIGINT},
       </if>
