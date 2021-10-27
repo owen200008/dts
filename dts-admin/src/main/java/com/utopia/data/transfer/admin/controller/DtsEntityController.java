@@ -2,7 +2,9 @@ package com.utopia.data.transfer.admin.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.parser.Feature;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.alibaba.fastjson.serializer.ValueFilter;
 import com.google.gson.JsonObject;
 import com.utopia.data.transfer.admin.contants.PathConstants;
 import com.utopia.data.transfer.admin.dao.entity.EntityBean;
@@ -17,6 +19,7 @@ import com.utopia.data.transfer.model.code.entity.mysql.MysqlProperty;
 import com.utopia.model.rsp.UtopiaErrorCode;
 import com.utopia.model.rsp.UtopiaResponseModel;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -76,17 +79,35 @@ public class DtsEntityController {
         return UtopiaResponseModel.success();
     }
 
-    @PostMapping("/entity/dataType")
-    public UtopiaResponseModel<String> dataType(@RequestParam("type")String type) {
-        String mysql = JSON.toJSONString(new MysqlProperty(), SerializerFeature.WriteMapNullValue);
-        String kafka = JSON.toJSONString(new KafkaProperty(), SerializerFeature.WriteMapNullValue);
+    @PostMapping("/entity/property")
+    public UtopiaResponseModel<JSONObject> dataType(@RequestParam("type")String type) {
+        String mysql = JSON.toJSONString(new MysqlProperty(), (ValueFilter) (object, name, value) -> {
+            if(value == null){
+                return "";
+            }
+            return value;
+        });
+        String kafka = JSON.toJSONString(new KafkaProperty(), (ValueFilter) (object, name, value) -> {
+            if(value == null){
+                return "";
+            }
+            return value;
+        });
+        JSONObject kafkaJson = JSONObject.parseObject(kafka, Feature.InitStringFieldAsEmpty);
+        JSONObject mysqlJson = JSONObject.parseObject(mysql,Feature.InitStringFieldAsEmpty);
 
         if (type.equals(DataMediaType.MYSQL.name())){
-            return  UtopiaResponseModel.success(mysql);
+            return  UtopiaResponseModel.success(mysqlJson);
         }else if (type.equals(DataMediaType.KAFKA.name())){
-            return  UtopiaResponseModel.success(kafka);
+            return  UtopiaResponseModel.success(kafkaJson);
         }
-        return  UtopiaResponseModel.success(mysql);
+        return  UtopiaResponseModel.success(mysqlJson);
+    }
+
+    @PostMapping("/entity/dataType")
+    public UtopiaResponseModel<List<String>> dataTypeList(){
+        List<String> list = CollectionUtils.arrayToList(DataMediaType.values());
+        return UtopiaResponseModel.success(list);
     }
 
 

@@ -84,6 +84,8 @@ public class PairSeviceImpl implements PairService {
 
     @Override
     public void pairModify(PairBean pairBean) {
-        pairBeanRepository.updateByUniqueKey(pairBean);
+        PairBeanDal pairBeanDal = new PairBeanDal();
+        pairBeanDal.createCriteria().andIdEqualTo(pairBean.getId());
+        pairBeanRepository.updateByExampleSelective(pairBean,pairBeanDal);
     }
 }

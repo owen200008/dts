@@ -10,10 +10,12 @@ import com.utopia.data.transfer.admin.vo.PageRes;
 import com.utopia.data.transfer.admin.vo.req.PipelineAddVo;
 import com.utopia.data.transfer.admin.vo.req.QueryRegionVo;
 import com.utopia.data.transfer.admin.vo.req.RegionAddVo;
+import com.utopia.data.transfer.model.code.bean.StageType;
 import com.utopia.model.rsp.UtopiaErrorCode;
 import com.utopia.model.rsp.UtopiaResponseModel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -82,6 +84,12 @@ public class DtsRegionController {
     public UtopiaResponseModel<Void> regionModify(RegionBean regionBean){
         regionService.regionModify(regionBean);
         return UtopiaResponseModel.success();
+    }
+
+    @PostMapping("/region/mode")
+    public UtopiaResponseModel<List<String>> modelList(){
+        List<String> list = CollectionUtils.arrayToList(StageType.values());
+        return  UtopiaResponseModel.success(list);
     }
 
 }

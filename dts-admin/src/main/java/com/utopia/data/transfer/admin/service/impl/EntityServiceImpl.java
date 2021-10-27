@@ -110,7 +110,10 @@ public class EntityServiceImpl implements EntityService {
 
     @Override
     public void entityModify(EntityBean entityBean) {
-        entityBeanRepository.updateByUniqueKey(entityBean);
+        EntityBeanDal entityBeanDal = new EntityBeanDal();
+        entityBeanDal.createCriteria().andIdEqualTo(entityBean.getId());
+
+        entityBeanMapper.updateByExampleSelective(entityBean,entityBeanDal);
     }
 
 

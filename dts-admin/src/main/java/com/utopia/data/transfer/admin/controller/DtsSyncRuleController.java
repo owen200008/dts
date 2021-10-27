@@ -4,15 +4,19 @@ import com.utopia.data.transfer.admin.dao.entity.SyncRuleBean;
 import com.utopia.data.transfer.admin.service.SyncRuleService;
 import com.utopia.data.transfer.admin.vo.PageRes;
 import com.utopia.data.transfer.admin.vo.req.QuerySyncRuleVo;
+import com.utopia.data.transfer.model.code.data.media.SyncRuleType;
 import com.utopia.model.rsp.UtopiaResponseModel;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.PastOrPresent;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -63,6 +67,12 @@ public class DtsSyncRuleController {
     public UtopiaResponseModel<Void> syncRuleModify(SyncRuleBean syncRuleBean){
         syncRuleService.syncRuleModify(syncRuleBean);
         return UtopiaResponseModel.success();
+    }
+
+    @PostMapping("/syncRule/type")
+    public UtopiaResponseModel<List<String>> syncRuleType(){
+        List<String> list = CollectionUtils.arrayToList(SyncRuleType.values());
+        return UtopiaResponseModel.success(list);
     }
 
 }

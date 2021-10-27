@@ -2,7 +2,9 @@ package com.utopia.data.transfer.admin.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.parser.Feature;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.alibaba.fastjson.serializer.ValueFilter;
 import com.utopia.data.transfer.admin.contants.PathConstants;
 import com.utopia.data.transfer.admin.dao.entity.PipelineBean;
 import com.utopia.data.transfer.admin.dao.entity.SyncRuleBean;
@@ -11,6 +13,7 @@ import com.utopia.data.transfer.admin.vo.PageRes;
 import com.utopia.data.transfer.admin.vo.ResponseModel;
 import com.utopia.data.transfer.admin.vo.req.*;
 import com.utopia.data.transfer.model.archetype.ErrorCode;
+import com.utopia.data.transfer.model.code.entity.kafka.KafkaProperty;
 import com.utopia.data.transfer.model.code.pipeline.PipelineParameter;
 import com.utopia.model.rsp.UtopiaErrorCode;
 import com.utopia.model.rsp.UtopiaResponseModel;
@@ -93,9 +96,15 @@ public class DtsPipelineController {
     }
 
     @PostMapping("/pipeline/defaultParams")
-    public UtopiaResponseModel<String> defaultParams(){
-        String s = JSON.toJSONString(new PipelineParameter(), SerializerFeature.WriteMapNullValue,SerializerFeature.WriteNullStringAsEmpty);
-        return UtopiaResponseModel.success(s);
+    public UtopiaResponseModel<JSONObject> defaultParams(){
+        String defaultParams = JSON.toJSONString(new PipelineParameter(), (ValueFilter) (object, name, value) -> {
+            if(value == null){
+                return "";
+            }
+            return value;
+        });
+        JSONObject kafkaJson = JSONObject.parseObject(defaultParams, Feature.InitStringFieldAsEmpty);
+        return UtopiaResponseModel.success(kafkaJson);
     }
 
     @PostMapping("/pipeline/modify")
