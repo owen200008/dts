@@ -67,4 +67,16 @@ public class ExecExample {
         System.out.println(mysqlJson);
         System.out.println(kafkaJson);
     }
+
+    @Test
+    public void testInitString(){
+        String defaultParams = JSON.toJSONString(new PipelineParameter(), (ValueFilter) (object, name, value) -> {
+            if(value == null){
+                return "";
+            }
+            return value;
+        });
+        JSONObject kafkaJson = JSONObject.parseObject(defaultParams, Feature.InitStringFieldAsEmpty);
+        System.out.println(defaultParams);
+    }
 }

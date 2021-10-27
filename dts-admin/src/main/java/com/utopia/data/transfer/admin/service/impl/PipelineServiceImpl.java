@@ -13,6 +13,7 @@ import com.utopia.data.transfer.admin.dao.mapper.base.PipelineBeanRepository;
 import com.utopia.data.transfer.admin.dao.mapper.base.RegionBeanRepository;
 import com.utopia.data.transfer.admin.service.PairService;
 import com.utopia.data.transfer.admin.service.PipelineService;
+import com.utopia.data.transfer.admin.service.RegionPipelineService;
 import com.utopia.data.transfer.admin.service.RegionService;
 import com.utopia.data.transfer.admin.vo.PageRes;
 import com.utopia.data.transfer.admin.vo.req.PipelineAddVo;
@@ -71,6 +72,9 @@ public class PipelineServiceImpl implements PipelineService {
     @Autowired
     SyncRuleBeanMapper syncRuleMapper;
 
+    @Autowired
+    RegionPipelineService regionPipelineService;
+
     @Override
     public Long pipelineAdd(PipelineAddVo pipelineAddVo) {
         PipelineBean pipelineBean = null;
@@ -90,7 +94,7 @@ public class PipelineServiceImpl implements PipelineService {
     public void pipelineDelete(Long pipelineId) {
         //搜索下数据是否存在
         {
-            List<RegionBean> byPipelineId = regionService.getByPipelineId(pipelineId);
+            List<RegionPipelineBean> byPipelineId = regionPipelineService.regionPipelineGetByPipelineId(pipelineId);
             if(!CollectionUtils.isEmpty(byPipelineId)){
                 throw new UtopiaRunTimeException(ErrorCode.CHILD_NEED_DELETE_FIRST);
             }
@@ -101,8 +105,6 @@ public class PipelineServiceImpl implements PipelineService {
                 throw new UtopiaRunTimeException(ErrorCode.CHILD_NEED_DELETE_FIRST);
             }
         }
-
-
 
 
         pipelineBeanMapper.deleteByPrimaryKey(pipelineId);
@@ -143,23 +145,6 @@ public class PipelineServiceImpl implements PipelineService {
         pairBeanRepository.insert(pairBean);
     }
 
-    @Override
-    public void pipelineRegionAdd(PipelineRegionAddVo pipelineRegionAddVo) {
-
-        RegionBean sourceRegionBean = new RegionBean();
-        sourceRegionBean.setMode(StageType.SELECT.toString());
-        sourceRegionBean.setPipelineId(pipelineRegionAddVo.getPipelineId().longValue());
-        sourceRegionBean.setRegion(pipelineRegionAddVo.getSourceRegion());
-
-        regionBeanRepository.insert(sourceRegionBean);
-
-        RegionBean targetRegionBean = new RegionBean();
-        targetRegionBean.setMode(StageType.LOAD.toString());
-        targetRegionBean.setPipelineId(pipelineRegionAddVo.getPipelineId().longValue());
-        targetRegionBean.setRegion(pipelineRegionAddVo.getTargetRegion());
-
-        regionBeanRepository.insert(targetRegionBean);
-    }
 
 
     @Override

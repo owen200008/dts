@@ -8,19 +8,18 @@ import lombok.NoArgsConstructor;
  * describe:
  *
  * @author niuyaze
- * @date 2021/10/19
+ * @date 2021/10/27
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class QueryRegionVo {
+public class QueryRegionPipelineVo {
 
+    private Long pipelineId;
 
-    private String region;
-
-    private Integer pageSize = 10;
 
     private Integer pageNum = 1;
 
+    private Integer pageSize = 10;
 
 }

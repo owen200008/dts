@@ -20,12 +20,7 @@ public interface RegionService {
      */
     List<RegionBean> getAll();
 
-    /**
-     * 根据pipelineid搜索
-     * @param pipelineId
-     * @return
-     */
-    List<RegionBean> getByPipelineId(Long pipelineId);
+
 
     PageRes<List<RegionBean>> regionList(QueryRegionVo queryRegionVo);
 

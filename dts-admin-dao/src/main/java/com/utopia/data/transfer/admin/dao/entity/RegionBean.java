@@ -8,10 +8,6 @@ public class RegionBean extends BaseModel implements Serializable {
 
     private String region;
 
-    private String mode;
-
-    private Long pipelineId;
-
     private static final long serialVersionUID = 1L;
 
     public Integer getId() {
@@ -30,22 +26,6 @@ public class RegionBean extends BaseModel implements Serializable {
         this.region = region == null ? null : region.trim();
     }
 
-    public String getMode() {
-        return mode;
-    }
-
-    public void setMode(String mode) {
-        this.mode = mode == null ? null : mode.trim();
-    }
-
-    public Long getPipelineId() {
-        return pipelineId;
-    }
-
-    public void setPipelineId(Long pipelineId) {
-        this.pipelineId = pipelineId;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -54,8 +34,6 @@ public class RegionBean extends BaseModel implements Serializable {
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
         sb.append(", region=").append(region);
-        sb.append(", mode=").append(mode);
-        sb.append(", pipelineId=").append(pipelineId);
         sb.append("]");
         return sb.toString();
     }
@@ -73,9 +51,7 @@ public class RegionBean extends BaseModel implements Serializable {
         }
         RegionBean other = (RegionBean) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-            && (this.getRegion() == null ? other.getRegion() == null : this.getRegion().equals(other.getRegion()))
-            && (this.getMode() == null ? other.getMode() == null : this.getMode().equals(other.getMode()))
-            && (this.getPipelineId() == null ? other.getPipelineId() == null : this.getPipelineId().equals(other.getPipelineId()));
+            && (this.getRegion() == null ? other.getRegion() == null : this.getRegion().equals(other.getRegion()));
     }
 
     @Override
@@ -84,8 +60,6 @@ public class RegionBean extends BaseModel implements Serializable {
         int result = 1;
         result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
         result = prime * result + ((getRegion() == null) ? 0 : getRegion().hashCode());
-        result = prime * result + ((getMode() == null) ? 0 : getMode().hashCode());
-        result = prime * result + ((getPipelineId() == null) ? 0 : getPipelineId().hashCode());
         return result;
     }
 }

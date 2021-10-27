@@ -42,10 +42,11 @@ public class DtsRegionController {
     RegionBeanRepository regionBeanRepository;
 
     @PostMapping("/region/add")
-    public UtopiaResponseModel<Void> regionAdd(RegionBean regionBean){
+    public UtopiaResponseModel<JSONObject> regionAdd(RegionBean regionBean){
         Integer regionId = regionService.add(regionBean);
-
-        return UtopiaResponseModel.success();
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("regionId",regionId);
+        return UtopiaResponseModel.success(jsonObject);
     }
 
 
@@ -59,12 +60,6 @@ public class DtsRegionController {
     public UtopiaResponseModel<RegionBean> regionGet(@RequestParam(value = "regionId",required = true) Long id){
         RegionBean regionBean = regionService.regionGet(id);
         return UtopiaResponseModel.create(UtopiaErrorCode.CODE_SUCCESS.getCode(), PathConstants.SUC_MSG,regionBean);
-    }
-
-    @PostMapping("/region/get/pipelineId")
-    public UtopiaResponseModel<List<RegionBean>> regionGetPipelineId(@RequestParam(value = "pipelineId",required = true) Long id){
-        List<RegionBean> byPipelineId = regionService.getByPipelineId(id);
-        return UtopiaResponseModel.success(byPipelineId);
     }
 
 

@@ -48,11 +48,6 @@ public class DtsPipelineController {
         return UtopiaResponseModel.success();
     }
 
-    @PostMapping("/pipeline/region/add")
-    public UtopiaResponseModel pipelineRegionAdd(@Valid PipelineRegionAddVo pipelineRegionAddVo){
-        pipelineService.pipelineRegionAdd(pipelineRegionAddVo);
-        return UtopiaResponseModel.success();
-    }
 
     @PostMapping("/pipeline/syncRule/add")
     public UtopiaResponseModel pipelineSyncRuleAdd(SyncRuleBean syncRule){

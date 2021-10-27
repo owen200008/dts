@@ -38,22 +38,12 @@ public class RegionServiceImpl implements RegionService {
     }
 
     @Override
-    public List<RegionBean> getByPipelineId(Long pipelineId) {
-        RegionBeanDal regionBeanDal = new RegionBeanDal();
-        regionBeanDal.createCriteria().andPipelineIdEqualTo(pipelineId);
-        return regionBeanMapper.selectByExample(regionBeanDal);
-    }
-
-    @Override
     public PageRes<List<RegionBean>> regionList(QueryRegionVo queryRegionVo) {
         Page<Object> page = PageHelper.startPage(queryRegionVo.getPageNum(), queryRegionVo.getPageSize(), true);
         RegionBeanDal regionBeanDal = new RegionBeanDal();
         RegionBeanDal.Criteria criteria = regionBeanDal.createCriteria();
         if (queryRegionVo.getRegion() != null) {
             criteria.andRegionEqualTo(queryRegionVo.getRegion());
-        }
-        if (queryRegionVo.getPipelineId() != null){
-            criteria.andPipelineIdEqualTo(queryRegionVo.getPipelineId());
         }
         regionBeanDal.setOrderByClause(" id asc");
         List<RegionBean> regionBeans = regionBeanMapper.selectByExample(regionBeanDal);

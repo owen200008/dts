@@ -39,7 +39,6 @@ public interface PipelineService {
 
     void pipelinePairAdd(PipelinePairAddVo pipelinePairAddVo);
 
-    void pipelineRegionAdd(PipelineRegionAddVo pipelineRegionAddVo);
 
     PipelineBean pipelineGet(Long id);
 

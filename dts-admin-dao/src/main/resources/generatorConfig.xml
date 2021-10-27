@@ -166,6 +166,16 @@
            enableSelectByExample="true"
            enableUpdateByExample="true">
     </table>
+    <table schema="u_dts" tableName="u_region_pipeline" domainObjectName="RegionPipelineBean"
+           enableInsert="true"
+           enableDeleteByPrimaryKey="true"
+           enableSelectByPrimaryKey="false"
+           enableUpdateByPrimaryKey="false"
+           enableCountByExample="false"
+           enableDeleteByExample="true"
+           enableSelectByExample="true"
+           enableUpdateByExample="true">
+    </table>
 
   </context>
 </generatorConfiguration>

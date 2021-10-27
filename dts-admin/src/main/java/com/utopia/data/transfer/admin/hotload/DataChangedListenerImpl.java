@@ -121,89 +121,89 @@ public class DataChangedListenerImpl implements DataChangedListener, Initializin
     }
 
 
-    protected RegionBean getRegionByType(List<RegionBean> findRegion, final StageType mode){
-        for (RegionBean regionBean : findRegion) {
-            if(regionBean.getMode().equals(mode.name())){
-                return regionBean;
-            }
-        }
-        return null;
-    }
+//    protected RegionBean getRegionByType(List<RegionBean> findRegion, final StageType mode){
+//        for (RegionBean regionBean : findRegion) {
+//            if(regionBean.getMode().equals(mode.name())){
+//                return regionBean;
+//            }
+//        }
+//        return null;
+//    }
     public DTSServiceConf getKernelConfig() {
         try {
-            //全量获取
-            Map<Long, TaskBean> mapTasks = taskSevice.getAll().stream().collect(Collectors.toMap(TaskBean::getId, item -> item));
-            List<PipelineBean> ayPipeline = pipelineService.getAll();
-            Map<Long, List<RegionBean>> mapRegion = regionService.getAll().stream().collect(Collectors.groupingBy(RegionBean::getPipelineId));
-            Map<Long, SyncRuleBean> mapSyncRuleBean = syncRuleService.getAll().stream().collect(Collectors.toMap(SyncRuleBean::getPipelineId, item -> item));
-
-            List<EntityDesc> ayEntity = entityService.getAll().stream().map(item -> {
-                var ret = new EntityDesc();
-                ret.setId(item.getId());
-                ret.setName(item.getName());
-                ret.setType(DataMediaType.valueOf(item.getType()));
-                ret.setEncode(item.getEncode());
-                ret.setCreateTime(item.getCreateTime());
-                ret.setModifyTime(item.getModifyTime());
-                ret.setUrl(item.getUrl());
-                ret.setUsername(item.getUsername());
-                ret.setPassword(item.getPassword());
-                ret.setDriver(item.getDriver());
-                ret.setMysql(JSON.parseObject(item.getProperty(), MysqlProperty.class));
-                return ret;
-            }).collect(Collectors.toList());
-
-            List<Pipeline> setPipeline = ayPipeline.stream().map(item -> {
-                List<RegionBean> findRegion = mapRegion.get(item.getId());
-                if(CollectionUtils.isEmpty(findRegion)){
-                    return null;
-                }
-                Map<StageType, String> stageTypeStringMap = StageType.checkAndChange(type -> {
-                    RegionBean regionByType = getRegionByType(findRegion, type);
-                    if (Objects.isNull(regionByType)) {
-                        return null;
-                    }
-                    return regionByType.getRegion();
-                });
-                if(CollectionUtils.isEmpty(stageTypeStringMap)){
-                    return null;
-                }
-
-                TaskBean taskBean = mapTasks.get(item.getTaskId());
-                if(Objects.isNull(taskBean) || !taskBean.getValid()){
-                    return null;
-                }
-
-                Pipeline pipeline = new Pipeline();
-                pipeline.setId(item.getId());
-                pipeline.setName(item.getName());
-
-                pipeline.setSourceEntityId(item.getSourceEntityId());
-                pipeline.setTargetEntityId(item.getTargetEntityId());
-
-                pipeline.setParams(JSON.parseObject(item.getPipelineParams(), PipelineParameter.class));
-                pipeline.setStage(stageTypeStringMap);
-
-                SyncRuleBean syncRuleBean = mapSyncRuleBean.get(pipeline);
-                if(Objects.isNull(syncRuleBean)){
-                    return null;
-                }
-
-                SyncRuleTarget syncRuleTarget = new SyncRuleTarget();
-                syncRuleTarget.setSyncRuleType(SyncRuleType.valueOf(syncRuleBean.getSyncRuleType()));
-                syncRuleTarget.setNamespace(syncRuleBean.getNamespace());
-                syncRuleTarget.setValue(syncRuleBean.getTable());
-                syncRuleTarget.setStartGtid(syncRuleBean.getStartGtid());
-                pipeline.setSyncRuleTarget(syncRuleTarget);
-
-                return pipeline;
-            }).filter(item->item!=null).collect(Collectors.toList());
-
-
-            DTSServiceConf conf = DTSServiceConf.builder().list(setPipeline)
-                    .entityDescs(ayEntity).build();
-            conf.setMd5Data(UtopiaAlgorithm.md5Encode(JSON.toJSONString(conf)));
-            return conf;
+//            //全量获取
+//            Map<Long, TaskBean> mapTasks = taskSevice.getAll().stream().collect(Collectors.toMap(TaskBean::getId, item -> item));
+//            List<PipelineBean> ayPipeline = pipelineService.getAll();
+//            Map<Long, List<RegionBean>> mapRegion = regionService.getAll().stream().collect(Collectors.groupingBy(RegionBean::getPipelineId));
+//            Map<Long, SyncRuleBean> mapSyncRuleBean = syncRuleService.getAll().stream().collect(Collectors.toMap(SyncRuleBean::getPipelineId, item -> item));
+//
+//            List<EntityDesc> ayEntity = entityService.getAll().stream().map(item -> {
+//                var ret = new EntityDesc();
+//                ret.setId(item.getId());
+//                ret.setName(item.getName());
+//                ret.setType(DataMediaType.valueOf(item.getType()));
+//                ret.setEncode(item.getEncode());
+//                ret.setCreateTime(item.getCreateTime());
+//                ret.setModifyTime(item.getModifyTime());
+//                ret.setUrl(item.getUrl());
+//                ret.setUsername(item.getUsername());
+//                ret.setPassword(item.getPassword());
+//                ret.setDriver(item.getDriver());
+//                ret.setMysql(JSON.parseObject(item.getProperty(), MysqlProperty.class));
+//                return ret;
+//            }).collect(Collectors.toList());
+//
+//            List<Pipeline> setPipeline = ayPipeline.stream().map(item -> {
+//                List<RegionBean> findRegion = mapRegion.get(item.getId());
+//                if(CollectionUtils.isEmpty(findRegion)){
+//                    return null;
+//                }
+//                Map<StageType, String> stageTypeStringMap = StageType.checkAndChange(type -> {
+//                    RegionBean regionByType = getRegionByType(findRegion, type);
+//                    if (Objects.isNull(regionByType)) {
+//                        return null;
+//                    }
+//                    return regionByType.getRegion();
+//                });
+//                if(CollectionUtils.isEmpty(stageTypeStringMap)){
+//                    return null;
+//                }
+//
+//                TaskBean taskBean = mapTasks.get(item.getTaskId());
+//                if(Objects.isNull(taskBean) || !taskBean.getValid()){
+//                    return null;
+//                }
+//
+//                Pipeline pipeline = new Pipeline();
+//                pipeline.setId(item.getId());
+//                pipeline.setName(item.getName());
+//
+//                pipeline.setSourceEntityId(item.getSourceEntityId());
+//                pipeline.setTargetEntityId(item.getTargetEntityId());
+//
+//                pipeline.setParams(JSON.parseObject(item.getPipelineParams(), PipelineParameter.class));
+//                pipeline.setStage(stageTypeStringMap);
+//
+//                SyncRuleBean syncRuleBean = mapSyncRuleBean.get(pipeline);
+//                if(Objects.isNull(syncRuleBean)){
+//                    return null;
+//                }
+//
+//                SyncRuleTarget syncRuleTarget = new SyncRuleTarget();
+//                syncRuleTarget.setSyncRuleType(SyncRuleType.valueOf(syncRuleBean.getSyncRuleType()));
+//                syncRuleTarget.setNamespace(syncRuleBean.getNamespace());
+//                syncRuleTarget.setValue(syncRuleBean.getTable());
+//                syncRuleTarget.setStartGtid(syncRuleBean.getStartGtid());
+//                pipeline.setSyncRuleTarget(syncRuleTarget);
+//
+//                return pipeline;
+//            }).filter(item->item!=null).collect(Collectors.toList());
+//
+//
+//            DTSServiceConf conf = DTSServiceConf.builder().list(setPipeline)
+//                    .entityDescs(ayEntity).build();
+//            conf.setMd5Data(UtopiaAlgorithm.md5Encode(JSON.toJSONString(conf)));
+//            return conf;
         } catch (Exception e) {
             log.warn("updateConfigCache error.", e);
         }
