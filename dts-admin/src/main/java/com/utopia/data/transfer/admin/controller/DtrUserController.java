@@ -31,9 +31,4 @@ public class DtrUserController {
         }
         return UtopiaResponseModel.fail(ErrorCode.LOGIN_FAIL);
     }
-
-    @PostMapping("/checkValidUser")
-    public UtopiaResponseModel checkValidUser(String token){
-        return UtopiaResponseModel.success();
-    }
 }

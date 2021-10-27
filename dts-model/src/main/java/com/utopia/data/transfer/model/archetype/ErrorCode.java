@@ -19,6 +19,7 @@ public class ErrorCode extends BaseErrorCode {
     public final static UtopiaErrorCodeClass DTS_KEY_COLUMN_NOFIND = new UtopiaErrorCodeClass(24057, "");
     public final static UtopiaErrorCodeClass GET_DB_DIALECT_ERROR = new UtopiaErrorCodeClass(24058, "");
     public final static UtopiaErrorCodeClass CANAL_PARSE_GTID_ERROR = new UtopiaErrorCodeClass(24059, "");
+    public final static UtopiaErrorCodeClass NO_TOKEN = new UtopiaErrorCodeClass(24060, "");
 
     public final static UtopiaErrorCodeClass NO_SUPPORT_DATASOURCE_TYPE = new UtopiaErrorCodeClass(24100, "");
     public final static UtopiaErrorCodeClass GET_DATASOURCE_ERROR = new UtopiaErrorCodeClass(24101, "");
