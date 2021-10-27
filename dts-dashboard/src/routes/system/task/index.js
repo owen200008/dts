@@ -163,7 +163,7 @@ export default class Task extends PureComponent {
   onItemUpdate = (item, checked, e) => {
     let params = {
       id: item.id,
-      valid: checked
+      valid: checked ? 1 : 0
     }
 
     const { dispatch } = this.props;

@@ -89,7 +89,7 @@ export default {
       let dataList = state.dataList;
       dataList = dataList.map((item) => {
         if (item.id === payload.id) {
-          item.valid = payload.valid;
+          item.valid = payload.valid === 1;
         }
         return item;
       })
