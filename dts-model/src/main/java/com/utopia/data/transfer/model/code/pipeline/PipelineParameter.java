@@ -13,12 +13,7 @@ import java.io.Serializable;
 @Data
 public class PipelineParameter implements Serializable {
 
-    private DispatchParamter dispatchParamter;
-
-    /**
-     * 订阅的客户端id
-     */
-    private Short clientId;
+    private DispatchParamter dispatchParamter = new DispatchParamter();
 
     /**
      *  订阅批次大小

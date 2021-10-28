@@ -143,7 +143,7 @@ public class CanalEmbedSelector {
 
 
         canalServer.start(this.source.getName());
-        this.clientIdentity = new ClientIdentity(this.source.getName(), pipeline.getParams().getClientId(), filter);
+        this.clientIdentity = new ClientIdentity(this.source.getName(), pipeline.getId().shortValue(), filter);
         /**
          * 发起一次订阅
          */
@@ -166,8 +166,7 @@ public class CanalEmbedSelector {
         canal.setId(entityDesc.getId());
         canal.setName(entityDesc.getName());
         //canal.setStatus(CanalStatus.START);
-        // slaveId = 10000 + pipelineid
-        long slaveId = 10000 + pipeline.getId();
+
         CanalParameter canalParameter = new CanalParameter();
         canalParameter.setZkClusterId(1L);
         canalParameter.setZkClusters(Arrays.asList(zookeeperConfig.getUrl().split(",")));
@@ -184,7 +183,8 @@ public class CanalEmbedSelector {
 
         //索引模式
         canalParameter.setIndexMode(CanalParameter.IndexMode.META);
-        canalParameter.setSlaveId(slaveId + pipeline.getId());
+        // slaveId = 10000 + pipelineid
+        canalParameter.setSlaveId(10000 + pipeline.getId());
         //心跳检查
         canalParameter.setDetectingSQL("insert into retl.xdual values(1,now()) on duplicate key update x=now()");
         canalParameter.setDetectingIntervalInSeconds(5);

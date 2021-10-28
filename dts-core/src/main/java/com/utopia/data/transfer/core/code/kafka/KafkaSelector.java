@@ -6,6 +6,7 @@ import com.utopia.data.transfer.core.code.service.ConfigService;
 import com.utopia.data.transfer.model.archetype.ErrorCode;
 import com.utopia.data.transfer.model.archetype.ServiceException;
 import com.utopia.data.transfer.model.code.entity.EntityDesc;
+import com.utopia.data.transfer.model.code.entity.kafka.KafkaProperty;
 import com.utopia.data.transfer.model.code.pipeline.Pipeline;
 import com.utopia.extension.UtopiaExtensionLoader;
 import com.utopia.serialization.api.SerializationApi;
@@ -62,9 +63,10 @@ public class KafkaSelector {
         }
         EntityDesc entityDesc = configService.getEntityDesc(pipeline.getSourceEntityId());
 
-        this.serializationApi = UtopiaExtensionLoader.getExtensionLoader(SerializationApi.class).getExtension(entityDesc.getKafka().getSerialization());
+        KafkaProperty kafka = entityDesc.getParams().toJavaObject(KafkaProperty.class);
+        this.serializationApi = UtopiaExtensionLoader.getExtensionLoader(SerializationApi.class).getExtension(kafka.getSerialization());
         if(Objects.isNull(this.serializationApi)){
-            log.error("no find serializationApi {}", entityDesc.getKafka().getSerialization());
+            log.error("no find serializationApi {}", kafka.getSerialization());
             throw new ServiceException(ErrorCode.SELECT_NO_SERIALIZATION);
         }
 
@@ -80,7 +82,7 @@ public class KafkaSelector {
 
         this.stringKafkaConsumer = new KafkaConsumer<>(props);
 
-        stringKafkaConsumer.subscribe(Collections.singletonList(entityDesc.getKafka().getTopic()));
+        stringKafkaConsumer.subscribe(Collections.singletonList(kafka.getTopic()));
         running = true;
     }
 

@@ -9,6 +9,7 @@ import com.utopia.data.transfer.core.code.service.impl.task.load.LoadRun;
 import com.utopia.data.transfer.model.archetype.ErrorCode;
 import com.utopia.data.transfer.model.archetype.ServiceException;
 import com.utopia.data.transfer.model.code.entity.EntityDesc;
+import com.utopia.data.transfer.model.code.entity.kafka.KafkaProperty;
 import com.utopia.data.transfer.model.code.pipeline.Pipeline;
 
 import com.utopia.data.transfer.model.code.transfer.TransferEventDataTransaction;
@@ -64,9 +65,10 @@ public class LoadRunKafka implements LoadRun {
             this.sourceEntityDesc = sourceEntityDesc;
             this.targetEntityDesc = targetEntityDesc;
 
-            this.serializationApi = UtopiaExtensionLoader.getExtensionLoader(SerializationApi.class).getExtension(targetEntityDesc.getKafka().getSerialization());
+            KafkaProperty kafkaParam = targetEntityDesc.getParams().toJavaObject(KafkaProperty.class);
+            this.serializationApi = UtopiaExtensionLoader.getExtensionLoader(SerializationApi.class).getExtension(kafkaParam.getSerialization());
             if(Objects.isNull(this.serializationApi)){
-                log.error("no find serializationApi {}", targetEntityDesc.getKafka().getSerialization());
+                log.error("no find serializationApi {}", kafkaParam.getSerialization());
                 throw new ServiceException(ErrorCode.LOAD_NO_SERIALIZATION);
             }
             //手动创建kafka的provider
@@ -75,7 +77,7 @@ public class LoadRunKafka implements LoadRun {
             UtopiaProviderKafkaConf kafkaConf = new UtopiaProviderKafkaConf();
             kafkaConf.setByteArray(true);
             kafkaConf.setKafkaTemplateInjectName(KAFKA_BYTEARRAY_TEMPLATE);
-            kafkaConf.setProviderTopic(targetEntityDesc.getKafka().getTopic());
+            kafkaConf.setProviderTopic(kafkaParam.getTopic());
 
             String keyName = String.format("loadRunKafkaItem_Template_%d", pipeline.getId());
             Supplier<UtopiaProviderByteArrayApi> supplier = () -> kafka.createProviderByteArray((JSONObject) JSON.toJSON(kafkaConf));
@@ -84,7 +86,7 @@ public class LoadRunKafka implements LoadRun {
 
             utopiaProviderByteArrayApi = (UtopiaProviderByteArrayApi) beanDefinitionRegistry.getBean(keyName);
             if(Objects.isNull(utopiaProviderByteArrayApi)){
-                log.error("utopiaProviderByteArrayApi topic {}", targetEntityDesc.getKafka().getTopic());
+                log.error("utopiaProviderByteArrayApi topic {}", kafkaParam.getTopic());
                 throw new ServiceException(ErrorCode.LOAD_NO_KAFKA);
             }
         }

@@ -1,5 +1,6 @@
 package com.utopia.data.transfer.model.code.entity;
 
+import com.alibaba.fastjson.JSONObject;
 import com.utopia.data.transfer.model.code.data.media.DataMediaType;
 import com.utopia.data.transfer.model.code.entity.kafka.KafkaProperty;
 import lombok.Data;
@@ -54,7 +55,5 @@ public class EntityDesc implements Serializable {
     private String              password;
     private String              driver;
 
-    private MysqlProperty       mysql = new MysqlProperty();
-
-    private KafkaProperty       kafka = new KafkaProperty();
+    private JSONObject          params;
 }
