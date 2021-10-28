@@ -13,6 +13,7 @@ import com.utopia.data.transfer.admin.vo.req.RegionAddVo;
 import com.utopia.data.transfer.model.code.bean.StageType;
 import com.utopia.model.rsp.UtopiaErrorCode;
 import com.utopia.model.rsp.UtopiaResponseModel;
+import com.utopia.register.center.sync.InstanceResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * describe:
@@ -85,6 +87,12 @@ public class DtsRegionController {
     public UtopiaResponseModel<List<String>> modelList(){
         List<String> list = CollectionUtils.arrayToList(StageType.values());
         return  UtopiaResponseModel.success(list);
+    }
+
+    @PostMapping("/region/nacos")
+    public UtopiaResponseModel<Map<String, List<InstanceResponse>>> regionNacos(@RequestParam(value = "region",required = false)String region){
+        Map<String, List<InstanceResponse>> stringListMap = regionService.regionNacos(region);
+        return UtopiaResponseModel.success(stringListMap);
     }
 
 }
