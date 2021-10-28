@@ -11,10 +11,10 @@ import com.utopia.data.transfer.model.code.entity.kafka.KafkaProperty;
 import com.utopia.data.transfer.model.code.entity.mysql.MysqlProperty;
 import com.utopia.data.transfer.model.code.pipeline.PipelineParameter;
 
+import com.utopia.register.center.sync.InstanceResponse;
 import org.junit.Test;
 
-import java.util.List;
-import java.util.Timer;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -78,5 +78,49 @@ public class ExecExample {
         });
         JSONObject kafkaJson = JSONObject.parseObject(defaultParams, Feature.InitStringFieldAsEmpty);
         System.out.println(defaultParams);
+    }
+
+    @Test
+    public void testNocos(){
+        Map<String,String> map1 = new HashMap<>();
+        map1.put("region","1");
+
+
+        Map<String,String> map2 = new HashMap<>();
+        map2.put("region","2");
+        InstanceResponse instanceResponse1 = InstanceResponse.builder()
+                .ip("map11")
+                .metaData(map1)
+                .port(111)
+                .weight(1111)
+                .build();
+        InstanceResponse instanceResponse2 = InstanceResponse.builder()
+                .ip("map12")
+                .metaData(map1)
+                .port(111)
+                .weight(1111)
+                .build();
+        InstanceResponse instanceResponse3 = InstanceResponse.builder()
+                .ip("map21")
+                .metaData(map2)
+                .port(111)
+                .weight(1111)
+                .build();
+        InstanceResponse instanceResponse4 = InstanceResponse.builder()
+                .ip("map22")
+                .metaData(map2)
+                .port(111)
+                .weight(1111)
+                .build();
+        List<InstanceResponse> list = new ArrayList<>();
+        list.add(instanceResponse1);
+        list.add(instanceResponse2);
+        list.add(instanceResponse3);
+        list.add(instanceResponse4);
+
+        Map<String, List<InstanceResponse>> region = list.stream().collect(Collectors.groupingBy(instance -> instance.getMetaData().get("region")));
+        String s = JSONObject.toJSONString(region);
+        System.out.println(s);
+
     }
 }
