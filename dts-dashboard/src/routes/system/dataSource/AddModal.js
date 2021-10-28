@@ -33,7 +33,7 @@ class AddModal extends PureComponent {
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
 
-        let { name, type, encode, slaveId, url, driver, username, password } = values;
+        let { name, type, encode, /* slaveId, */ url, driver, username, password } = values;
         let property = this.jsonEncode(this.configEditor);
         try {
           property && JSON.parse(property);
@@ -41,7 +41,7 @@ class AddModal extends PureComponent {
           return alert('请输入正确配置');
         }
 
-        handleOk({ id, name, type, encode, slaveId, url, driver, username, password, property });
+        handleOk({ id, name, type, encode, /* slaveId, */ url, driver, username, password, property });
       }
     });
   };
@@ -90,7 +90,7 @@ class AddModal extends PureComponent {
   }
 
   render() {
-    let { typeList, handleCancel, form, name, type, encode, slaveId, url, driver, username, password, property } = this.props;
+    let { typeList, handleCancel, form, name, type, encode, /* slaveId, */ url, driver, username, password, property } = this.props;
 
 
 
@@ -154,14 +154,14 @@ class AddModal extends PureComponent {
               <Input placeholder="请输入数据编码格式" />
             )}
           </FormItem>
-          <FormItem label="slaveId" {...formItemLayout}>
+          {/* <FormItem label="slaveId" {...formItemLayout}>
             {getFieldDecorator("slaveId", {
               rules: [{ required: true, message: "请输入slaveId" }],
               initialValue: slaveId,
             })(
               <Input placeholder="请输入slaveId" />
             )}
-          </FormItem>
+            </FormItem> */}
           <FormItem label="JDBC URL" {...formItemLayout}>
             {getFieldDecorator("url", {
               rules: [{ required: true, message: "请输入jdbc url" }],
