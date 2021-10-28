@@ -27,6 +27,13 @@ export default class Pipeline extends PureComponent {
   componentWillMount() {
     const { dispatch } = this.props;
     dispatch({
+      type: 'pipeline/saveList',
+      payload: {
+        dataList: [],
+        total: 0
+      }
+    })
+    dispatch({
       type: "task/fetch",
       payload: {
         pageNum: 1,
@@ -282,8 +289,8 @@ export default class Pipeline extends PureComponent {
       return (
         <Fragment>
           <Descriptions style={{ marginBottom: 20 }} title="数据源" size="small" column={2}>
-            <Descriptions.Item label="同步源">{sourceEntity.name}</Descriptions.Item>
-            <Descriptions.Item label="同步目标">{targetEntity.name}</Descriptions.Item>
+            <Descriptions.Item label="同步源">{sourceEntity?.name}</Descriptions.Item>
+            <Descriptions.Item label="同步目标">{targetEntity?.name}</Descriptions.Item>
           </Descriptions>
           {region?.length ?
             (
@@ -304,8 +311,8 @@ export default class Pipeline extends PureComponent {
               <Descriptions style={{ marginBottom: 20 }} title="数据映射关系" size="small" column={2}>
                 {pairs.map(pair => (
                   <React.Fragment key={`${pair.id}_0`}>
-                    <Descriptions.Item label="源数据">{pair[0].name}</Descriptions.Item>
-                    <Descriptions.Item label="目标数据">{pair[1].name}</Descriptions.Item>
+                    <Descriptions.Item label="源数据">{pair[0]?.name}</Descriptions.Item>
+                    <Descriptions.Item label="目标数据">{pair[1]?.name}</Descriptions.Item>
                   </React.Fragment>
                 ))
                 }

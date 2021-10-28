@@ -28,6 +28,13 @@ export default class Region extends PureComponent {
     const { currentPage, taskId } = this.state;
     const { dispatch } = this.props;
     dispatch({
+      type: "pipeline/saveList",
+      payload: {
+        dataList: [],
+        total: 0
+      }
+    });
+    dispatch({
       type: "pipeline/fetch",
       payload: {
         taskId: taskId || undefined,
