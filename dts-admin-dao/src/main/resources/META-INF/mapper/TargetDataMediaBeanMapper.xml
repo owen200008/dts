@@ -8,6 +8,7 @@
     <result column="table" jdbcType="VARCHAR" property="table" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
+    <result column="sync_rule" jdbcType="VARCHAR" property="syncRule" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -68,7 +69,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, `name`, namespace, `table`, create_time, modify_time
+    id, `name`, namespace, `table`, create_time, modify_time, sync_rule
   </sql>
   <select id="selectByExample" parameterType="com.utopia.data.transfer.admin.dao.entity.TargetDataMediaBeanDal" resultMap="BaseResultMap">
     select
@@ -105,9 +106,11 @@
       SELECT LAST_INSERT_ID()
     </selectKey>
     insert into u_target_datamedia (`name`, namespace, `table`, 
-      create_time, modify_time)
+      create_time, modify_time, sync_rule
+      )
     values (#{name,jdbcType=VARCHAR}, #{namespace,jdbcType=VARCHAR}, #{table,jdbcType=VARCHAR}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{modifyTime,jdbcType=TIMESTAMP})
+      #{createTime,jdbcType=TIMESTAMP}, #{modifyTime,jdbcType=TIMESTAMP}, #{syncRule,jdbcType=VARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.utopia.data.transfer.admin.dao.entity.TargetDataMediaBean">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
@@ -130,6 +133,9 @@
       <if test="modifyTime != null">
         modify_time,
       </if>
+      <if test="syncRule != null">
+        sync_rule,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="name != null">
@@ -146,6 +152,9 @@
       </if>
       <if test="modifyTime != null">
         #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="syncRule != null">
+        #{syncRule,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -170,6 +179,9 @@
       <if test="record.modifyTime != null">
         modify_time = #{record.modifyTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="record.syncRule != null">
+        sync_rule = #{record.syncRule,jdbcType=VARCHAR},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -182,7 +194,8 @@
       namespace = #{record.namespace,jdbcType=VARCHAR},
       `table` = #{record.table,jdbcType=VARCHAR},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
-      modify_time = #{record.modifyTime,jdbcType=TIMESTAMP}
+      modify_time = #{record.modifyTime,jdbcType=TIMESTAMP},
+      sync_rule = #{record.syncRule,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -205,6 +218,9 @@
       <if test="modifyTime != null">
         modify_time = #{modifyTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="syncRule != null">
+        sync_rule = #{syncRule,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -214,7 +230,8 @@
       namespace = #{namespace,jdbcType=VARCHAR},
       `table` = #{table,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
-      modify_time = #{modifyTime,jdbcType=TIMESTAMP}
+      modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      sync_rule = #{syncRule,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

@@ -17,6 +17,8 @@ public class TargetDataMediaBean extends BaseModel implements Serializable {
 
     private LocalDateTime modifyTime;
 
+    private String syncRule;
+
     private static final long serialVersionUID = 1L;
 
     public Long getId() {
@@ -67,6 +69,14 @@ public class TargetDataMediaBean extends BaseModel implements Serializable {
         this.modifyTime = modifyTime;
     }
 
+    public String getSyncRule() {
+        return syncRule;
+    }
+
+    public void setSyncRule(String syncRule) {
+        this.syncRule = syncRule == null ? null : syncRule.trim();
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -79,6 +89,7 @@ public class TargetDataMediaBean extends BaseModel implements Serializable {
         sb.append(", table=").append(table);
         sb.append(", createTime=").append(createTime);
         sb.append(", modifyTime=").append(modifyTime);
+        sb.append(", syncRule=").append(syncRule);
         sb.append("]");
         return sb.toString();
     }
@@ -100,7 +111,8 @@ public class TargetDataMediaBean extends BaseModel implements Serializable {
             && (this.getNamespace() == null ? other.getNamespace() == null : this.getNamespace().equals(other.getNamespace()))
             && (this.getTable() == null ? other.getTable() == null : this.getTable().equals(other.getTable()))
             && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
-            && (this.getModifyTime() == null ? other.getModifyTime() == null : this.getModifyTime().equals(other.getModifyTime()));
+            && (this.getModifyTime() == null ? other.getModifyTime() == null : this.getModifyTime().equals(other.getModifyTime()))
+            && (this.getSyncRule() == null ? other.getSyncRule() == null : this.getSyncRule().equals(other.getSyncRule()));
     }
 
     @Override
@@ -113,6 +125,7 @@ public class TargetDataMediaBean extends BaseModel implements Serializable {
         result = prime * result + ((getTable() == null) ? 0 : getTable().hashCode());
         result = prime * result + ((getCreateTime() == null) ? 0 : getCreateTime().hashCode());
         result = prime * result + ((getModifyTime() == null) ? 0 : getModifyTime().hashCode());
+        result = prime * result + ((getSyncRule() == null) ? 0 : getSyncRule().hashCode());
         return result;
     }
 }

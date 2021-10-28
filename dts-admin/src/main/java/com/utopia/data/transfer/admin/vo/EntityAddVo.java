@@ -36,4 +36,8 @@ public class EntityAddVo {
 
     private String property;
 
+    /**
+     *当为Kafka时 需要指定数据类型
+      */
+    private String dataType;
 }

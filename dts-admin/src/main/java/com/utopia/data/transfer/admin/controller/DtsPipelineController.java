@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.parser.Feature;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.serializer.ValueFilter;
+import com.utopia.data.transfer.admin.contants.DispatchRuleType;
 import com.utopia.data.transfer.admin.contants.PathConstants;
 import com.utopia.data.transfer.admin.dao.entity.PipelineBean;
 import com.utopia.data.transfer.admin.dao.entity.SyncRuleBean;
@@ -18,11 +19,13 @@ import com.utopia.data.transfer.model.code.pipeline.PipelineParameter;
 import com.utopia.model.rsp.UtopiaErrorCode;
 import com.utopia.model.rsp.UtopiaResponseModel;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -60,8 +63,8 @@ public class DtsPipelineController {
 
 
     @PostMapping("/pipeline/add")
-    public UtopiaResponseModel<JSONObject> pipelineAdd(@Valid PipelineAddVo pipelineAddVo){
-        Long pi = pipelineService.pipelineAdd(pipelineAddVo);
+    public UtopiaResponseModel<JSONObject> pipelineAdd(PipelineBean pipelineBean){
+        Long pi = pipelineService.pipelineAdd(pipelineBean);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("pipelineId",pi);
         return UtopiaResponseModel.success(jsonObject);
@@ -106,5 +109,11 @@ public class DtsPipelineController {
     public UtopiaResponseModel<Void> pipelineModify(PipelineBean pipelineBean){
         pipelineService.pipelineModify(pipelineBean);
         return UtopiaResponseModel.success();
+    }
+
+    @PostMapping("/pipeline/dispatchRule")
+    public UtopiaResponseModel<List<String>> dispatchRule(){
+        List<String> list = CollectionUtils.arrayToList(DispatchRuleType.values());
+        return UtopiaResponseModel.success(list);
     }
 }

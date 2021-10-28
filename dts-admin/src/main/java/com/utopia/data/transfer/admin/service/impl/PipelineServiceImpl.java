@@ -76,14 +76,7 @@ public class PipelineServiceImpl implements PipelineService {
     RegionPipelineService regionPipelineService;
 
     @Override
-    public Long pipelineAdd(PipelineAddVo pipelineAddVo) {
-        PipelineBean pipelineBean = null;
-        try {
-            pipelineBean = CommonUtil.snakeObjectToUnderline(pipelineAddVo, PipelineBean.class);
-        } catch (IOException e) {
-            log.error("parase object to new object fail");
-            throw new UtopiaRunTimeException(ErrorCode.JSON_PARSE_ERROR);
-        }
+    public Long pipelineAdd(PipelineBean pipelineBean) {
         pipelineBean.setCreateTime(LocalDateTime.now());
         pipelineBean.setModifyTime(LocalDateTime.now());
         pipelineBeanMapper.insert(pipelineBean);
