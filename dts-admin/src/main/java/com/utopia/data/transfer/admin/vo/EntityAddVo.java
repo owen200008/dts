@@ -35,6 +35,6 @@ public class EntityAddVo {
     @NotNull
     private String password;
 
-    private String mysql;
+    private String property;
 
 }
