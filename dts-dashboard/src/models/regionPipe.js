@@ -39,7 +39,11 @@ export default {
           item.region = regionResp?.data?.region;
           return item;
         }));
-        let dataList = yield call(async () => { let result = await Promise.all(promiseArr); return result; });
+        let dataList = yield call(async () => {
+          if (!promiseArr.lengnth) return [];
+          let result = await Promise.all(promiseArr);
+          return result;
+        });
         if (callback) callback(dataList);
         yield put({
           type: "saveList",

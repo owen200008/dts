@@ -54,7 +54,7 @@ export default class Pipeline extends PureComponent {
     dispatch({
       type: "pipeline/fetch",
       payload: {
-        taskId,
+        taskId: taskId || undefined,
         pageNum,
         pageSize: this.pageSize
       }
@@ -224,7 +224,7 @@ export default class Pipeline extends PureComponent {
           callback: resolve
         })
       }).then(pairs => {
-
+        if (!pairs?.length) return [];
         return Promise.all(pairs.map(pair => {
           return Promise.all([
             new Promise((resolve) => {
