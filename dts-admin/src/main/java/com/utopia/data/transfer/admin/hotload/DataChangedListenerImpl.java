@@ -12,24 +12,32 @@ import java.util.stream.Collectors;
 import com.alibaba.fastjson.JSON;
 import com.utopia.algorithm.UtopiaAlgorithm;
 import com.utopia.data.transfer.admin.contants.PathConstants;
+import com.utopia.data.transfer.admin.dao.entity.PairBean;
 import com.utopia.data.transfer.admin.dao.entity.PipelineBean;
 import com.utopia.data.transfer.admin.dao.entity.RegionBean;
 import com.utopia.data.transfer.admin.dao.entity.RegionPipelineBean;
+import com.utopia.data.transfer.admin.dao.entity.SourceDataMediaBean;
 import com.utopia.data.transfer.admin.dao.entity.SyncRuleBean;
+import com.utopia.data.transfer.admin.dao.entity.TargetDataMediaBean;
 import com.utopia.data.transfer.admin.dao.entity.TaskBean;
 import com.utopia.data.transfer.admin.service.EntityService;
+import com.utopia.data.transfer.admin.service.PairService;
 import com.utopia.data.transfer.admin.service.PipelineService;
 import com.utopia.data.transfer.admin.service.RegionPipelineService;
 import com.utopia.data.transfer.admin.service.RegionService;
+import com.utopia.data.transfer.admin.service.SourceDataMediaService;
 import com.utopia.data.transfer.admin.service.SyncRuleService;
+import com.utopia.data.transfer.admin.service.TargetDataMediaService;
 import com.utopia.data.transfer.admin.service.TaskService;
 import com.utopia.data.transfer.model.code.DTSServiceConf;
 import com.utopia.data.transfer.model.code.bean.StageType;
+import com.utopia.data.transfer.model.code.data.media.DataMediaRulePair;
+import com.utopia.data.transfer.model.code.data.media.DataMediaRuleSource;
+import com.utopia.data.transfer.model.code.data.media.DataMediaRuleTarget;
 import com.utopia.data.transfer.model.code.data.media.DataMediaType;
 import com.utopia.data.transfer.model.code.data.media.SyncRuleTarget;
 import com.utopia.data.transfer.model.code.data.media.SyncRuleType;
 import com.utopia.data.transfer.model.code.entity.EntityDesc;
-import com.utopia.data.transfer.model.code.entity.mysql.MysqlProperty;
 import com.utopia.data.transfer.model.code.pipeline.Pipeline;
 import com.utopia.data.transfer.model.code.pipeline.PipelineParameter;
 import com.utopia.register.center.instance.Registration;
@@ -69,6 +77,12 @@ public class DataChangedListenerImpl implements DataChangedListener, Initializin
     Registration registration;
     @Autowired
     SyncRuleService syncRuleService;
+    @Autowired
+    PairService pairService;
+    @Autowired
+    SourceDataMediaService sourceDataMediaService;
+    @Autowired
+    TargetDataMediaService targetDataMediaService;
     @Autowired
     LocalCacheManager localCacheManager;
 
@@ -141,6 +155,9 @@ public class DataChangedListenerImpl implements DataChangedListener, Initializin
             Map<Long, List<RegionPipelineBean>> mapRegion = regionPipelineService.getAll().stream().collect(Collectors.groupingBy(RegionPipelineBean::getPipelineId));
             Map<Long, RegionBean> mapIdToRegion = regionService.getAll().stream().collect(Collectors.toMap(RegionBean::getId, item -> item));
             Map<Long, SyncRuleBean> mapSyncRuleBean = syncRuleService.getAll().stream().collect(Collectors.toMap(SyncRuleBean::getPipelineId, item -> item));
+            Map<Long, List<PairBean>> mapPair = pairService.getAll().stream().collect(Collectors.groupingBy(PairBean::getPipelineId));
+            Map<Long, SourceDataMediaBean> mapSource = sourceDataMediaService.getAll().stream().collect(Collectors.toMap(SourceDataMediaBean::getId, item -> item));
+            Map<Long, TargetDataMediaBean> mapTarget = targetDataMediaService.getAll().stream().collect(Collectors.toMap(TargetDataMediaBean::getId, item -> item));
 
             List<EntityDesc> ayEntity = entityService.getAll().stream().map(item -> {
                 var ret = new EntityDesc();
@@ -193,6 +210,39 @@ public class DataChangedListenerImpl implements DataChangedListener, Initializin
                 if(Objects.isNull(syncRuleBean)){
                     return null;
                 }
+
+                List<PairBean> pairBeans = mapPair.get(pipeline.getId());
+                if(CollectionUtils.isEmpty(pairBeans)){
+                    return null;
+                }
+
+                pipeline.setPairs(pairBeans.stream().map(pair->{
+                    DataMediaRulePair dataMediaRulePair = new DataMediaRulePair();
+
+                    SourceDataMediaBean sourceDataMediaBean = mapSource.get(pair.getSourceDatamediaId());
+                    if(Objects.isNull(sourceDataMediaBean)){
+                        return null;
+                    }
+                    DataMediaRuleSource dataMediaRuleSource = new DataMediaRuleSource();
+                    dataMediaRuleSource.setId(sourceDataMediaBean.getId());
+                    dataMediaRuleSource.setNamespace(sourceDataMediaBean.getNamespace());
+                    dataMediaRuleSource.setValue(sourceDataMediaBean.getTable());
+
+                    dataMediaRulePair.setSource(dataMediaRuleSource);
+
+                    TargetDataMediaBean targetDataMediaBean = mapTarget.get(pair.getTargetDatamediaId());
+                    if(Objects.isNull(targetDataMediaBean)){
+                        return null;
+                    }
+
+                    DataMediaRuleTarget dataMediaRuleTarget = new DataMediaRuleTarget();
+                    dataMediaRuleTarget.setId(targetDataMediaBean.getId());
+                    dataMediaRuleTarget.setNamespace(targetDataMediaBean.getNamespace());
+                    dataMediaRuleTarget.setValue(targetDataMediaBean.getTable());
+
+                    dataMediaRulePair.setTarget(dataMediaRuleTarget);
+                    return dataMediaRulePair;
+                }).collect(Collectors.toList()));
 
                 SyncRuleTarget syncRuleTarget = new SyncRuleTarget();
                 syncRuleTarget.setSyncRuleType(SyncRuleType.valueOf(syncRuleBean.getSyncRuleType()));

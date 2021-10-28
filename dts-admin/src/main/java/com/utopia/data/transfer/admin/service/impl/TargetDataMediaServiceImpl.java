@@ -77,4 +77,9 @@ public class TargetDataMediaServiceImpl implements TargetDataMediaService {
     public void targetDataMediaModify(TargetDataMediaBean targetDataMediaBean) {
         targetDataMediaBeanMapper.updateByPrimaryKeySelective(targetDataMediaBean);
     }
+
+    @Override
+    public List<TargetDataMediaBean> getAll() {
+        return targetDataMediaBeanMapper.selectByExample(new TargetDataMediaBeanDal());
+    }
 }

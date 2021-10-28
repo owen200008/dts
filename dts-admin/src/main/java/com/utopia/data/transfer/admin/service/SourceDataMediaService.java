@@ -23,4 +23,6 @@ public interface SourceDataMediaService {
     Long sourceDataMediaAdd(SourceDataMediaBean sourceDataMediaBean);
 
     void sourceDataMediaModify(SourceDataMediaBean sourceDataMediaBean);
+
+    List<SourceDataMediaBean> getAll();
 }

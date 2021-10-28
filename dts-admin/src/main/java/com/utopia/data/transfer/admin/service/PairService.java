@@ -49,4 +49,6 @@ public interface PairService {
     PairBean pairGet(Long id);
 
     void pairModify(PairBean pairBean);
+
+    List<PairBean> getAll();
 }

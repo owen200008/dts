@@ -22,4 +22,6 @@ public interface TargetDataMediaService {
     Long targetDataMediaAdd(TargetDataMediaBean targetDataMediaBean);
 
     void targetDataMediaModify(TargetDataMediaBean targetDataMediaBean);
+
+    List<TargetDataMediaBean> getAll();
 }

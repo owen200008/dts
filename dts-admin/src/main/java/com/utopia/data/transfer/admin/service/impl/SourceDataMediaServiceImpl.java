@@ -74,4 +74,9 @@ public class SourceDataMediaServiceImpl  implements SourceDataMediaService {
     public void sourceDataMediaModify(SourceDataMediaBean sourceDataMediaBean) {
         sourceDataMediaBeanMapper.updateByPrimaryKeySelective(sourceDataMediaBean);
     }
+
+    @Override
+    public List<SourceDataMediaBean> getAll() {
+        return sourceDataMediaBeanMapper.selectByExample(new SourceDataMediaBeanDal());
+    }
 }

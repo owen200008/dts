@@ -88,4 +88,9 @@ public class PairSeviceImpl implements PairService {
         pairBeanDal.createCriteria().andIdEqualTo(pairBean.getId());
         pairBeanRepository.updateByExampleSelective(pairBean,pairBeanDal);
     }
+
+    @Override
+    public List<PairBean> getAll() {
+        return pairBeanRepository.selectByExample(new PairBeanDal());
+    }
 }
