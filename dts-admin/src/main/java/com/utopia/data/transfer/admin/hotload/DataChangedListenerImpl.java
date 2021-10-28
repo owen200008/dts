@@ -189,7 +189,7 @@ public class DataChangedListenerImpl implements DataChangedListener, Initializin
                 pipeline.setParams(JSON.parseObject(item.getPipelineParams(), PipelineParameter.class));
                 pipeline.setStage(stageTypeStringMap);
 
-                SyncRuleBean syncRuleBean = mapSyncRuleBean.get(pipeline);
+                SyncRuleBean syncRuleBean = mapSyncRuleBean.get(pipeline.getId());
                 if(Objects.isNull(syncRuleBean)){
                     return null;
                 }
