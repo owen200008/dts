@@ -188,7 +188,7 @@ class AddModal extends PureComponent {
                 {dataSourceList.map((item, index) => {
                   return (
                     <Option key={index} value={item.id}>
-                      {item.name}
+                      {`${item.name} -- ${item.type}`}
                     </Option>
                   );
                 })}
@@ -211,7 +211,7 @@ class AddModal extends PureComponent {
                 {dataSourceList.map((item, index) => {
                   return (
                     <Option key={index} value={item.id}>
-                      {item.name}
+                      {`${item.name} -- ${item.type}`}
                     </Option>
                   );
                 })}

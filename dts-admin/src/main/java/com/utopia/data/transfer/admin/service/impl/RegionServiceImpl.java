@@ -109,6 +109,8 @@ public class RegionServiceImpl implements RegionService, LocalCacheManager.Notif
     @Override
     public void notify(String key, List<InstanceResponse> o) {
         INSTANCE_CACHE.clear();
-        INSTANCE_CACHE = o.stream().collect(Collectors.groupingBy(instance -> instance.getMetaData().get("region")));
+        if (PathConstants.INSTANCE_KEY.equals(key)){
+            INSTANCE_CACHE = o.stream().collect(Collectors.groupingBy(instance -> instance.getMetaData().get("region")));
+        }
     }
 }
