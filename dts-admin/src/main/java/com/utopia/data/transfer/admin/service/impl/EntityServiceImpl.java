@@ -15,6 +15,7 @@ import com.utopia.data.transfer.admin.vo.PageRes;
 import com.utopia.data.transfer.admin.vo.QueryEntityVo;
 import com.utopia.data.transfer.model.archetype.ErrorCode;
 import com.utopia.exception.UtopiaRunTimeException;
+import com.utopia.string.UtopiaStringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -97,7 +98,9 @@ public class EntityServiceImpl implements EntityService {
         }else {
             entityBeanDal.setOrderByClause("create_time desc");
         }
-        criteria.andTypeEqualTo(queryEntityVo.getType());
+        if(UtopiaStringUtil.isNotBlank(queryEntityVo.getType())){
+            criteria.andTypeEqualTo(queryEntityVo.getType());
+        }
         List<EntityBean> entityBeans = entityBeanMapper.selectByExample(entityBeanDal);
         PageRes<List<EntityBean>> pageRes = PageRes.getPage(page.getTotal(), page.getPageSize(), entityBeans);
         return pageRes;

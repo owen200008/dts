@@ -17,7 +17,7 @@ public class QueryEntityVo {
 
     private String name ;
 
-    private String type = "MYSQL";
+    private String type;
 
     private Integer pageNum = 1;
 

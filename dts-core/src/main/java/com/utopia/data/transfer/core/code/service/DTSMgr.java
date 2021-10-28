@@ -159,7 +159,10 @@ public class DTSMgr implements UtopiaShutdownHook.ShutdownCallbackFunc, LocalCac
         //先查找不存在的
         tasks.asMap().forEach((pipelineId, item)->{
             if(!collect.containsKey(pipelineId)){
-                item.asMap().forEach((stage, task)-> task.shutdown());
+                item.asMap().forEach((stage, task)-> {
+                    task.shutdown();
+                    task.waitClose();
+                });
                 tasks.invalidate(pipelineId);
             }
         });
