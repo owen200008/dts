@@ -83,11 +83,7 @@ public class TaskServiceImpl implements TaskService {
         taskBeanDal.createCriteria().andIdEqualTo(id);
         TaskBean taskBean = new TaskBean();
         taskBean.setValid(valid > 0 ? true : false);
-        int i = taskBeanMapper.updateByExampleSelective(taskBean, taskBeanDal);
-        if (valid > 0) {
-            return i;
-        }
-        return 0;
+        return taskBeanMapper.updateByExampleSelective(taskBean, taskBeanDal);
     }
 
     @Override
