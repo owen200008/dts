@@ -13,6 +13,7 @@
     <result column="password" jdbcType="VARCHAR" property="password" />
     <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="property" jdbcType="LONGVARCHAR" property="property" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.utopia.data.transfer.admin.dao.entity.EntityBean">
     <result column="property" jdbcType="LONGVARCHAR" property="property" />
@@ -77,7 +78,7 @@
   </sql>
   <sql id="Base_Column_List">
     id, `name`, `type`, encode, slave_id, url, driver, username, `password`, modify_time, 
-    create_time
+    create_time,`property`
   </sql>
   <sql id="Blob_Column_List">
     property
