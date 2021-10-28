@@ -196,12 +196,12 @@ export default class DataSource extends PureComponent {
         dataIndex: "encode",
         key: "encode",
       },
-      {
+      /* {
         align: "center",
         title: "slaveId",
         dataIndex: "slaveId",
         key: "slaveId",
-      },
+      }, */
       {
         align: "center",
         title: "jdbcUrl",
