@@ -375,66 +375,6 @@ public class EntityBeanDal {
             return (Criteria) this;
         }
 
-        public Criteria andSlaveIdIsNull() {
-            addCriterion("slave_id is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andSlaveIdIsNotNull() {
-            addCriterion("slave_id is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andSlaveIdEqualTo(Long value) {
-            addCriterion("slave_id =", value, "slaveId");
-            return (Criteria) this;
-        }
-
-        public Criteria andSlaveIdNotEqualTo(Long value) {
-            addCriterion("slave_id <>", value, "slaveId");
-            return (Criteria) this;
-        }
-
-        public Criteria andSlaveIdGreaterThan(Long value) {
-            addCriterion("slave_id >", value, "slaveId");
-            return (Criteria) this;
-        }
-
-        public Criteria andSlaveIdGreaterThanOrEqualTo(Long value) {
-            addCriterion("slave_id >=", value, "slaveId");
-            return (Criteria) this;
-        }
-
-        public Criteria andSlaveIdLessThan(Long value) {
-            addCriterion("slave_id <", value, "slaveId");
-            return (Criteria) this;
-        }
-
-        public Criteria andSlaveIdLessThanOrEqualTo(Long value) {
-            addCriterion("slave_id <=", value, "slaveId");
-            return (Criteria) this;
-        }
-
-        public Criteria andSlaveIdIn(List<Long> values) {
-            addCriterion("slave_id in", values, "slaveId");
-            return (Criteria) this;
-        }
-
-        public Criteria andSlaveIdNotIn(List<Long> values) {
-            addCriterion("slave_id not in", values, "slaveId");
-            return (Criteria) this;
-        }
-
-        public Criteria andSlaveIdBetween(Long value1, Long value2) {
-            addCriterion("slave_id between", value1, value2, "slaveId");
-            return (Criteria) this;
-        }
-
-        public Criteria andSlaveIdNotBetween(Long value1, Long value2) {
-            addCriterion("slave_id not between", value1, value2, "slaveId");
-            return (Criteria) this;
-        }
-
         public Criteria andUrlIsNull() {
             addCriterion("url is null");
             return (Criteria) this;

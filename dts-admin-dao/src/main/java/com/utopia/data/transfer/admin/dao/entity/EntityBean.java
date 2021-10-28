@@ -13,8 +13,6 @@ public class EntityBean extends BaseModel implements Serializable {
 
     private String encode;
 
-    private Long slaveId;
-
     private String url;
 
     private String driver;
@@ -61,14 +59,6 @@ public class EntityBean extends BaseModel implements Serializable {
 
     public void setEncode(String encode) {
         this.encode = encode == null ? null : encode.trim();
-    }
-
-    public Long getSlaveId() {
-        return slaveId;
-    }
-
-    public void setSlaveId(Long slaveId) {
-        this.slaveId = slaveId;
     }
 
     public String getUrl() {
@@ -137,7 +127,6 @@ public class EntityBean extends BaseModel implements Serializable {
         sb.append(", name=").append(name);
         sb.append(", type=").append(type);
         sb.append(", encode=").append(encode);
-        sb.append(", slaveId=").append(slaveId);
         sb.append(", url=").append(url);
         sb.append(", driver=").append(driver);
         sb.append(", username=").append(username);
@@ -165,7 +154,6 @@ public class EntityBean extends BaseModel implements Serializable {
             && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
             && (this.getType() == null ? other.getType() == null : this.getType().equals(other.getType()))
             && (this.getEncode() == null ? other.getEncode() == null : this.getEncode().equals(other.getEncode()))
-            && (this.getSlaveId() == null ? other.getSlaveId() == null : this.getSlaveId().equals(other.getSlaveId()))
             && (this.getUrl() == null ? other.getUrl() == null : this.getUrl().equals(other.getUrl()))
             && (this.getDriver() == null ? other.getDriver() == null : this.getDriver().equals(other.getDriver()))
             && (this.getUsername() == null ? other.getUsername() == null : this.getUsername().equals(other.getUsername()))
@@ -183,7 +171,6 @@ public class EntityBean extends BaseModel implements Serializable {
         result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
         result = prime * result + ((getType() == null) ? 0 : getType().hashCode());
         result = prime * result + ((getEncode() == null) ? 0 : getEncode().hashCode());
-        result = prime * result + ((getSlaveId() == null) ? 0 : getSlaveId().hashCode());
         result = prime * result + ((getUrl() == null) ? 0 : getUrl().hashCode());
         result = prime * result + ((getDriver() == null) ? 0 : getDriver().hashCode());
         result = prime * result + ((getUsername() == null) ? 0 : getUsername().hashCode());

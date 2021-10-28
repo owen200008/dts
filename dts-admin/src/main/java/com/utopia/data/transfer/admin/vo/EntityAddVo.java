@@ -24,8 +24,7 @@ public class EntityAddVo {
     private String type;
 
     private String encode;
-    @NotNull
-    private Long slaveId;
+
     @NotNull
     private String url;
     @NotNull

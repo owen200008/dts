@@ -6,7 +6,6 @@
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="type" jdbcType="VARCHAR" property="type" />
     <result column="encode" jdbcType="VARCHAR" property="encode" />
-    <result column="slave_id" jdbcType="BIGINT" property="slaveId" />
     <result column="url" jdbcType="VARCHAR" property="url" />
     <result column="driver" jdbcType="VARCHAR" property="driver" />
     <result column="username" jdbcType="VARCHAR" property="username" />
@@ -77,8 +76,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, `name`, `type`, encode, slave_id, url, driver, username, `password`, modify_time, 
-    create_time,`property`
+    id, `name`, `type`, encode, url, driver, username, `password`, modify_time, create_time,property
   </sql>
   <sql id="Blob_Column_List">
     property
@@ -128,13 +126,13 @@
       SELECT LAST_INSERT_ID()
     </selectKey>
     insert into u_entity (`name`, `type`, encode, 
-      slave_id, url, driver, 
-      username, `password`, modify_time, 
-      create_time, property)
+      url, driver, username, 
+      `password`, modify_time, create_time, 
+      property)
     values (#{name,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{encode,jdbcType=VARCHAR}, 
-      #{slaveId,jdbcType=BIGINT}, #{url,jdbcType=VARCHAR}, #{driver,jdbcType=VARCHAR}, 
-      #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{modifyTime,jdbcType=TIMESTAMP}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{property,jdbcType=LONGVARCHAR})
+      #{url,jdbcType=VARCHAR}, #{driver,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, 
+      #{password,jdbcType=VARCHAR}, #{modifyTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{property,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.utopia.data.transfer.admin.dao.entity.EntityBean">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
@@ -150,9 +148,6 @@
       </if>
       <if test="encode != null">
         encode,
-      </if>
-      <if test="slaveId != null">
-        slave_id,
       </if>
       <if test="url != null">
         url,
@@ -185,9 +180,6 @@
       </if>
       <if test="encode != null">
         #{encode,jdbcType=VARCHAR},
-      </if>
-      <if test="slaveId != null">
-        #{slaveId,jdbcType=BIGINT},
       </if>
       <if test="url != null">
         #{url,jdbcType=VARCHAR},
@@ -227,9 +219,6 @@
       <if test="record.encode != null">
         encode = #{record.encode,jdbcType=VARCHAR},
       </if>
-      <if test="record.slaveId != null">
-        slave_id = #{record.slaveId,jdbcType=BIGINT},
-      </if>
       <if test="record.url != null">
         url = #{record.url,jdbcType=VARCHAR},
       </if>
@@ -262,7 +251,6 @@
       `name` = #{record.name,jdbcType=VARCHAR},
       `type` = #{record.type,jdbcType=VARCHAR},
       encode = #{record.encode,jdbcType=VARCHAR},
-      slave_id = #{record.slaveId,jdbcType=BIGINT},
       url = #{record.url,jdbcType=VARCHAR},
       driver = #{record.driver,jdbcType=VARCHAR},
       username = #{record.username,jdbcType=VARCHAR},
@@ -280,7 +268,6 @@
       `name` = #{record.name,jdbcType=VARCHAR},
       `type` = #{record.type,jdbcType=VARCHAR},
       encode = #{record.encode,jdbcType=VARCHAR},
-      slave_id = #{record.slaveId,jdbcType=BIGINT},
       url = #{record.url,jdbcType=VARCHAR},
       driver = #{record.driver,jdbcType=VARCHAR},
       username = #{record.username,jdbcType=VARCHAR},
