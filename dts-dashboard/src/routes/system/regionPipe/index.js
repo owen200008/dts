@@ -28,7 +28,7 @@ export default class Region extends PureComponent {
     const { currentPage, taskId } = this.state;
     const { dispatch } = this.props;
     dispatch({
-      type: "pipeline/saveList",
+      type: "regionPipe/saveList",
       payload: {
         dataList: [],
         total: 0
@@ -247,7 +247,7 @@ export default class Region extends PureComponent {
             <div className="table-header" style={{ paddingTop: 5 }}>
               <Breadcrumb>
                 <Breadcrumb.Item><a href="#/home">Home</a></Breadcrumb.Item>
-                <Breadcrumb.Item>Region列表</Breadcrumb.Item>
+                <Breadcrumb.Item>Region映射列表</Breadcrumb.Item>
               </Breadcrumb>
             </div>
             <div className="table-header" style={{ justifyContent: "normal" }}>

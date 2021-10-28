@@ -108,7 +108,7 @@ class AddModal extends PureComponent {
       <Modal
         width={520}
         centered
-        title="Region"
+        title="Region映射"
         visible
         okText="确定"
         cancelText="取消"

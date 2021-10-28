@@ -29,7 +29,7 @@ export default {
       if (json.code === 200) {
         let { total, data = [] } = json.data || {};
 
-        let promiseArr = (data.map(async item => {
+        let promiseArr = data.map(async item => {
           item.key = item.id;
           let [pipeResp, regionResp] = await Promise.all([
             pipeline.getItem({ pipelineId: item.pipelineId }),
@@ -38,9 +38,9 @@ export default {
           item.pipelineName = pipeResp?.data?.name;
           item.region = regionResp?.data?.region;
           return item;
-        }));
+        });
         let dataList = yield call(async () => {
-          if (!promiseArr.lengnth) return [];
+          if (!promiseArr.length) return [];
           let result = await Promise.all(promiseArr);
           return result;
         });
