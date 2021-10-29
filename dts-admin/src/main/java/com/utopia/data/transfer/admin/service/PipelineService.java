@@ -14,9 +14,9 @@ public interface PipelineService {
 
     /**
      * 增加pipeline
-     * @param pipelineAddVo
+     * @param pipelineBean
      */
-    Long pipelineAdd(PipelineAddVo pipelineAddVo);
+    Long pipelineAdd(PipelineBean pipelineBean);
 
     /**
      * 删除

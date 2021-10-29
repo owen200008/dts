@@ -775,6 +775,76 @@ public class EntityBeanDal {
             return (Criteria) this;
         }
 
+        public Criteria andDataTypeIsNull() {
+            addCriterion("data_type is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andDataTypeIsNotNull() {
+            addCriterion("data_type is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andDataTypeEqualTo(String value) {
+            addCriterion("data_type =", value, "dataType");
+            return (Criteria) this;
+        }
+
+        public Criteria andDataTypeNotEqualTo(String value) {
+            addCriterion("data_type <>", value, "dataType");
+            return (Criteria) this;
+        }
+
+        public Criteria andDataTypeGreaterThan(String value) {
+            addCriterion("data_type >", value, "dataType");
+            return (Criteria) this;
+        }
+
+        public Criteria andDataTypeGreaterThanOrEqualTo(String value) {
+            addCriterion("data_type >=", value, "dataType");
+            return (Criteria) this;
+        }
+
+        public Criteria andDataTypeLessThan(String value) {
+            addCriterion("data_type <", value, "dataType");
+            return (Criteria) this;
+        }
+
+        public Criteria andDataTypeLessThanOrEqualTo(String value) {
+            addCriterion("data_type <=", value, "dataType");
+            return (Criteria) this;
+        }
+
+        public Criteria andDataTypeLike(String value) {
+            addCriterion("data_type like", value, "dataType");
+            return (Criteria) this;
+        }
+
+        public Criteria andDataTypeNotLike(String value) {
+            addCriterion("data_type not like", value, "dataType");
+            return (Criteria) this;
+        }
+
+        public Criteria andDataTypeIn(List<String> values) {
+            addCriterion("data_type in", values, "dataType");
+            return (Criteria) this;
+        }
+
+        public Criteria andDataTypeNotIn(List<String> values) {
+            addCriterion("data_type not in", values, "dataType");
+            return (Criteria) this;
+        }
+
+        public Criteria andDataTypeBetween(String value1, String value2) {
+            addCriterion("data_type between", value1, value2, "dataType");
+            return (Criteria) this;
+        }
+
+        public Criteria andDataTypeNotBetween(String value1, String value2) {
+            addCriterion("data_type not between", value1, value2, "dataType");
+            return (Criteria) this;
+        }
+
         public Criteria andNameLikeInsensitive(String value) {
             addCriterion("upper(`name`) like", value.toUpperCase(), "name");
             return (Criteria) this;
@@ -807,6 +877,11 @@ public class EntityBeanDal {
 
         public Criteria andPasswordLikeInsensitive(String value) {
             addCriterion("upper(`password`) like", value.toUpperCase(), "password");
+            return (Criteria) this;
+        }
+
+        public Criteria andDataTypeLikeInsensitive(String value) {
+            addCriterion("upper(data_type) like", value.toUpperCase(), "dataType");
             return (Criteria) this;
         }
     }
