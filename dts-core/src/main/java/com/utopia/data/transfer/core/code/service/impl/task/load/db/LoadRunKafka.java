@@ -16,21 +16,21 @@ import com.utopia.data.transfer.model.code.transfer.TransferEventDataTransaction
 import com.utopia.extension.UtopiaExtensionLoader;
 import com.utopia.extension.UtopiaSPIInject;
 import com.utopia.model.rsp.UtopiaErrorCodeClass;
-import com.utopia.module.template.queue.provider.api.UtopiaProviderByteArrayApi;
-import com.utopia.module.template.queue.provider.api.UtopiaProviderFactoryApi;
-import com.utopia.module.template.queue.provider.api.UtopiaResult;
-import com.utopia.module.template.queue.provider.kafka.UtopiaProviderKafkaConf;
 import com.utopia.serialization.api.SerializationApi;
 import groovy.lang.Closure;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.support.DefaultListableBeanFactory;
-import org.springframework.beans.factory.support.RootBeanDefinition;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.RecordMetadata;
+import org.h2.util.NetUtils;
+import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
-import java.util.function.Supplier;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author owen.cai
@@ -44,11 +44,11 @@ public class LoadRunKafka implements LoadRun {
     private static String KAFKA_BYTEARRAY_TEMPLATE = "kafkaTemplateByteArray";
 
     @UtopiaSPIInject
-    private DefaultListableBeanFactory beanDefinitionRegistry;
+    private KafkaProperties kafkaProperties;
 
     @Override
     public LoadRunItem createItem(Pipeline pipeline, EntityDesc sourceEntityDesc, EntityDesc targetEntityDesc) {
-        return new LoadRunKafkaItem(pipeline, sourceEntityDesc, targetEntityDesc, beanDefinitionRegistry);
+        return new LoadRunKafkaItem(pipeline, sourceEntityDesc, targetEntityDesc, kafkaProperties);
     }
 
     public static class LoadRunKafkaItem implements LoadRunItem{
@@ -56,14 +56,17 @@ public class LoadRunKafka implements LoadRun {
         private final Pipeline pipeline;
         private final EntityDesc sourceEntityDesc;
         private final EntityDesc targetEntityDesc;
+        private final KafkaProperties kafkaProperties;
 
+        private String topic;
         private SerializationApi serializationApi;
-        private UtopiaProviderByteArrayApi utopiaProviderByteArrayApi;
+        private KafkaProducer<String, byte[]> producer;
 
-        public LoadRunKafkaItem(Pipeline pipeline, EntityDesc sourceEntityDesc, EntityDesc targetEntityDesc, DefaultListableBeanFactory beanDefinitionRegistry) {
+        public LoadRunKafkaItem(Pipeline pipeline, EntityDesc sourceEntityDesc, EntityDesc targetEntityDesc, KafkaProperties kafkaProperties) {
             this.pipeline = pipeline;
             this.sourceEntityDesc = sourceEntityDesc;
             this.targetEntityDesc = targetEntityDesc;
+            this.kafkaProperties = kafkaProperties;
 
             KafkaProperty kafkaParam = targetEntityDesc.getParams().toJavaObject(KafkaProperty.class);
             this.serializationApi = UtopiaExtensionLoader.getExtensionLoader(SerializationApi.class).getExtension(kafkaParam.getSerialization());
@@ -71,24 +74,11 @@ public class LoadRunKafka implements LoadRun {
                 log.error("no find serializationApi {}", kafkaParam.getSerialization());
                 throw new ServiceException(ErrorCode.LOAD_NO_SERIALIZATION);
             }
-            //手动创建kafka的provider
-            UtopiaProviderFactoryApi kafka = UtopiaExtensionLoader.getExtensionLoader(UtopiaProviderFactoryApi.class).getExtension("kafka");
 
-            UtopiaProviderKafkaConf kafkaConf = new UtopiaProviderKafkaConf();
-            kafkaConf.setByteArray(true);
-            kafkaConf.setKafkaTemplateInjectName(KAFKA_BYTEARRAY_TEMPLATE);
-            kafkaConf.setProviderTopic(kafkaParam.getTopic());
-
-            String keyName = String.format("loadRunKafkaItem_Template_%d", pipeline.getId());
-            Supplier<UtopiaProviderByteArrayApi> supplier = () -> kafka.createProviderByteArray((JSONObject) JSON.toJSON(kafkaConf));
-            RootBeanDefinition bean = new RootBeanDefinition(UtopiaProviderByteArrayApi.class, supplier);
-            beanDefinitionRegistry.registerBeanDefinition(keyName, bean);
-
-            utopiaProviderByteArrayApi = (UtopiaProviderByteArrayApi) beanDefinitionRegistry.getBean(keyName);
-            if(Objects.isNull(utopiaProviderByteArrayApi)){
-                log.error("utopiaProviderByteArrayApi topic {}", kafkaParam.getTopic());
-                throw new ServiceException(ErrorCode.LOAD_NO_KAFKA);
-            }
+            this.topic = kafkaParam.getTopic();
+            Map<String, Object> props = this.kafkaProperties.buildProducerProperties();
+            props.put("client.id", String.format("dts_%d", this.pipeline.getId(), NetUtils.getLocalAddress()));
+            this.producer = new KafkaProducer(props);
         }
 
         @Override
@@ -101,11 +91,10 @@ public class LoadRunKafka implements LoadRun {
         public UtopiaErrorCodeClass loadInner(Message<EventDataTransaction> message) {
             //目前只支持单topic，单分区
             try{
-                UtopiaResult utopiaResult = utopiaProviderByteArrayApi.put(null, this.serializationApi.writeOnce(message)).get();
-                if(utopiaResult.equals(UtopiaResult.Succ)){
-                    return ErrorCode.CODE_SUCCESS;
-                }
-                return ErrorCode.LOAD_KAFKA_PUT_FAIL;
+                ProducerRecord<String, byte[]> record = new ProducerRecord(this.topic, this.serializationApi.writeOnce(message));
+                //最多5s
+                RecordMetadata recordMetadata = this.producer.send(record).get(5000, TimeUnit.SECONDS);
+                return ErrorCode.CODE_SUCCESS;
             } catch (Throwable e) {
                 log.error("kafka put error", e);
             }
@@ -114,7 +103,7 @@ public class LoadRunKafka implements LoadRun {
 
         @Override
         public void close() {
-            utopiaProviderByteArrayApi.close();
+            producer.close();
         }
 
         private static final GroovyShell SHELL = new GroovyShell();

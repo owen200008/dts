@@ -11,6 +11,7 @@ import com.utopia.data.transfer.core.code.src.dialect.DbDialectFactory;
 import com.utopia.data.transfer.core.code.src.dialect.impl.mysql.MysqlDialect;
 import com.utopia.data.transfer.core.code.utils.SqlUtils;
 import com.utopia.data.transfer.model.code.data.media.DataMediaRulePair;
+import com.utopia.data.transfer.model.code.data.media.DataMediaType;
 import com.utopia.data.transfer.model.code.entity.EntityDesc;
 import com.utopia.data.transfer.model.code.entity.EventColumn;
 import com.utopia.data.transfer.model.code.pipeline.Pipeline;
@@ -90,7 +91,13 @@ public class LoadRunDB implements LoadRun {
                 case MYSQL:
                     return loadDb(message);
                 case KAFKA:{
-                    switch(sourceEntityDesc.getDataType()){
+                    DataMediaType dataType = pipeline.getDataType();
+
+                    if(Objects.isNull(dataType)) {
+                        //默认是mysql
+                        dataType = DataMediaType.MYSQL;
+                    }
+                    switch(dataType) {
                         case MYSQL:
                             return loadDb(message);
                     }

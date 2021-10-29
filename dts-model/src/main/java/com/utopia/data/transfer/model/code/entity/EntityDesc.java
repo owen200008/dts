@@ -27,10 +27,6 @@ public class EntityDesc implements Serializable {
      * 实体类型
      */
     private DataMediaType       type;
-    /**
-     * 如果type为kafka的话，需要通过dataType来确定数据类型
-     */
-    private DataMediaType       dataType;
 
     /**
      * 编码方式

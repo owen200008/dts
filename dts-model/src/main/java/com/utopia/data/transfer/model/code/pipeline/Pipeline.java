@@ -2,6 +2,7 @@ package com.utopia.data.transfer.model.code.pipeline;
 
 import com.utopia.data.transfer.model.code.bean.StageType;
 import com.utopia.data.transfer.model.code.data.media.DataMediaRulePair;
+import com.utopia.data.transfer.model.code.data.media.DataMediaType;
 import com.utopia.data.transfer.model.code.data.media.SyncRuleTarget;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,6 +33,11 @@ public class Pipeline implements Serializable {
     private Long sourceEntityId;
     private Long targetEntityId;
     private SyncRuleTarget syncRuleTarget;
+
+    /**
+     * 如果type为kafka的话，需要通过dataType来确定数据类型
+     */
+    private DataMediaType dataType;
 
     private PipelineParameter params;
 
