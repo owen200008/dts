@@ -20,6 +20,7 @@ import com.utopia.data.transfer.model.archetype.ServiceException;
 import com.utopia.data.transfer.model.archetype.ErrorCode;
 import com.utopia.data.transfer.core.code.base.config.DTSConstants;
 import com.utopia.data.transfer.core.code.model.EventDataTransaction;
+import com.utopia.data.transfer.model.code.entity.CanalSupport;
 import com.utopia.data.transfer.model.code.entity.EntityDesc;
 import com.utopia.data.transfer.model.code.pipeline.Pipeline;
 import com.utopia.data.transfer.core.code.model.Message;
@@ -92,6 +93,9 @@ public class CanalEmbedSelector {
     public void start(){
         if (running) {
             return;
+        }
+        if(!(source instanceof CanalSupport)){
+            throw new ServiceException(ErrorCode.SOURCE_TYPE_ERROR);
         }
         this.filter = CanalFilterSupport.makeFilterExpression(pipeline);
 
@@ -173,13 +177,13 @@ public class CanalEmbedSelector {
         //使用zk
         canalParameter.setMetaMode(CanalParameter.MetaMode.ZOOKEEPER);
 
-        ConnectionUrlParser connectionUrlParser = ConnectionUrlParser.parseConnectionString(entityDesc.getUrl());
+        ConnectionUrlParser connectionUrlParser = ConnectionUrlParser.parseConnectionString(((CanalSupport)entityDesc).getUrl());
         List<CanalParameter.DataSourcing> collect = connectionUrlParser.getHosts().stream()
                 .map(item -> new CanalParameter.DataSourcing(CanalParameter.SourcingType.MYSQL, new InetSocketAddress(item.getHost(), item.getPort())))
                 .collect(Collectors.toList());
         canalParameter.setGroupDbAddresses(Arrays.asList(collect));
-        canalParameter.setDbUsername(entityDesc.getUsername());
-        canalParameter.setDbPassword(entityDesc.getPassword());
+        canalParameter.setDbUsername(((CanalSupport)entityDesc).getUsername());
+        canalParameter.setDbPassword(((CanalSupport)entityDesc).getPassword());
 
         //索引模式
         canalParameter.setIndexMode(CanalParameter.IndexMode.META);

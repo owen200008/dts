@@ -164,13 +164,8 @@ public class DataChangedListenerImpl implements DataChangedListener, Initializin
                 ret.setId(item.getId());
                 ret.setName(item.getName());
                 ret.setType(DataMediaType.valueOf(item.getType()));
-                ret.setEncode(item.getEncode());
                 ret.setCreateTime(item.getCreateTime());
                 ret.setModifyTime(item.getModifyTime());
-                ret.setUrl(item.getUrl());
-                ret.setUsername(item.getUsername());
-                ret.setPassword(item.getPassword());
-                ret.setDriver(item.getDriver());
                 ret.setParams((JSON.parseObject(item.getProperty())));
                 return ret;
             }).collect(Collectors.toList());

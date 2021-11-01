@@ -1,8 +1,8 @@
 package com.utopia.data.transfer.core.code.service.impl.task.load.db;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Joiner;
+import com.utopia.data.transfer.core.code.kafka.KafkaConfig;
 import com.utopia.data.transfer.core.code.model.EventDataTransaction;
 import com.utopia.data.transfer.core.code.model.Message;
 import com.utopia.data.transfer.core.code.service.impl.task.load.LoadRun;
@@ -23,12 +23,8 @@ import groovy.lang.Script;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.clients.producer.RecordMetadata;
-import org.h2.util.NetUtils;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
-
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -40,9 +36,6 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 public class LoadRunKafka implements LoadRun {
-
-    private static String KAFKA_BYTEARRAY_TEMPLATE = "kafkaTemplateByteArray";
-
     @UtopiaSPIInject
     private KafkaProperties kafkaProperties;
 
@@ -76,9 +69,8 @@ public class LoadRunKafka implements LoadRun {
             }
 
             this.topic = kafkaParam.getTopic();
-            Map<String, Object> props = this.kafkaProperties.buildProducerProperties();
-            props.put("client.id", String.format("dts_%d", this.pipeline.getId(), NetUtils.getLocalAddress()));
-            this.producer = new KafkaProducer(props);
+            //Map<String, Object> props = this.kafkaProperties.buildProducerProperties();
+            this.producer = new KafkaProducer(KafkaConfig.buildProducerProperties(kafkaParam, pipeline));
         }
 
         @Override
@@ -93,7 +85,7 @@ public class LoadRunKafka implements LoadRun {
             try{
                 ProducerRecord<String, byte[]> record = new ProducerRecord(this.topic, this.serializationApi.writeOnce(message));
                 //最多5s
-                RecordMetadata recordMetadata = this.producer.send(record).get(5000, TimeUnit.SECONDS);
+                this.producer.send(record).get(5000, TimeUnit.SECONDS);
                 return ErrorCode.CODE_SUCCESS;
             } catch (Throwable e) {
                 log.error("kafka put error", e);

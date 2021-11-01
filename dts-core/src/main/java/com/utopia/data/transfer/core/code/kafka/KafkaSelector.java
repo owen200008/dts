@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Properties;
 
 /**
  * @author owen.cai
@@ -71,12 +70,8 @@ public class KafkaSelector {
             throw new ServiceException(ErrorCode.SELECT_NO_SERIALIZATION);
         }
 
-        Map<String, Object> props = kafkaProperties.buildConsumerProperties();
-        props.put("group.id", String.valueOf(this.pipeline.getId()));
-        props.put("enable.auto.commit", "false");
-        props.put("auto.offset.reset","earliest");
-        props.put("client.id", String.format("dts_%d", this.pipeline.getId(), NetUtils.getLocalAddress()));
-        this.stringKafkaConsumer = new KafkaConsumer(props);
+        //Map<String, Object> props = kafkaProperties.buildConsumerProperties();
+        this.stringKafkaConsumer = new KafkaConsumer(KafkaConfig.buildConsumerProperties(kafka, this.pipeline));
 
         stringKafkaConsumer.subscribe(Collections.singletonList(kafka.getTopic()));
         running = true;

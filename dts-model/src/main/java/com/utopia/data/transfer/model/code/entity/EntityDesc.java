@@ -29,11 +29,6 @@ public class EntityDesc implements Serializable {
     private DataMediaType       type;
 
     /**
-     * 编码方式
-     */
-    private String              encode;
-
-    /**
      * 创建时间
      */
     private LocalDateTime       createTime;
@@ -42,14 +37,6 @@ public class EntityDesc implements Serializable {
      * 修改时间
      */
     private LocalDateTime       modifyTime;
-
-    /**
-     * db的配置
-     */
-    private String              url;
-    private String              username;
-    private String              password;
-    private String              driver;
 
     private JSONObject          params;
 }

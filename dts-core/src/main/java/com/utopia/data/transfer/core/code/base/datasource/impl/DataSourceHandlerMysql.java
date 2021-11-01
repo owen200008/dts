@@ -58,10 +58,10 @@ public class DataSourceHandlerMysql implements DataSourceHandler {
         dbcpDs.setMinEvictableIdleTimeMillis(mysql.getMinEvictableIdleTimeMillis());
 
         // 动态的参数
-        dbcpDs.setDriverClassName(entityDesc.getDriver());
-        dbcpDs.setUrl(entityDesc.getUrl());
-        dbcpDs.setUsername(entityDesc.getUsername());
-        dbcpDs.setPassword(entityDesc.getPassword());
+        dbcpDs.setDriverClassName(mysql.getDriver());
+        dbcpDs.setUrl(mysql.getUrl());
+        dbcpDs.setUsername(mysql.getUsername());
+        dbcpDs.setPassword(mysql.getPassword());
 
         // open the batch mode for mysql since 5.1.8
         dbcpDs.addConnectionProperty("useServerPrepStmts", "false");
@@ -74,12 +74,12 @@ public class DataSourceHandlerMysql implements DataSourceHandler {
         dbcpDs.addConnectionProperty("noDatetimeStringSync", "true");
         // 允许sqlMode为非严格模式
         dbcpDs.addConnectionProperty("jdbcCompliantTruncation", "false");
-        if (StringUtils.isNotEmpty(entityDesc.getEncode())) {
-            if (StringUtils.equalsIgnoreCase(entityDesc.getEncode(), "utf8mb4")) {
+        if (StringUtils.isNotEmpty(mysql.getEncode())) {
+            if (StringUtils.equalsIgnoreCase(mysql.getEncode(), "utf8mb4")) {
                 dbcpDs.addConnectionProperty("characterEncoding", "utf8");
                 dbcpDs.setConnectionInitSqls(Arrays.asList("set names utf8mb4"));
             } else {
-                dbcpDs.addConnectionProperty("characterEncoding", entityDesc.getEncode());
+                dbcpDs.addConnectionProperty("characterEncoding", mysql.getEncode());
             }
         }
         dbcpDs.setValidationQuery("select 1");

@@ -31,7 +31,7 @@ public class ErrorCode extends BaseErrorCode {
 
 
     public final static UtopiaErrorCodeClass CHILD_NEED_DELETE_FIRST = new UtopiaErrorCodeClass(24201, "this not first delete");
-    public final static UtopiaErrorCodeClass JSON_PARSE_ERROR = new UtopiaErrorCodeClass(24202, "");
+    public final static UtopiaErrorCodeClass SOURCE_TYPE_ERROR = new UtopiaErrorCodeClass(24202, "");
     public final static UtopiaErrorCodeClass SOURCE_DATAMEDIA_NO_FIND = new UtopiaErrorCodeClass(24203, "");
     public final static UtopiaErrorCodeClass TARGET_DATAMEDIA_NO_FIND = new UtopiaErrorCodeClass(24204, "");
 
