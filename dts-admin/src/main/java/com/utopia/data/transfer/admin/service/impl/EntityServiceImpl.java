@@ -72,7 +72,7 @@ public class EntityServiceImpl implements EntityService {
         EntityBeanDal entityBeanDal = new EntityBeanDal();
         EntityBeanDal.Criteria criteria = entityBeanDal.createCriteria();
         criteria.andIdEqualTo(id);
-        List<EntityBean> entityBeans = entityBeanMapper.selectByExample(entityBeanDal);
+        List<EntityBean> entityBeans = entityBeanMapper.selectByExampleWithBLOBs(entityBeanDal);
         if (CollectionUtils.isEmpty(entityBeans)){
             return null;
         }
@@ -101,14 +101,14 @@ public class EntityServiceImpl implements EntityService {
         if(UtopiaStringUtil.isNotBlank(queryEntityVo.getType())){
             criteria.andTypeEqualTo(queryEntityVo.getType());
         }
-        List<EntityBean> entityBeans = entityBeanMapper.selectByExample(entityBeanDal);
+        List<EntityBean> entityBeans = entityBeanMapper.selectByExampleWithBLOBs(entityBeanDal);
         PageRes<List<EntityBean>> pageRes = PageRes.getPage(page.getTotal(), page.getPageSize(), entityBeans);
         return pageRes;
     }
 
     @Override
     public List<EntityBean> getAll() {
-        return entityBeanMapper.selectByExample(new EntityBeanDal());
+        return entityBeanMapper.selectByExampleWithBLOBs(new EntityBeanDal());
     }
 
     @Override

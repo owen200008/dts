@@ -23,21 +23,5 @@ public class EntityAddVo {
     @NotNull
     private String type;
 
-    private String encode;
-
-    @NotNull
-    private String url;
-    @NotNull
-    private String driver;
-    @NotNull
-    private String username;
-    @NotNull
-    private String password;
-
     private String property;
-
-    /**
-     *当为Kafka时 需要指定数据类型
-      */
-    private String dataType;
 }
