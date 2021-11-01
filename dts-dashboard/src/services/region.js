@@ -48,8 +48,10 @@ export async function listItems(params) {
   });
 }
 
-export async function listMode(params) {
-  return request(`${baseUrl}/dts/region/mode`, {
+
+
+export async function listNacos(params) {
+  return request(`${baseUrl}/dts/region/nacos`, {
     method: `POST`,
     body: {
       ...params

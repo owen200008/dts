@@ -6,7 +6,6 @@ import {
   getItem,
   updateItem,
   listItems,
-  listTypes,
   getProperty,
 } from "../services/dataSource";
 
@@ -14,7 +13,6 @@ export default {
   namespace: "dataSource",
 
   state: {
-    typeList: [],
     dataList: [],
     total: 0
   },
@@ -41,18 +39,7 @@ export default {
         });
       }
     },
-    * fetchType(params, { call, put }) {
-      const { payload } = params;
-      const json = yield call(listTypes, payload);
-      if (json.code === 200) {
-        yield put({
-          type: "saveTypeList",
-          payload: {
-            dataList: json.data || []
-          }
-        });
-      }
-    },
+    
 
     * fetchProperty(params, { call }) {
       const { payload, callback } = params;
@@ -118,12 +105,7 @@ export default {
         total: payload.total
       };
     },
-    saveTypeList(state, { payload }) {
-      return {
-        ...state,
-        typeList: payload.dataList,
-      };
-    },
+   
     updataItem(state, { payload }) {
       let dataList = state.dataList;
       dataList = dataList.map((item) => {

@@ -3,6 +3,14 @@ import request from "../utils/request";
 
 const baseUrl = document.getElementById("httpPath").innerHTML;
 
+/* 查询所有常量 */
+export async function queryPlatform() {
+  return request(`${baseUrl}/enum`, {
+    method: `GET`
+  });
+}
+
+
 /* 添加用户 */
 export async function addUser(params) {
   return request(`${baseUrl}/dashboardUser`, {

@@ -4,8 +4,9 @@ import { connect } from "dva";
 import AddModal from "./AddModal";
 
 const { Option } = Select;
-@connect(({ dataSource, loading }) => ({
+@connect(({ dataSource, global, loading }) => ({
   dataSource,
+  platform: global.platform,
   loading: loading.effects["dataSource/fetch"],
 }))
 export default class DataSource extends PureComponent {
@@ -23,11 +24,8 @@ export default class DataSource extends PureComponent {
   }
 
   componentWillMount() {
-    const { dispatch } = this.props;
     const { currentPage } = this.state;
-    dispatch({
-      type: 'dataSource/fetchType'
-    });
+
     this.listItems(currentPage);
   }
 
@@ -173,10 +171,10 @@ export default class DataSource extends PureComponent {
 
   render() {
 
-    const { dataSource, loading } = this.props;
-    const { dataList, total, typeList } = dataSource;
+    const { dataSource, loading, platform = {} } = this.props;
+    const { dataList, total, } = dataSource;
     const { currentPage, name, type, popup } = this.state;
-
+    const { entityType = [] } = platform;
     const tableColumns = [
       {
         align: "center",
@@ -190,18 +188,19 @@ export default class DataSource extends PureComponent {
         dataIndex: "type",
         key: "type",
       },
+      /*
       {
         align: "center",
         title: "编码",
         dataIndex: "encode",
         key: "encode",
       },
-      /* {
+       {
         align: "center",
         title: "slaveId",
         dataIndex: "slaveId",
         key: "slaveId",
-      }, */
+      }, 
       {
         align: "center",
         title: "jdbcUrl",
@@ -225,7 +224,7 @@ export default class DataSource extends PureComponent {
         title: "密码",
         dataIndex: "password",
         key: "password",
-      },
+      }, */
       {
         align: "center",
         title: "属性",
@@ -292,10 +291,10 @@ export default class DataSource extends PureComponent {
                 onChange={this.searchOnSelectchange.bind(this, 'type')}
                 placeholder="请选择数据类型"
               >
-                {typeList.map((item, index) => {
+                {entityType.map((item, index) => {
                   return (
-                    <Option key={index} value={item}>
-                      {item}
+                    <Option key={index} value={item.code}>
+                      {item.name}
                     </Option>
                   );
                 })}

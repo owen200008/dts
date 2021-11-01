@@ -6,9 +6,9 @@ import AddRegionModal from "../region/AddModal";
 const { Option } = Select;
 const FormItem = Form.Item;
 
-@connect(({ pipeline, region }) => ({
+@connect(({ pipeline, region, global }) => ({
   pipelineList: pipeline.dataList,
-  modeList: region.modeList,
+  platform: global.platform,
   regionList: region.dataList
 }))
 class AddModal extends PureComponent {
@@ -85,10 +85,10 @@ class AddModal extends PureComponent {
   }
 
   render() {
-    let { regionList, modeList, pipelineList, handleCancel, form, mode, pipelineId } = this.props;
+    let { regionList, platform, pipelineList, handleCancel, form, mode, pipelineId } = this.props;
 
     let { regionId, popup } = this.state;
-
+    const { stageType: modeList } = platform;
     const { getFieldDecorator } = form;
 
     const formItemLayout = {
@@ -164,8 +164,8 @@ class AddModal extends PureComponent {
               <Select>
                 {modeList.map((item, index) => {
                   return (
-                    <Option key={index} value={item}>
-                      {item}
+                    <Option key={index} value={item.code}>
+                      {item.name}
                     </Option>
                   );
                 })}

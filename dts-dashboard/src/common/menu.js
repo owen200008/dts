@@ -73,6 +73,9 @@ const menuData = [
       {
         name: 'Region管理',
         path: 'region',
+      }, {
+        name: 'region实例管理',
+        path: 'nacos',
       },
       {
         name: 'Region映射管理',
@@ -91,7 +94,7 @@ const menuData = [
       }, {
         name: '同步规则管理',
         path: 'sync',
-      },
+      }
     ],
   },
 ];

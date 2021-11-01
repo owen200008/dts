@@ -48,14 +48,6 @@ export async function listItems(params) {
   });
 }
 
-export async function listTypes(params) {
-  return request(`${baseUrl}/dts/syncRule/type`, {
-    method: `POST`,
-    body: {
-      ...params
-    }
-  });
-}
 
 export async function listItemsById(params) {
   return request(`${baseUrl}/dts/syncRule/get/pipelineId`, {

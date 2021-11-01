@@ -6,16 +6,15 @@ import {
   getItem,
   listItems,
   updateItem,
-  listMode
+  listNacos
 } from "../services/region";
 
-import * as pipeline from '../services/pipeline';
 
 export default {
   namespace: "region",
 
   state: {
-    modeList: [],
+    nacosList: [],
     dataList: [],
     total: 0
   },
@@ -42,14 +41,23 @@ export default {
         });
       }
     },
-    * fetchMode(params, { call, put }) {
+    * fetchNacos(params, { call, put }) {
       const { payload, } = params;
-      const json = yield call(listMode, payload);
+      const json = yield call(listNacos, payload);
       if (json.code === 200) {
+        let data = json.data || {};
+        let dataList = Object.keys(data).reduce((pv, cv) => {
+          let list = data[cv] || [];
+          if (list?.length) {
+            pv = pv.concat(list.map(item => ({ ...item, region: cv, key: Math.random() })))
+          }
+          return pv;
+        }, []);
+
         yield put({
-          type: "saveModeList",
+          type: "saveNacosList",
           payload: {
-            dataList: json.data || []
+            dataList
           }
         });
       }
@@ -115,10 +123,11 @@ export default {
         total: payload.total
       };
     },
-    saveModeList(state, { payload }) {
+   
+    saveNacosList(state, { payload }) {
       return {
         ...state,
-        modeList: payload.dataList,
+        nacosList: payload.dataList,
       };
     },
     updataItem(state, { payload }) {

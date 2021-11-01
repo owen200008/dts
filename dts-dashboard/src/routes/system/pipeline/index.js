@@ -181,6 +181,10 @@ export default class Pipeline extends PureComponent {
     });
   };
 
+  toRegionNacos = (item) => {
+    window.open(`#/system/nacos?regionId=${item.regionId}`, '_blank');
+  };
+
   addRegion = (item) => {
     window.open(`#/system/regionPipe?pipelineId=${item.id}&taskId=${item.taskId}`, '_blank');
   };
@@ -301,7 +305,17 @@ export default class Pipeline extends PureComponent {
                 column={2}
               >
                 {
-                  region.map(item => <Descriptions.Item label={item.mode} key={item.id}>{item.region}</Descriptions.Item>)
+                  region.map(item => (
+                    <Descriptions.Item label={item.mode} key={item.id}>
+                      {item.region}
+                      <Icon
+                        title='运行实例'
+                        type="api"
+                        style={{ color: 'orange' }}
+                        onClick={this.toRegionNacos.bind(this, item)}
+                      />
+                    </Descriptions.Item>
+                  ))
                 }
               </Descriptions>
             )

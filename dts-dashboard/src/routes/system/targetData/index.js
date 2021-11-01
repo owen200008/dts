@@ -2,7 +2,7 @@ import React, { PureComponent } from "react";
 import { Table, Input, Button, Popconfirm, Icon, Col, Row, Breadcrumb, Switch } from "antd";
 import { connect } from "dva";
 
-import AddModal from "../sourceData/AddModal";
+import AddModal from "./AddModal";
 
 @connect(({ targetData, loading }) => ({
   targetData,
@@ -171,6 +171,12 @@ export default class TargetData extends PureComponent {
         title: "数据表名",
         dataIndex: "table",
         key: "table",
+      },
+      {
+        align: "center",
+        title: "同步规则",
+        dataIndex: "suncRule",
+        key: "suncRule",
       },
 
       {

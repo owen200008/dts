@@ -5,13 +5,16 @@ import {
   deleteItem,
   getItem,
   listItems,
-  updateItem
+  updateItem,
+  dispatchRule,
+  defaultParams
 } from "../services/pipeline";
 
 export default {
   namespace: "pipeline",
 
   state: {
+    ruleList: [],
     dataList: [],
     total: 0
   },
@@ -38,9 +41,28 @@ export default {
         });
       }
     },
+    * fetchRule(params, { call, put }) {
+      const { payload } = params;
+      const json = yield call(dispatchRule, payload);
+      if (json.code === 200) {
+        yield put({
+          type: "saveRuleList",
+          payload: {
+            dataList: json.data || []
+          }
+        });
+      }
+    },
     * fetchItem(params, { call }) {
       const { payload, callback } = params;
       const json = yield call(getItem, payload);
+      if (json.code === 200) {
+        callback(json.data);
+      }
+    },
+    * defaultParams(params, { call }) {
+      const { payload, callback } = params;
+      const json = yield call(defaultParams, payload);
       if (json.code === 200) {
         callback(json.data);
       }
@@ -96,6 +118,12 @@ export default {
         ...state,
         dataList: payload.dataList,
         total: payload.total
+      };
+    },
+    saveRuleList(state, { payload }) {
+      return {
+        ...state,
+        ruleList: payload.dataList,
       };
     },
     updateItem(state, { payload }) {

@@ -141,7 +141,9 @@ export default class Region extends PureComponent {
 
 
 
-
+  toRegionNacos = (item) => {
+    window.open(`#/system/nacos?regionId=${item.id}`, '_blank');
+  };
 
   render() {
 
@@ -172,9 +174,17 @@ export default class Region extends PureComponent {
           return (
             <div>
               <Icon
+                title='运行实例'
+                type="api"
+                style={{ color: 'brown' }}
+                onClick={() => {
+                  this.toRegionNacos(record);
+                }}
+              />
+              <Icon
                 title='编辑'
                 type="edit"
-                style={{ color: 'orange' }}
+                style={{ marginLeft: 20, color: 'orange' }}
                 onClick={() => {
                   this.editClick(record);
                 }}

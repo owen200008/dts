@@ -1,5 +1,5 @@
-import { message } from "antd";
-import { queryPlatform, getAllPlugins, asyncOnePlugin } from "../services/api";
+
+import { queryPlatform } from "../services/api";
 
 export default {
   namespace: "global",
@@ -21,34 +21,6 @@ export default {
         });
       }
     },
-    *fetchPlugins({ payload }, { call, put }) {
-      const { callback } = payload;
-      const params = {
-        currentPage: 1,
-        pageSize: 50
-      };
-      const json = yield call(getAllPlugins, params);
-      if (json.code === 200) {
-        let { dataList } = json.data;
-
-        callback(dataList)
-        yield put({
-          type: "savePlugins",
-          payload: {
-            dataList
-          }
-        });
-      }
-    },
-    *asyncPlugin(params, { call }) {
-      const { payload } = params;
-      const json = yield call(asyncOnePlugin, payload);
-      if (json.code === 200) {
-        message.success("同步成功");
-      } else {
-        message.warn(json.msg || json.data);
-      }
-    }
   },
 
   reducers: {

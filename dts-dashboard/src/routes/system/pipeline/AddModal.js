@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 import React, { PureComponent, Fragment } from "react";
 import { Modal, Form, Switch, Input, Select, Divider, Button } from "antd";
 import { connect } from "dva";
@@ -21,16 +22,37 @@ const FormItem = Form.Item;
 class AddModal extends PureComponent {
   constructor(props) {
     super(props);
-    const { sourceEntityId, targetEntityId } = props;
+    const { sourceEntityId, targetEntityId, pipelineParams, dispatch } = props;
     this.state = {
       popup: null,
       sourceEntityId,
-      targetEntityId
+      targetEntityId,
+      pipelineParams,
+    }
+
+    if (pipelineParams === null || pipelineParams === undefined) {
+
+      dispatch({
+        type: "pipeline/defaultParams",
+        payload: {
+          pageNum: 1,
+          pageSize: 10000
+        },
+        callback: (resp) => {
+          const val = formatJSON(JSON.stringify(resp));
+          if (this.editor) {
+            this.editor.setValue(val);
+          } else {
+            this.setState({ pipelineParams: val });
+          }
+        }
+      })
     }
   }
 
   componentDidMount() {
     const { dispatch } = this.props;
+
     dispatch({
       type: "dataSource/fetch",
       payload: {
@@ -38,11 +60,17 @@ class AddModal extends PureComponent {
         pageSize: 10000
       }
     });
-    setTimeout(this.initAceEditor, 100);
+    setTimeout(() => {
+      this.initAceEditor();
+      // this.initSelectAceEditor();
+      // this.initLoadAceEditor();
+    }, 100);
   }
 
   componentWillUnmount() {
     this.destroyEditor();
+    // this.destroySelectEditor();
+    // this.destroyLoadEditor();
   }
 
   handleSubmit = e => {
@@ -50,15 +78,27 @@ class AddModal extends PureComponent {
     e.preventDefault();
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        let pipelineParams = this.jsonEncode(this.configEditor);
-        let { name, taskId, sourceEntityId, targetEntityId } = values;
+        let pipelineParams = this.jsonEncode('editor');
+        // let selectParam = this.jsonEncode('selectEditor');
+        // let loadParam = this.jsonEncode('loadEditor');
+        let { name, taskId, sourceEntityId, targetEntityId, /* fullDistribute, dispatchRuleType */ } = values;
         try {
           pipelineParams && JSON.parse(pipelineParams);
         } catch (ex) {
-          return alert('请输入正确配置');
+          return alert('请输入正确通道配置');
         }
+        /* try {
+          selectParam && JSON.parse(selectParam);
+        } catch (ex) {
+          return alert('请输入正确Select配置');
+        }
+        try {
+          loadParam && JSON.parse(loadParam);
+        } catch (ex) {
+          return alert('请输入正确LOad配置');
+        } */
 
-        handleOk({ id, name, taskId, sourceEntityId, targetEntityId, pipelineParams });
+        handleOk({ id, name, taskId, sourceEntityId, targetEntityId, pipelineParams, /* fullDistribute, dispatchRuleType, selectParam, loadParam */ });
       }
     });
   };
@@ -71,6 +111,22 @@ class AddModal extends PureComponent {
     this.editor.session.setMode(new JsMode());
   }
 
+  /* initSelectAceEditor = () => {
+    this.destroySelectEditor();
+    this.selectEditor = ace.edit(this.refs.selectEditor);
+    this.selectEditor.setTheme('ace/theme/xcode');
+    let JsMode = ace.require('ace/mode/json').Mode;
+    this.selectEditor.session.setMode(new JsMode());
+  }
+
+  initLoadAceEditor = () => {
+    this.destroyLoadEditor();
+    this.loadEditor = ace.edit(this.refs.loadEditor);
+    this.loadEditor.setTheme('ace/theme/xcode');
+    let JsMode = ace.require('ace/mode/json').Mode;
+    this.loadEditor.session.setMode(new JsMode());
+  } */
+
   destroyEditor = () => {
     if (this.editor) {
       this.editor.destroy();
@@ -79,8 +135,24 @@ class AddModal extends PureComponent {
     }
   }
 
-  jsonEncode = () => {
-    let jsonDoc = this.editor.getValue();
+  /* destroyLoadEditor = () => {
+    if (this.loadEditor) {
+      this.loadEditor.destroy();
+      this.loadEditor.container.remove();
+      this.loadEditor = null;
+    }
+  }
+
+  destroySelectEditor = () => {
+    if (this.selectEditor) {
+      this.selectEditor.destroy();
+      this.selectEditor.container.remove();
+      this.selectEditor = null;
+    }
+  } */
+
+  jsonEncode = (editor = 'editor') => {
+    let jsonDoc = this[editor].getValue();
     jsonDoc = formatJSON(jsonDoc, true);
     return jsonDoc;
   }
@@ -125,8 +197,8 @@ class AddModal extends PureComponent {
   }
 
   render() {
-    let { taskList, dataSourceList, handleCancel, form, name, taskId, pipelineParams } = this.props;
-    let { sourceEntityId, targetEntityId, popup } = this.state;
+    let { taskList, dataSourceList, handleCancel, form, name, taskId, } = this.props;
+    let { sourceEntityId, targetEntityId, popup, pipelineParams } = this.state;
 
 
     const { getFieldDecorator } = form;
@@ -225,30 +297,37 @@ class AddModal extends PureComponent {
               添加
             </Button>
           </FormItem>
-          <FormItem label="参数" {...formItemLayout}>
-            <div style={{ width: '100%', height: '200px' }} ref="editor">{formatJSON(pipelineParams)}</div>
+          <FormItem label="通道参数" {...formItemLayout}>
+            <div style={{ width: '100%', height: '300px' }} ref="editor">{formatJSON(pipelineParams)}</div>
           </FormItem>
-          {/* <FormItem label="类型" {...formItemLayout}>
-            {getFieldDecorator("typePlugin", {
-              rules: [{required: true, message: "请选择类型"}],
-              initialValue: typePlugin// pluginTypeEnums[typePlugin].name
+          {/* <FormItem {...formItemLayout} label="全量分发">
+            {getFieldDecorator("fullDistribute", {
+              initialValue: fullDistribute,
+              rules: [{ required: true, }],
+              valuePropName: "checked"
+            })(<Switch />)}
+          </FormItem>
+          <FormItem {...formItemLayout} label="分发规则	">
+            {getFieldDecorator("dispatchRuleType", {
+              rules: [{ required: true, message: "请选择分发规则" }],
+              initialValue: dispatchRuleType
             })(
               <Select>
-                {pluginTypeEnums.map((item, index) => {
+                {ruleList.map((item, index) => {
                   return (
-                    <Option key={index} value={item.code}>
-                      {item.name}
+                    <Option key={index} value={item}>
+                      {item}
                     </Option>
                   );
                 })}
               </Select>
             )}
+              </FormItem> 
+          <FormItem label="Select参数" {...formItemLayout}>
+            <div style={{ width: '100%', height: '100px' }} ref="selectEditor">{formatJSON(selectParam)}</div>
           </FormItem>
-          <FormItem {...formItemLayout} label="是否开启">
-            {getFieldDecorator("isValid", {
-              initialValue: isValid === 1,
-              valuePropName: "checked"
-            })(<Switch/>)}
+          <FormItem label="Load参数" {...formItemLayout}>
+            <div style={{ width: '100%', height: '100px' }} ref="loadEditor">{formatJSON(loadParam)}</div>
           </FormItem> */}
         </Form>
         {popup}

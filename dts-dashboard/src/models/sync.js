@@ -15,7 +15,6 @@ export default {
   namespace: "sync",
 
   state: {
-    typeList: [],
     dataList: [],
     total: 0
   },
@@ -45,19 +44,7 @@ export default {
         });
       }
     },
-    * fetchType(params, { call, put }) {
-      const { payload } = params;
-      const json = yield call(listTypes, payload);
-      if (json.code === 200) {
-        yield put({
-          type: "saveTypeList",
-          payload: {
-            dataList: json.data || []
-          }
-        });
-      }
-    },
-
+   
     * fetchById(params, { call }) {
       const { payload, callback } = params;
       const json = yield call(listItemsById, payload);
@@ -122,12 +109,7 @@ export default {
         total: payload.total
       };
     },
-    saveTypeList(state, { payload }) {
-      return {
-        ...state,
-        typeList: payload.dataList,
-      };
-    },
+  
     updataItem(state, { payload }) {
       let dataList = state.dataList;
       dataList = dataList.map((item) => {

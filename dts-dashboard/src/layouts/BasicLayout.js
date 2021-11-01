@@ -101,10 +101,10 @@ class BasicLayout extends React.PureComponent {
       payload: {
         callback: () => { }
       }
-    }); 
+    });  */
     dispatch({
       type: "global/fetchPlatform"
-    }); */
+    });
   }
 
   getPageTitle() {

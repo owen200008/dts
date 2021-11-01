@@ -48,14 +48,7 @@ export async function listItems(params) {
   });
 }
 
-export async function listTypes(params) {
-  return request(`${baseUrl}/dts/entity/dataType`, {
-    method: `POST`,
-    body: {
-      ...params
-    }
-  });
-}
+
 
 export async function getProperty(params) {
   return request(`${baseUrl}/dts/entity/property`, {

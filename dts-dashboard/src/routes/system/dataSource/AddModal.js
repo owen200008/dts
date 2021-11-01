@@ -10,9 +10,8 @@ import { formatJSON } from "../../../utils/jsonUtil";
 const { Option } = Select;
 const FormItem = Form.Item;
 
-@connect(({ global, dataSource }) => ({
+@connect(({ global }) => ({
   platform: global.platform,
-  typeList: dataSource.typeList
 }))
 class AddModal extends PureComponent {
   constructor(props) {
@@ -33,7 +32,7 @@ class AddModal extends PureComponent {
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
 
-        let { name, type, encode, /* slaveId, */ url, driver, username, password } = values;
+        let { name, type, /* encode,  slaveId,  url, driver, username, password, dataType */ } = values;
         let property = this.jsonEncode(this.configEditor);
         try {
           property && JSON.parse(property);
@@ -41,7 +40,7 @@ class AddModal extends PureComponent {
           return alert('请输入正确配置');
         }
 
-        handleOk({ id, name, type, encode, /* slaveId, */ url, driver, username, password, property });
+        handleOk({ id, name, type, property,/* encode,  slaveId,  url, driver, username, password, dataType */ });
       }
     });
   };
@@ -90,10 +89,11 @@ class AddModal extends PureComponent {
   }
 
   render() {
-    let { typeList, handleCancel, form, name, type, encode, /* slaveId, */ url, driver, username, password, property } = this.props;
+    let { platform, handleCancel, form, name, type, property, /* encode,  slaveId,  url, driver, username, password, dataType */ } = this.props;
 
 
 
+    const { entityType = [] } = platform;
     const { getFieldDecorator } = form;
 
     const formItemLayout = {
@@ -136,17 +136,17 @@ class AddModal extends PureComponent {
               initialValue: type,
             })(
               <Select onChange={this.onTypeChange}>
-                {typeList.map((item, index) => {
+                {entityType.map((item, index) => {
                   return (
-                    <Option key={index} value={item}>
-                      {item}
+                    <Option key={index} value={item.code}>
+                      {item.name}
                     </Option>
                   );
                 })}
               </Select>
             )}
           </FormItem>
-          <FormItem label="数据编码格式" {...formItemLayout}>
+          {/* <FormItem label="数据编码格式" {...formItemLayout}>
             {getFieldDecorator("encode", {
               rules: [{ required: false, message: "请输入数据编码格式" }],
               initialValue: encode,
@@ -154,14 +154,14 @@ class AddModal extends PureComponent {
               <Input placeholder="请输入数据编码格式" />
             )}
           </FormItem>
-          {/* <FormItem label="slaveId" {...formItemLayout}>
+           <FormItem label="slaveId" {...formItemLayout}>
             {getFieldDecorator("slaveId", {
               rules: [{ required: true, message: "请输入slaveId" }],
               initialValue: slaveId,
             })(
               <Input placeholder="请输入slaveId" />
             )}
-            </FormItem> */}
+            </FormItem> 
           <FormItem label="JDBC URL" {...formItemLayout}>
             {getFieldDecorator("url", {
               rules: [{ required: true, message: "请输入jdbc url" }],
@@ -194,6 +194,7 @@ class AddModal extends PureComponent {
               <Input placeholder="请输入密码" />
             )}
           </FormItem>
+          */}
           <FormItem label="属性" {...formItemLayout}>
             <div style={{ width: '100%', height: '200px' }} ref="editor">{formatJSON(property)}</div>
           </FormItem>

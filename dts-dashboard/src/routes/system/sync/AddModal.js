@@ -5,18 +5,12 @@ import { connect } from "dva";
 const { Option } = Select;
 const FormItem = Form.Item;
 
-@connect(({ pipeline, sync }) => ({
+@connect(({ pipeline, global }) => ({
   pipelineList: pipeline.dataList,
-  typeList: sync.typeList
+  platform: global.platform
 }))
 class AddModal extends PureComponent {
-  constructor(props) {
-    super(props);
-    const { dispatch } = props;
-    dispatch({
-      type: 'sync/fetchType',
-    })
-  }
+
 
   handleSubmit = e => {
     let { form, handleOk, id } = this.props;
@@ -34,9 +28,9 @@ class AddModal extends PureComponent {
   filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
 
   render() {
-    let { typeList, pipelineList, handleCancel, form, pipelineId, syncRuleType, namespace, table, startGtid } = this.props;
+    let { platform, pipelineList, handleCancel, form, pipelineId, syncRuleType, namespace, table, startGtid } = this.props;
 
-
+    const { syncRule: typeList } = platform;
 
     const { getFieldDecorator } = form;
 
@@ -90,8 +84,8 @@ class AddModal extends PureComponent {
               <Select>
                 {typeList.map((item, index) => {
                   return (
-                    <Option key={index} value={item}>
-                      {item}
+                    <Option key={index} value={item.code}>
+                      {item.name}
                     </Option>
                   );
                 })}

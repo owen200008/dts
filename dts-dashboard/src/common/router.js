@@ -129,6 +129,9 @@ export const getRouterData = app => {
     '/system/targetData': {
       component: dynamicWrapper(app, ['targetData'], () => import('../routes/system/targetData')),
     },
+    '/system/nacos': {
+      component: dynamicWrapper(app, ['region'], () => import('../routes/system/nacos')),
+    },
     '/system/pair': {
       component: dynamicWrapper(app, ['pair', 'sourceData', 'targetData'], () => import('../routes/system/pair')),
     },

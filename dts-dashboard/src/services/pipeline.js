@@ -55,4 +55,22 @@ export async function listItems(params) {
   });
 }
 
+export async function dispatchRule(params) {
+  return request(`${baseUrl}/dts/pipeline/dispatchRule`, {
+    method: `POST`,
+    body: {
+      ...params
+    }
+  });
+}
+
+export async function defaultParams(params) {
+  return request(`${baseUrl}/dts/pipeline/defaultParams`, {
+    method: `POST`,
+    body: {
+      ...params
+    }
+  });
+}
+
 
