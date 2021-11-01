@@ -10,10 +10,6 @@
     <result column="target_entity_id" jdbcType="BIGINT" property="targetEntityId" />
     <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="dispatch_rule_type" jdbcType="VARCHAR" property="dispatchRuleType" />
-    <result column="full_distribute" jdbcType="BIT" property="fullDistribute" />
-    <result column="select_param" jdbcType="VARCHAR" property="selectParam" />
-    <result column="load_param" jdbcType="VARCHAR" property="loadParam" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.utopia.data.transfer.admin.dao.entity.PipelineBean">
     <result column="pipeline_params" jdbcType="LONGVARCHAR" property="pipelineParams" />
@@ -78,7 +74,7 @@
   </sql>
   <sql id="Base_Column_List">
     id, task_id, `name`, source_entity_id, data_type, target_entity_id, modify_time, 
-    create_time, dispatch_rule_type, full_distribute, select_param, load_param
+    create_time
   </sql>
   <sql id="Blob_Column_List">
     pipeline_params
@@ -129,14 +125,10 @@
     </selectKey>
     insert into u_pipeline (task_id, `name`, source_entity_id, 
       data_type, target_entity_id, modify_time, 
-      create_time, dispatch_rule_type, full_distribute, 
-      select_param, load_param, pipeline_params
-      )
+      create_time, pipeline_params)
     values (#{taskId,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{sourceEntityId,jdbcType=BIGINT}, 
       #{dataType,jdbcType=VARCHAR}, #{targetEntityId,jdbcType=BIGINT}, #{modifyTime,jdbcType=TIMESTAMP}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{dispatchRuleType,jdbcType=VARCHAR}, #{fullDistribute,jdbcType=BIT}, 
-      #{selectParam,jdbcType=VARCHAR}, #{loadParam,jdbcType=VARCHAR}, #{pipelineParams,jdbcType=LONGVARCHAR}
-      )
+      #{createTime,jdbcType=TIMESTAMP}, #{pipelineParams,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.utopia.data.transfer.admin.dao.entity.PipelineBean">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
@@ -165,18 +157,6 @@
       <if test="createTime != null">
         create_time,
       </if>
-      <if test="dispatchRuleType != null">
-        dispatch_rule_type,
-      </if>
-      <if test="fullDistribute != null">
-        full_distribute,
-      </if>
-      <if test="selectParam != null">
-        select_param,
-      </if>
-      <if test="loadParam != null">
-        load_param,
-      </if>
       <if test="pipelineParams != null">
         pipeline_params,
       </if>
@@ -202,18 +182,6 @@
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="dispatchRuleType != null">
-        #{dispatchRuleType,jdbcType=VARCHAR},
-      </if>
-      <if test="fullDistribute != null">
-        #{fullDistribute,jdbcType=BIT},
-      </if>
-      <if test="selectParam != null">
-        #{selectParam,jdbcType=VARCHAR},
-      </if>
-      <if test="loadParam != null">
-        #{loadParam,jdbcType=VARCHAR},
       </if>
       <if test="pipelineParams != null">
         #{pipelineParams,jdbcType=LONGVARCHAR},
@@ -247,18 +215,6 @@
       <if test="record.createTime != null">
         create_time = #{record.createTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="record.dispatchRuleType != null">
-        dispatch_rule_type = #{record.dispatchRuleType,jdbcType=VARCHAR},
-      </if>
-      <if test="record.fullDistribute != null">
-        full_distribute = #{record.fullDistribute,jdbcType=BIT},
-      </if>
-      <if test="record.selectParam != null">
-        select_param = #{record.selectParam,jdbcType=VARCHAR},
-      </if>
-      <if test="record.loadParam != null">
-        load_param = #{record.loadParam,jdbcType=VARCHAR},
-      </if>
       <if test="record.pipelineParams != null">
         pipeline_params = #{record.pipelineParams,jdbcType=LONGVARCHAR},
       </if>
@@ -277,10 +233,6 @@
       target_entity_id = #{record.targetEntityId,jdbcType=BIGINT},
       modify_time = #{record.modifyTime,jdbcType=TIMESTAMP},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
-      dispatch_rule_type = #{record.dispatchRuleType,jdbcType=VARCHAR},
-      full_distribute = #{record.fullDistribute,jdbcType=BIT},
-      select_param = #{record.selectParam,jdbcType=VARCHAR},
-      load_param = #{record.loadParam,jdbcType=VARCHAR},
       pipeline_params = #{record.pipelineParams,jdbcType=LONGVARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -295,11 +247,7 @@
       data_type = #{record.dataType,jdbcType=VARCHAR},
       target_entity_id = #{record.targetEntityId,jdbcType=BIGINT},
       modify_time = #{record.modifyTime,jdbcType=TIMESTAMP},
-      create_time = #{record.createTime,jdbcType=TIMESTAMP},
-      dispatch_rule_type = #{record.dispatchRuleType,jdbcType=VARCHAR},
-      full_distribute = #{record.fullDistribute,jdbcType=BIT},
-      select_param = #{record.selectParam,jdbcType=VARCHAR},
-      load_param = #{record.loadParam,jdbcType=VARCHAR}
+      create_time = #{record.createTime,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>

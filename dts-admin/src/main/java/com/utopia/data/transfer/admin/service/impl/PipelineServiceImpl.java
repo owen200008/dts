@@ -135,6 +135,7 @@ public class PipelineServiceImpl implements PipelineService {
         pairBean.setPipelineId(pipelinePairAddVo.getPipelineId());
         pairBean.setSourceDatamediaId(sourceDataMediaBean.getId());
         pairBean.setTargetDatamediaId(targetDataMediaBean.getId());
+
         pairBeanRepository.insert(pairBean);
     }
 
