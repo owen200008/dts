@@ -375,6 +375,76 @@ public class TargetDataMediaBeanDal {
             return (Criteria) this;
         }
 
+        public Criteria andSyncRuleIsNull() {
+            addCriterion("sync_rule is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andSyncRuleIsNotNull() {
+            addCriterion("sync_rule is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andSyncRuleEqualTo(String value) {
+            addCriterion("sync_rule =", value, "syncRule");
+            return (Criteria) this;
+        }
+
+        public Criteria andSyncRuleNotEqualTo(String value) {
+            addCriterion("sync_rule <>", value, "syncRule");
+            return (Criteria) this;
+        }
+
+        public Criteria andSyncRuleGreaterThan(String value) {
+            addCriterion("sync_rule >", value, "syncRule");
+            return (Criteria) this;
+        }
+
+        public Criteria andSyncRuleGreaterThanOrEqualTo(String value) {
+            addCriterion("sync_rule >=", value, "syncRule");
+            return (Criteria) this;
+        }
+
+        public Criteria andSyncRuleLessThan(String value) {
+            addCriterion("sync_rule <", value, "syncRule");
+            return (Criteria) this;
+        }
+
+        public Criteria andSyncRuleLessThanOrEqualTo(String value) {
+            addCriterion("sync_rule <=", value, "syncRule");
+            return (Criteria) this;
+        }
+
+        public Criteria andSyncRuleLike(String value) {
+            addCriterion("sync_rule like", value, "syncRule");
+            return (Criteria) this;
+        }
+
+        public Criteria andSyncRuleNotLike(String value) {
+            addCriterion("sync_rule not like", value, "syncRule");
+            return (Criteria) this;
+        }
+
+        public Criteria andSyncRuleIn(List<String> values) {
+            addCriterion("sync_rule in", values, "syncRule");
+            return (Criteria) this;
+        }
+
+        public Criteria andSyncRuleNotIn(List<String> values) {
+            addCriterion("sync_rule not in", values, "syncRule");
+            return (Criteria) this;
+        }
+
+        public Criteria andSyncRuleBetween(String value1, String value2) {
+            addCriterion("sync_rule between", value1, value2, "syncRule");
+            return (Criteria) this;
+        }
+
+        public Criteria andSyncRuleNotBetween(String value1, String value2) {
+            addCriterion("sync_rule not between", value1, value2, "syncRule");
+            return (Criteria) this;
+        }
+
         public Criteria andCreateTimeIsNull() {
             addCriterion("create_time is null");
             return (Criteria) this;
@@ -492,76 +562,6 @@ public class TargetDataMediaBeanDal {
 
         public Criteria andModifyTimeNotBetween(LocalDateTime value1, LocalDateTime value2) {
             addCriterion("modify_time not between", value1, value2, "modifyTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andSyncRuleIsNull() {
-            addCriterion("sync_rule is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andSyncRuleIsNotNull() {
-            addCriterion("sync_rule is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andSyncRuleEqualTo(String value) {
-            addCriterion("sync_rule =", value, "syncRule");
-            return (Criteria) this;
-        }
-
-        public Criteria andSyncRuleNotEqualTo(String value) {
-            addCriterion("sync_rule <>", value, "syncRule");
-            return (Criteria) this;
-        }
-
-        public Criteria andSyncRuleGreaterThan(String value) {
-            addCriterion("sync_rule >", value, "syncRule");
-            return (Criteria) this;
-        }
-
-        public Criteria andSyncRuleGreaterThanOrEqualTo(String value) {
-            addCriterion("sync_rule >=", value, "syncRule");
-            return (Criteria) this;
-        }
-
-        public Criteria andSyncRuleLessThan(String value) {
-            addCriterion("sync_rule <", value, "syncRule");
-            return (Criteria) this;
-        }
-
-        public Criteria andSyncRuleLessThanOrEqualTo(String value) {
-            addCriterion("sync_rule <=", value, "syncRule");
-            return (Criteria) this;
-        }
-
-        public Criteria andSyncRuleLike(String value) {
-            addCriterion("sync_rule like", value, "syncRule");
-            return (Criteria) this;
-        }
-
-        public Criteria andSyncRuleNotLike(String value) {
-            addCriterion("sync_rule not like", value, "syncRule");
-            return (Criteria) this;
-        }
-
-        public Criteria andSyncRuleIn(List<String> values) {
-            addCriterion("sync_rule in", values, "syncRule");
-            return (Criteria) this;
-        }
-
-        public Criteria andSyncRuleNotIn(List<String> values) {
-            addCriterion("sync_rule not in", values, "syncRule");
-            return (Criteria) this;
-        }
-
-        public Criteria andSyncRuleBetween(String value1, String value2) {
-            addCriterion("sync_rule between", value1, value2, "syncRule");
-            return (Criteria) this;
-        }
-
-        public Criteria andSyncRuleNotBetween(String value1, String value2) {
-            addCriterion("sync_rule not between", value1, value2, "syncRule");
             return (Criteria) this;
         }
 

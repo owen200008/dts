@@ -6,9 +6,9 @@
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="namespace" jdbcType="VARCHAR" property="namespace" />
     <result column="table" jdbcType="VARCHAR" property="table" />
+    <result column="sync_rule" jdbcType="VARCHAR" property="syncRule" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
-    <result column="sync_rule" jdbcType="VARCHAR" property="syncRule" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -69,7 +69,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, `name`, namespace, `table`, create_time, modify_time, sync_rule
+    id, `name`, namespace, `table`, sync_rule, create_time, modify_time
   </sql>
   <select id="selectByExample" parameterType="com.utopia.data.transfer.admin.dao.entity.TargetDataMediaBeanDal" resultMap="BaseResultMap">
     select
@@ -106,10 +106,10 @@
       SELECT LAST_INSERT_ID()
     </selectKey>
     insert into u_target_datamedia (`name`, namespace, `table`, 
-      create_time, modify_time, sync_rule
+      sync_rule, create_time, modify_time
       )
     values (#{name,jdbcType=VARCHAR}, #{namespace,jdbcType=VARCHAR}, #{table,jdbcType=VARCHAR}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{modifyTime,jdbcType=TIMESTAMP}, #{syncRule,jdbcType=VARCHAR}
+      #{syncRule,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{modifyTime,jdbcType=TIMESTAMP}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.utopia.data.transfer.admin.dao.entity.TargetDataMediaBean">
@@ -127,14 +127,14 @@
       <if test="table != null">
         `table`,
       </if>
+      <if test="syncRule != null">
+        sync_rule,
+      </if>
       <if test="createTime != null">
         create_time,
       </if>
       <if test="modifyTime != null">
         modify_time,
-      </if>
-      <if test="syncRule != null">
-        sync_rule,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -147,14 +147,14 @@
       <if test="table != null">
         #{table,jdbcType=VARCHAR},
       </if>
+      <if test="syncRule != null">
+        #{syncRule,jdbcType=VARCHAR},
+      </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
       </if>
       <if test="modifyTime != null">
         #{modifyTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="syncRule != null">
-        #{syncRule,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -173,14 +173,14 @@
       <if test="record.table != null">
         `table` = #{record.table,jdbcType=VARCHAR},
       </if>
+      <if test="record.syncRule != null">
+        sync_rule = #{record.syncRule,jdbcType=VARCHAR},
+      </if>
       <if test="record.createTime != null">
         create_time = #{record.createTime,jdbcType=TIMESTAMP},
       </if>
       <if test="record.modifyTime != null">
         modify_time = #{record.modifyTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="record.syncRule != null">
-        sync_rule = #{record.syncRule,jdbcType=VARCHAR},
       </if>
     </set>
     <if test="_parameter != null">
@@ -193,9 +193,9 @@
       `name` = #{record.name,jdbcType=VARCHAR},
       namespace = #{record.namespace,jdbcType=VARCHAR},
       `table` = #{record.table,jdbcType=VARCHAR},
+      sync_rule = #{record.syncRule,jdbcType=VARCHAR},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
-      modify_time = #{record.modifyTime,jdbcType=TIMESTAMP},
-      sync_rule = #{record.syncRule,jdbcType=VARCHAR}
+      modify_time = #{record.modifyTime,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -212,14 +212,14 @@
       <if test="table != null">
         `table` = #{table,jdbcType=VARCHAR},
       </if>
+      <if test="syncRule != null">
+        sync_rule = #{syncRule,jdbcType=VARCHAR},
+      </if>
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
       <if test="modifyTime != null">
         modify_time = #{modifyTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="syncRule != null">
-        sync_rule = #{syncRule,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
@@ -229,9 +229,9 @@
     set `name` = #{name,jdbcType=VARCHAR},
       namespace = #{namespace,jdbcType=VARCHAR},
       `table` = #{table,jdbcType=VARCHAR},
+      sync_rule = #{syncRule,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
-      modify_time = #{modifyTime,jdbcType=TIMESTAMP},
-      sync_rule = #{syncRule,jdbcType=VARCHAR}
+      modify_time = #{modifyTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

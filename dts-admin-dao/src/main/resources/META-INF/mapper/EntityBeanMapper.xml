@@ -5,11 +5,6 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="type" jdbcType="VARCHAR" property="type" />
-    <result column="encode" jdbcType="VARCHAR" property="encode" />
-    <result column="url" jdbcType="VARCHAR" property="url" />
-    <result column="driver" jdbcType="VARCHAR" property="driver" />
-    <result column="username" jdbcType="VARCHAR" property="username" />
-    <result column="password" jdbcType="VARCHAR" property="password" />
     <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
@@ -75,7 +70,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, `name`, `type`, encode, url, driver, username, `password`, modify_time, create_time
+    id, `name`, `type`, modify_time, create_time
   </sql>
   <sql id="Blob_Column_List">
     property
@@ -124,14 +119,10 @@
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into u_entity (`name`, `type`, encode, 
-      url, driver, username, 
-      `password`, modify_time, create_time, 
-      property)
-    values (#{name,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{encode,jdbcType=VARCHAR}, 
-      #{url,jdbcType=VARCHAR}, #{driver,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, 
-      #{password,jdbcType=VARCHAR}, #{modifyTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{property,jdbcType=LONGVARCHAR})
+    insert into u_entity (`name`, `type`, modify_time, 
+      create_time, property)
+    values (#{name,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{modifyTime,jdbcType=TIMESTAMP}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{property,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.utopia.data.transfer.admin.dao.entity.EntityBean">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
@@ -144,21 +135,6 @@
       </if>
       <if test="type != null">
         `type`,
-      </if>
-      <if test="encode != null">
-        encode,
-      </if>
-      <if test="url != null">
-        url,
-      </if>
-      <if test="driver != null">
-        driver,
-      </if>
-      <if test="username != null">
-        username,
-      </if>
-      <if test="password != null">
-        `password`,
       </if>
       <if test="modifyTime != null">
         modify_time,
@@ -176,21 +152,6 @@
       </if>
       <if test="type != null">
         #{type,jdbcType=VARCHAR},
-      </if>
-      <if test="encode != null">
-        #{encode,jdbcType=VARCHAR},
-      </if>
-      <if test="url != null">
-        #{url,jdbcType=VARCHAR},
-      </if>
-      <if test="driver != null">
-        #{driver,jdbcType=VARCHAR},
-      </if>
-      <if test="username != null">
-        #{username,jdbcType=VARCHAR},
-      </if>
-      <if test="password != null">
-        #{password,jdbcType=VARCHAR},
       </if>
       <if test="modifyTime != null">
         #{modifyTime,jdbcType=TIMESTAMP},
@@ -215,21 +176,6 @@
       <if test="record.type != null">
         `type` = #{record.type,jdbcType=VARCHAR},
       </if>
-      <if test="record.encode != null">
-        encode = #{record.encode,jdbcType=VARCHAR},
-      </if>
-      <if test="record.url != null">
-        url = #{record.url,jdbcType=VARCHAR},
-      </if>
-      <if test="record.driver != null">
-        driver = #{record.driver,jdbcType=VARCHAR},
-      </if>
-      <if test="record.username != null">
-        username = #{record.username,jdbcType=VARCHAR},
-      </if>
-      <if test="record.password != null">
-        `password` = #{record.password,jdbcType=VARCHAR},
-      </if>
       <if test="record.modifyTime != null">
         modify_time = #{record.modifyTime,jdbcType=TIMESTAMP},
       </if>
@@ -249,11 +195,6 @@
     set id = #{record.id,jdbcType=BIGINT},
       `name` = #{record.name,jdbcType=VARCHAR},
       `type` = #{record.type,jdbcType=VARCHAR},
-      encode = #{record.encode,jdbcType=VARCHAR},
-      url = #{record.url,jdbcType=VARCHAR},
-      driver = #{record.driver,jdbcType=VARCHAR},
-      username = #{record.username,jdbcType=VARCHAR},
-      `password` = #{record.password,jdbcType=VARCHAR},
       modify_time = #{record.modifyTime,jdbcType=TIMESTAMP},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       property = #{record.property,jdbcType=LONGVARCHAR}
@@ -266,11 +207,6 @@
     set id = #{record.id,jdbcType=BIGINT},
       `name` = #{record.name,jdbcType=VARCHAR},
       `type` = #{record.type,jdbcType=VARCHAR},
-      encode = #{record.encode,jdbcType=VARCHAR},
-      url = #{record.url,jdbcType=VARCHAR},
-      driver = #{record.driver,jdbcType=VARCHAR},
-      username = #{record.username,jdbcType=VARCHAR},
-      `password` = #{record.password,jdbcType=VARCHAR},
       modify_time = #{record.modifyTime,jdbcType=TIMESTAMP},
       create_time = #{record.createTime,jdbcType=TIMESTAMP}
     <if test="_parameter != null">

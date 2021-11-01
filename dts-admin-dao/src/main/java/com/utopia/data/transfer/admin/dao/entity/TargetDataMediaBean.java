@@ -13,11 +13,11 @@ public class TargetDataMediaBean extends BaseModel implements Serializable {
 
     private String table;
 
+    private String syncRule;
+
     private LocalDateTime createTime;
 
     private LocalDateTime modifyTime;
-
-    private String syncRule;
 
     private static final long serialVersionUID = 1L;
 
@@ -53,6 +53,14 @@ public class TargetDataMediaBean extends BaseModel implements Serializable {
         this.table = table == null ? null : table.trim();
     }
 
+    public String getSyncRule() {
+        return syncRule;
+    }
+
+    public void setSyncRule(String syncRule) {
+        this.syncRule = syncRule == null ? null : syncRule.trim();
+    }
+
     public LocalDateTime getCreateTime() {
         return createTime;
     }
@@ -69,14 +77,6 @@ public class TargetDataMediaBean extends BaseModel implements Serializable {
         this.modifyTime = modifyTime;
     }
 
-    public String getSyncRule() {
-        return syncRule;
-    }
-
-    public void setSyncRule(String syncRule) {
-        this.syncRule = syncRule == null ? null : syncRule.trim();
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -87,9 +87,9 @@ public class TargetDataMediaBean extends BaseModel implements Serializable {
         sb.append(", name=").append(name);
         sb.append(", namespace=").append(namespace);
         sb.append(", table=").append(table);
+        sb.append(", syncRule=").append(syncRule);
         sb.append(", createTime=").append(createTime);
         sb.append(", modifyTime=").append(modifyTime);
-        sb.append(", syncRule=").append(syncRule);
         sb.append("]");
         return sb.toString();
     }
@@ -110,9 +110,9 @@ public class TargetDataMediaBean extends BaseModel implements Serializable {
             && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
             && (this.getNamespace() == null ? other.getNamespace() == null : this.getNamespace().equals(other.getNamespace()))
             && (this.getTable() == null ? other.getTable() == null : this.getTable().equals(other.getTable()))
+            && (this.getSyncRule() == null ? other.getSyncRule() == null : this.getSyncRule().equals(other.getSyncRule()))
             && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
-            && (this.getModifyTime() == null ? other.getModifyTime() == null : this.getModifyTime().equals(other.getModifyTime()))
-            && (this.getSyncRule() == null ? other.getSyncRule() == null : this.getSyncRule().equals(other.getSyncRule()));
+            && (this.getModifyTime() == null ? other.getModifyTime() == null : this.getModifyTime().equals(other.getModifyTime()));
     }
 
     @Override
@@ -123,9 +123,9 @@ public class TargetDataMediaBean extends BaseModel implements Serializable {
         result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
         result = prime * result + ((getNamespace() == null) ? 0 : getNamespace().hashCode());
         result = prime * result + ((getTable() == null) ? 0 : getTable().hashCode());
+        result = prime * result + ((getSyncRule() == null) ? 0 : getSyncRule().hashCode());
         result = prime * result + ((getCreateTime() == null) ? 0 : getCreateTime().hashCode());
         result = prime * result + ((getModifyTime() == null) ? 0 : getModifyTime().hashCode());
-        result = prime * result + ((getSyncRule() == null) ? 0 : getSyncRule().hashCode());
         return result;
     }
 }
