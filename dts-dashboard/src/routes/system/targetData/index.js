@@ -175,8 +175,8 @@ export default class TargetData extends PureComponent {
       {
         align: "center",
         title: "同步规则",
-        dataIndex: "suncRule",
-        key: "suncRule",
+        dataIndex: "syncRule",
+        key: "syncRule",
       },
 
       {

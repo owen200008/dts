@@ -81,7 +81,7 @@ class AddModal extends PureComponent {
         let pipelineParams = this.jsonEncode('editor');
         // let selectParam = this.jsonEncode('selectEditor');
         // let loadParam = this.jsonEncode('loadEditor');
-        let { name, taskId, sourceEntityId, targetEntityId, /* fullDistribute, dispatchRuleType */ } = values;
+        let { name, taskId, sourceEntityId, targetEntityId, dataType, /* fullDistribute, dispatchRuleType */ } = values;
         try {
           pipelineParams && JSON.parse(pipelineParams);
         } catch (ex) {
@@ -98,7 +98,7 @@ class AddModal extends PureComponent {
           return alert('请输入正确LOad配置');
         } */
 
-        handleOk({ id, name, taskId, sourceEntityId, targetEntityId, pipelineParams, /* fullDistribute, dispatchRuleType, selectParam, loadParam */ });
+        handleOk({ id, name, taskId, sourceEntityId, targetEntityId, pipelineParams, dataType, /* fullDistribute, dispatchRuleType, selectParam, loadParam */ });
       }
     });
   };
@@ -197,10 +197,10 @@ class AddModal extends PureComponent {
   }
 
   render() {
-    let { taskList, dataSourceList, handleCancel, form, name, taskId, } = this.props;
+    let { platform, taskList, dataSourceList, handleCancel, form, name, taskId, dataType } = this.props;
     let { sourceEntityId, targetEntityId, popup, pipelineParams } = this.state;
 
-
+    const { entityType = [] } = platform;
     const { getFieldDecorator } = form;
 
     const formItemLayout = {
@@ -296,6 +296,22 @@ class AddModal extends PureComponent {
             >
               添加
             </Button>
+          </FormItem>
+          <FormItem label="数据类型" {...formItemLayout}>
+            {getFieldDecorator("dataType", {
+              rules: [{ required: true, message: "请选择数据类型" }],
+              initialValue: dataType,
+            })(
+              <Select>
+                {entityType.map((item, index) => {
+                  return (
+                    <Option key={index} value={item.code}>
+                      {item.name}
+                    </Option>
+                  );
+                })}
+              </Select>
+            )}
           </FormItem>
           <FormItem label="通道参数" {...formItemLayout}>
             <div style={{ width: '100%', height: '300px' }} ref="editor">{formatJSON(pipelineParams)}</div>

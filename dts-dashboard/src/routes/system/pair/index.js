@@ -164,7 +164,7 @@ export default class Pair extends PureComponent {
 
 
 
-
+  filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
 
   render() {
 
@@ -249,6 +249,8 @@ export default class Pair extends PureComponent {
             </div>
             <div className="table-header" style={{ justifyContent: "normal" }}>
               <Select
+                showSearch={true}
+                filterOption={this.filterOption}
                 value={pipelineId || ''}
                 style={{ width: 150 }}
                 onChange={this.searchOnSelectchange.bind(this, 'pipelineId')}

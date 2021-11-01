@@ -31,9 +31,12 @@ export default class TargetData extends PureComponent {
       payload: {
         pageNum: 1,
         pageSize: 10000
+      },
+      callback: () => {
+        this.listItems(currentPage);
       }
-    });
-    this.listItems(currentPage);
+    })
+
 
   }
 
@@ -121,6 +124,7 @@ export default class TargetData extends PureComponent {
             </div>
             <div className="table-header" style={{ justifyContent: "normal" }}>
               <Select
+                allowClear
                 value={regionId || ''}
                 style={{ width: 150 }}
                 onChange={this.searchOnSelectchange.bind(this, 'regionId')}

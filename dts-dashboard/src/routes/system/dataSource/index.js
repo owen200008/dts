@@ -230,6 +230,7 @@ export default class DataSource extends PureComponent {
         title: "属性",
         dataIndex: "property",
         key: "property",
+        width: 1000
       },
       {
         align: "center",
@@ -286,6 +287,7 @@ export default class DataSource extends PureComponent {
             </div>
             <div className="table-header" style={{ justifyContent: "normal" }}>
               <Select
+                allowClear
                 value={type || ''}
                 style={{ width: 150 }}
                 onChange={this.searchOnSelectchange.bind(this, 'type')}

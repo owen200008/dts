@@ -404,6 +404,10 @@ export default class Pipeline extends PureComponent {
 
   }
 
+
+  filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+
+  
   updateItem(payload) {
     const { dispatch } = this.props;
     dispatch({
@@ -411,7 +415,6 @@ export default class Pipeline extends PureComponent {
       payload,
     })
   }
-
 
   render() {
 
@@ -429,9 +432,16 @@ export default class Pipeline extends PureComponent {
       },
       {
         align: "center",
+        title: "数据类型",
+        dataIndex: "dataType",
+        key: "dataType",
+      },
+      {
+        align: "center",
         title: "参数",
         dataIndex: "pipelineParams",
         key: "pipelineParams",
+        width: 1000
       },
       {
         align: "center",
@@ -505,6 +515,8 @@ export default class Pipeline extends PureComponent {
             </div>
             <div className="table-header" style={{ justifyContent: "normal" }}>
               <Select
+                showSearch={true}
+                filterOption={this.filterOption}
                 value={taskId || ''}
                 style={{ width: 150 }}
                 onChange={this.searchOnSelectchange.bind(this, 'taskId')}

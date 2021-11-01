@@ -16,16 +16,16 @@ class AddModal extends PureComponent {
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
 
-        let { name, namespace, table, suncRule } = values;
+        let { name, namespace, table, syncRule } = values;
 
 
-        handleOk({ id, name, namespace, table, suncRule });
+        handleOk({ id, name, namespace, table, syncRule });
       }
     });
   };
 
   render() {
-    let { platform, title, handleCancel, form, name, namespace, table, suncRule } = this.props;
+    let { platform, title, handleCancel, form, name, namespace, table, syncRule } = this.props;
     let {
       syncRule: syncRuleList,
     } = platform;
@@ -88,9 +88,9 @@ class AddModal extends PureComponent {
           </FormItem>
 
           <FormItem label="同步规则" {...formItemLayout}>
-            {getFieldDecorator("suncRule", {
+            {getFieldDecorator("syncRule", {
               rules: [{ required: true, message: "请选择同步规则" }],
-              initialValue: suncRule || ''
+              initialValue: syncRule || ''
             })(
               <Select>
                 {syncRuleList.map((item, index) => {

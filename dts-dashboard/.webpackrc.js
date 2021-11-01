@@ -27,8 +27,9 @@ export default {
   hash: true,
   proxy: {
     "/": {
+      target:"http://172.26.27.107:8011",
       //target:"http://172.28.9.2:8112",
-      target:"https://dts-admin.blurams.vip",
+      //target:"https://dts-admin.blurams.vip",
       changeOrigin: true,
       pathRewrite: { "^/": "" }
     }
