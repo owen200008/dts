@@ -12,7 +12,7 @@ import java.io.Serializable;
  */
 @Data
 public class DispatchParamter implements Serializable {
-    private String dispatchRule;
+    private String dispatchRule = "INNER";
     private Boolean transferFullData = false;
     private String dispatchSelectParam = "";
     private String dispatchLoadParam = "";

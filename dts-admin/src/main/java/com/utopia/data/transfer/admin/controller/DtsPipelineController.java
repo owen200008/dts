@@ -3,7 +3,6 @@ package com.utopia.data.transfer.admin.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.parser.Feature;
-import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.serializer.ValueFilter;
 import com.utopia.data.transfer.admin.contants.DispatchRuleType;
 import com.utopia.data.transfer.admin.contants.PathConstants;
@@ -11,10 +10,8 @@ import com.utopia.data.transfer.admin.dao.entity.PipelineBean;
 import com.utopia.data.transfer.admin.dao.entity.SyncRuleBean;
 import com.utopia.data.transfer.admin.service.PipelineService;
 import com.utopia.data.transfer.admin.vo.PageRes;
-import com.utopia.data.transfer.admin.vo.ResponseModel;
 import com.utopia.data.transfer.admin.vo.req.*;
 import com.utopia.data.transfer.model.archetype.ErrorCode;
-import com.utopia.data.transfer.model.code.entity.kafka.KafkaProperty;
 import com.utopia.data.transfer.model.code.pipeline.PipelineParameter;
 import com.utopia.model.rsp.UtopiaErrorCode;
 import com.utopia.model.rsp.UtopiaResponseModel;
@@ -24,8 +21,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
