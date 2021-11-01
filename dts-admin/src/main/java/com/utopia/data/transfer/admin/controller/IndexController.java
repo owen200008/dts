@@ -108,7 +108,7 @@ public class IndexController {
      * @return {@linkplain UtopiaResponseModel}
      */
     @GetMapping("/enum")
-    public UtopiaResponseModel queryEnums() {
+    public @ResponseBody UtopiaResponseModel queryEnums() {
         return UtopiaResponseModel.success(enumService.list());
     }
 }
