@@ -103,6 +103,7 @@ public class IndexController {
     }
 
     /**
+     *
      * query enums.
      *
      * @return {@linkplain UtopiaResponseModel}

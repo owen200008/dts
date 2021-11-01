@@ -107,7 +107,7 @@ public class PipelineServiceImpl implements PipelineService {
     public List<PipelineBean> pipelineParamsList(Long taskId) {
         PipelineBeanDal pipelineBeanDal = new PipelineBeanDal();
         pipelineBeanDal.createCriteria().andTaskIdEqualTo(taskId);
-        return pipelineBeanRepository.selectByExample(pipelineBeanDal);
+        return pipelineBeanRepository.selectByExampleWithBLOBs(pipelineBeanDal);
     }
 
     @Override
@@ -145,7 +145,7 @@ public class PipelineServiceImpl implements PipelineService {
     public PipelineBean pipelineGet(Long id) {
         PipelineBeanDal pipelineBeanDal = new PipelineBeanDal();
         pipelineBeanDal.createCriteria().andIdEqualTo(id);
-        List<PipelineBean> pipelineBeans = pipelineBeanMapper.selectByExample(pipelineBeanDal);
+        List<PipelineBean> pipelineBeans = pipelineBeanMapper.selectByExampleWithBLOBs(pipelineBeanDal);
         if (CollectionUtils.isEmpty(pipelineBeans)){
             return null;
         }
@@ -166,7 +166,7 @@ public class PipelineServiceImpl implements PipelineService {
             pipelineBeanDal.createCriteria().andTaskIdEqualTo(queryPipelineVo.getTaskId());
         }
         pipelineBeanDal.setOrderByClause(" create_time desc");
-        List<PipelineBean> pipelineBeans = pipelineBeanMapper.selectByExample(pipelineBeanDal);
+        List<PipelineBean> pipelineBeans = pipelineBeanMapper.selectByExampleWithBLOBs(pipelineBeanDal);
         if (CollectionUtils.isEmpty(pipelineBeans)){
             return null;
         }
@@ -183,7 +183,7 @@ public class PipelineServiceImpl implements PipelineService {
 
     @Override
     public List<PipelineBean> getAll() {
-        return pipelineBeanRepository.selectByExample(new PipelineBeanDal());
+        return pipelineBeanRepository.selectByExampleWithBLOBs(new PipelineBeanDal());
     }
 
 }
