@@ -25,8 +25,6 @@ public class EntityBean extends BaseModel implements Serializable {
 
     private LocalDateTime createTime;
 
-    private String dataType;
-
     private String property;
 
     private static final long serialVersionUID = 1L;
@@ -111,14 +109,6 @@ public class EntityBean extends BaseModel implements Serializable {
         this.createTime = createTime;
     }
 
-    public String getDataType() {
-        return dataType;
-    }
-
-    public void setDataType(String dataType) {
-        this.dataType = dataType == null ? null : dataType.trim();
-    }
-
     public String getProperty() {
         return property;
     }
@@ -143,7 +133,6 @@ public class EntityBean extends BaseModel implements Serializable {
         sb.append(", password=").append(password);
         sb.append(", modifyTime=").append(modifyTime);
         sb.append(", createTime=").append(createTime);
-        sb.append(", dataType=").append(dataType);
         sb.append(", property=").append(property);
         sb.append("]");
         return sb.toString();
@@ -171,7 +160,6 @@ public class EntityBean extends BaseModel implements Serializable {
             && (this.getPassword() == null ? other.getPassword() == null : this.getPassword().equals(other.getPassword()))
             && (this.getModifyTime() == null ? other.getModifyTime() == null : this.getModifyTime().equals(other.getModifyTime()))
             && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
-            && (this.getDataType() == null ? other.getDataType() == null : this.getDataType().equals(other.getDataType()))
             && (this.getProperty() == null ? other.getProperty() == null : this.getProperty().equals(other.getProperty()));
     }
 
@@ -189,7 +177,6 @@ public class EntityBean extends BaseModel implements Serializable {
         result = prime * result + ((getPassword() == null) ? 0 : getPassword().hashCode());
         result = prime * result + ((getModifyTime() == null) ? 0 : getModifyTime().hashCode());
         result = prime * result + ((getCreateTime() == null) ? 0 : getCreateTime().hashCode());
-        result = prime * result + ((getDataType() == null) ? 0 : getDataType().hashCode());
         result = prime * result + ((getProperty() == null) ? 0 : getProperty().hashCode());
         return result;
     }

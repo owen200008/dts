@@ -13,6 +13,8 @@ public class PipelineBean extends BaseModel implements Serializable {
 
     private Long sourceEntityId;
 
+    private String dataType;
+
     private Long targetEntityId;
 
     private LocalDateTime modifyTime;
@@ -61,6 +63,14 @@ public class PipelineBean extends BaseModel implements Serializable {
 
     public void setSourceEntityId(Long sourceEntityId) {
         this.sourceEntityId = sourceEntityId;
+    }
+
+    public String getDataType() {
+        return dataType;
+    }
+
+    public void setDataType(String dataType) {
+        this.dataType = dataType == null ? null : dataType.trim();
     }
 
     public Long getTargetEntityId() {
@@ -137,6 +147,7 @@ public class PipelineBean extends BaseModel implements Serializable {
         sb.append(", taskId=").append(taskId);
         sb.append(", name=").append(name);
         sb.append(", sourceEntityId=").append(sourceEntityId);
+        sb.append(", dataType=").append(dataType);
         sb.append(", targetEntityId=").append(targetEntityId);
         sb.append(", modifyTime=").append(modifyTime);
         sb.append(", createTime=").append(createTime);
@@ -165,6 +176,7 @@ public class PipelineBean extends BaseModel implements Serializable {
             && (this.getTaskId() == null ? other.getTaskId() == null : this.getTaskId().equals(other.getTaskId()))
             && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
             && (this.getSourceEntityId() == null ? other.getSourceEntityId() == null : this.getSourceEntityId().equals(other.getSourceEntityId()))
+            && (this.getDataType() == null ? other.getDataType() == null : this.getDataType().equals(other.getDataType()))
             && (this.getTargetEntityId() == null ? other.getTargetEntityId() == null : this.getTargetEntityId().equals(other.getTargetEntityId()))
             && (this.getModifyTime() == null ? other.getModifyTime() == null : this.getModifyTime().equals(other.getModifyTime()))
             && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
@@ -183,6 +195,7 @@ public class PipelineBean extends BaseModel implements Serializable {
         result = prime * result + ((getTaskId() == null) ? 0 : getTaskId().hashCode());
         result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
         result = prime * result + ((getSourceEntityId() == null) ? 0 : getSourceEntityId().hashCode());
+        result = prime * result + ((getDataType() == null) ? 0 : getDataType().hashCode());
         result = prime * result + ((getTargetEntityId() == null) ? 0 : getTargetEntityId().hashCode());
         result = prime * result + ((getModifyTime() == null) ? 0 : getModifyTime().hashCode());
         result = prime * result + ((getCreateTime() == null) ? 0 : getCreateTime().hashCode());

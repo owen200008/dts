@@ -6,8 +6,8 @@
     <result column="task_id" jdbcType="BIGINT" property="taskId" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="source_entity_id" jdbcType="BIGINT" property="sourceEntityId" />
+    <result column="data_type" jdbcType="VARCHAR" property="dataType" />
     <result column="target_entity_id" jdbcType="BIGINT" property="targetEntityId" />
-    <result column="pipeline_params" jdbcType="LONGVARCHAR" property="pipelineParams" />
     <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="dispatch_rule_type" jdbcType="VARCHAR" property="dispatchRuleType" />
@@ -77,8 +77,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, task_id, `name`, source_entity_id, target_entity_id, pipeline_params,modify_time, create_time,
-    dispatch_rule_type, full_distribute, select_param, load_param
+    id, task_id, `name`, source_entity_id, data_type, target_entity_id, modify_time, 
+    create_time, dispatch_rule_type, full_distribute, select_param, load_param
   </sql>
   <sql id="Blob_Column_List">
     pipeline_params
@@ -128,13 +128,15 @@
       SELECT LAST_INSERT_ID()
     </selectKey>
     insert into u_pipeline (task_id, `name`, source_entity_id, 
-      target_entity_id, modify_time, create_time, 
-      dispatch_rule_type, full_distribute, select_param, 
-      load_param, pipeline_params)
+      data_type, target_entity_id, modify_time, 
+      create_time, dispatch_rule_type, full_distribute, 
+      select_param, load_param, pipeline_params
+      )
     values (#{taskId,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{sourceEntityId,jdbcType=BIGINT}, 
-      #{targetEntityId,jdbcType=BIGINT}, #{modifyTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{dispatchRuleType,jdbcType=VARCHAR}, #{fullDistribute,jdbcType=BIT}, #{selectParam,jdbcType=VARCHAR}, 
-      #{loadParam,jdbcType=VARCHAR}, #{pipelineParams,jdbcType=LONGVARCHAR})
+      #{dataType,jdbcType=VARCHAR}, #{targetEntityId,jdbcType=BIGINT}, #{modifyTime,jdbcType=TIMESTAMP}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{dispatchRuleType,jdbcType=VARCHAR}, #{fullDistribute,jdbcType=BIT}, 
+      #{selectParam,jdbcType=VARCHAR}, #{loadParam,jdbcType=VARCHAR}, #{pipelineParams,jdbcType=LONGVARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.utopia.data.transfer.admin.dao.entity.PipelineBean">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
@@ -150,6 +152,9 @@
       </if>
       <if test="sourceEntityId != null">
         source_entity_id,
+      </if>
+      <if test="dataType != null">
+        data_type,
       </if>
       <if test="targetEntityId != null">
         target_entity_id,
@@ -185,6 +190,9 @@
       </if>
       <if test="sourceEntityId != null">
         #{sourceEntityId,jdbcType=BIGINT},
+      </if>
+      <if test="dataType != null">
+        #{dataType,jdbcType=VARCHAR},
       </if>
       <if test="targetEntityId != null">
         #{targetEntityId,jdbcType=BIGINT},
@@ -227,6 +235,9 @@
       <if test="record.sourceEntityId != null">
         source_entity_id = #{record.sourceEntityId,jdbcType=BIGINT},
       </if>
+      <if test="record.dataType != null">
+        data_type = #{record.dataType,jdbcType=VARCHAR},
+      </if>
       <if test="record.targetEntityId != null">
         target_entity_id = #{record.targetEntityId,jdbcType=BIGINT},
       </if>
@@ -262,6 +273,7 @@
       task_id = #{record.taskId,jdbcType=BIGINT},
       `name` = #{record.name,jdbcType=VARCHAR},
       source_entity_id = #{record.sourceEntityId,jdbcType=BIGINT},
+      data_type = #{record.dataType,jdbcType=VARCHAR},
       target_entity_id = #{record.targetEntityId,jdbcType=BIGINT},
       modify_time = #{record.modifyTime,jdbcType=TIMESTAMP},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
@@ -280,6 +292,7 @@
       task_id = #{record.taskId,jdbcType=BIGINT},
       `name` = #{record.name,jdbcType=VARCHAR},
       source_entity_id = #{record.sourceEntityId,jdbcType=BIGINT},
+      data_type = #{record.dataType,jdbcType=VARCHAR},
       target_entity_id = #{record.targetEntityId,jdbcType=BIGINT},
       modify_time = #{record.modifyTime,jdbcType=TIMESTAMP},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
