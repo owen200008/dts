@@ -104,12 +104,5 @@ public class DtsEntityController {
         return  UtopiaResponseModel.success(mysqlJson);
     }
 
-    @PostMapping("/entity/dataType")
-    public UtopiaResponseModel<List<String>> dataTypeList(){
-        List<String> list = CollectionUtils.arrayToList(DataMediaType.values());
-        return UtopiaResponseModel.success(list);
-    }
-
-
 
 }

@@ -21,10 +21,12 @@ package com.utopia.data.transfer.admin.controller;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.utopia.data.transfer.admin.listener.UtopiaDomain;
+import com.utopia.data.transfer.admin.service.EnumService;
 import com.utopia.data.transfer.model.archetype.ErrorCode;
 import com.utopia.model.rsp.UtopiaResponseModel;
 import com.utopia.string.UtopiaStringUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -47,6 +49,9 @@ import java.util.stream.Collectors;
 @Controller
 @Slf4j
 public class IndexController {
+
+    @Autowired
+    private EnumService enumService;
 
     private static volatile String version;
 
@@ -95,5 +100,15 @@ public class IndexController {
             return UtopiaResponseModel.fail(ErrorCode.NO_TOKEN, "no token");
         }
         return UtopiaResponseModel.success();
+    }
+
+    /**
+     * query enums.
+     *
+     * @return {@linkplain UtopiaResponseModel}
+     */
+    @GetMapping("/enum")
+    public UtopiaResponseModel queryEnums() {
+        return UtopiaResponseModel.success(enumService.list());
     }
 }
