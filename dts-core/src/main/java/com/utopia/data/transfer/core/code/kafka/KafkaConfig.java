@@ -99,14 +99,14 @@ public class KafkaConfig {
         Map<String, Object> properties = new HashMap(8);
         if(Objects.nonNull(ssl)) {
             PropertyMapper map = PropertyMapper.get().alwaysApplyingWhenNonNull();
-            map.from(ssl::getKeyPassword).to(value -> properties.put(SslConfigs.SSL_KEY_PASSWORD_CONFIG,value));
-            map.from(ssl::getKeyStoreLocation).to(value -> properties.put(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG, value));
-            map.from(ssl::getKeyStorePassword).to(value -> properties.put(SslConfigs.SSL_KEYSTORE_PASSWORD_CONFIG, value));
-            map.from(ssl::getKeyStoreType).to(value -> properties.put(SslConfigs.SSL_KEYSTORE_TYPE_CONFIG, value));
-            map.from(ssl::getTrustStoreLocation).to(value -> properties.put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, value));
-            map.from(ssl::getTrustStorePassword).to(value -> properties.put(SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG, value));
-            map.from(ssl::getTrustStoreType).to(value -> properties.put(SslConfigs.SSL_TRUSTSTORE_TYPE_CONFIG, value));
-            map.from(ssl::getProtocol).to(value -> properties.put(SslConfigs.SSL_PROTOCOL_CONFIG, value));
+            map.from(ssl::getKeyPassword).whenHasText().to(value -> properties.put(SslConfigs.SSL_KEY_PASSWORD_CONFIG,value));
+            map.from(ssl::getKeyStoreLocation).whenHasText().to(value -> properties.put(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG, value));
+            map.from(ssl::getKeyStorePassword).whenHasText().to(value -> properties.put(SslConfigs.SSL_KEYSTORE_PASSWORD_CONFIG, value));
+            map.from(ssl::getKeyStoreType).whenHasText().to(value -> properties.put(SslConfigs.SSL_KEYSTORE_TYPE_CONFIG, value));
+            map.from(ssl::getTrustStoreLocation).whenHasText().to(value -> properties.put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, value));
+            map.from(ssl::getTrustStorePassword).whenHasText().to(value -> properties.put(SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG, value));
+            map.from(ssl::getTrustStoreType).whenHasText().to(value -> properties.put(SslConfigs.SSL_TRUSTSTORE_TYPE_CONFIG, value));
+            map.from(ssl::getProtocol).whenHasText().to(value -> properties.put(SslConfigs.SSL_PROTOCOL_CONFIG, value));
         }
         return properties;
     }
@@ -114,7 +114,7 @@ public class KafkaConfig {
         Map<String, Object> properties = new HashMap(8);
         if(Objects.nonNull(security)) {
             PropertyMapper map = PropertyMapper.get().alwaysApplyingWhenNonNull();
-            map.from(security::getProtocol).to(value -> properties.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG,value));
+            map.from(security::getProtocol).whenHasText().to(value -> properties.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG,value));
         }
         return properties;
     }

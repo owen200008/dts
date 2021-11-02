@@ -22,6 +22,7 @@ import com.utopia.data.transfer.core.code.base.config.DTSConstants;
 import com.utopia.data.transfer.core.code.model.EventDataTransaction;
 import com.utopia.data.transfer.model.code.entity.CanalSupport;
 import com.utopia.data.transfer.model.code.entity.EntityDesc;
+import com.utopia.data.transfer.model.code.entity.mysql.MysqlProperty;
 import com.utopia.data.transfer.model.code.pipeline.Pipeline;
 import com.utopia.data.transfer.core.code.model.Message;
 import com.utopia.data.transfer.core.code.service.ConfigService;
@@ -61,6 +62,7 @@ public class CanalEmbedSelector {
     @Getter
     private Pipeline                pipeline;
     private EntityDesc              source;
+    private CanalSupport            canalSupport;
     private ConfigService           configService;
     private MessageParser           messageParser;
     private ZookeeperConfig zookeeperConfig;
@@ -90,11 +92,22 @@ public class CanalEmbedSelector {
         canalServer.ack(clientIdentity, batchId);
     }
 
+
+    protected CanalSupport getCanalSupport(EntityDesc source){
+        switch(source.getType()) {
+            case MYSQL:{
+                return source.getParams().toJavaObject(MysqlProperty.class);
+            }
+        }
+        return null;
+    }
     public void start(){
         if (running) {
             return;
         }
-        if(!(source instanceof CanalSupport)){
+
+        this.canalSupport = getCanalSupport(this.source);
+        if(this.canalSupport == null){
             throw new ServiceException(ErrorCode.SOURCE_TYPE_ERROR);
         }
         this.filter = CanalFilterSupport.makeFilterExpression(pipeline);
@@ -177,13 +190,13 @@ public class CanalEmbedSelector {
         //使用zk
         canalParameter.setMetaMode(CanalParameter.MetaMode.ZOOKEEPER);
 
-        ConnectionUrlParser connectionUrlParser = ConnectionUrlParser.parseConnectionString(((CanalSupport)entityDesc).getUrl());
+        ConnectionUrlParser connectionUrlParser = ConnectionUrlParser.parseConnectionString(canalSupport.getUrl());
         List<CanalParameter.DataSourcing> collect = connectionUrlParser.getHosts().stream()
                 .map(item -> new CanalParameter.DataSourcing(CanalParameter.SourcingType.MYSQL, new InetSocketAddress(item.getHost(), item.getPort())))
                 .collect(Collectors.toList());
         canalParameter.setGroupDbAddresses(Arrays.asList(collect));
-        canalParameter.setDbUsername(((CanalSupport)entityDesc).getUsername());
-        canalParameter.setDbPassword(((CanalSupport)entityDesc).getPassword());
+        canalParameter.setDbUsername(canalSupport.getUsername());
+        canalParameter.setDbPassword(canalSupport.getPassword());
 
         //索引模式
         canalParameter.setIndexMode(CanalParameter.IndexMode.META);

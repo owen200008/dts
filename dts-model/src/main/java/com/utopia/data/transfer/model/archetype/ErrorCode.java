@@ -35,7 +35,7 @@ public class ErrorCode extends BaseErrorCode {
     public final static UtopiaErrorCodeClass SOURCE_DATAMEDIA_NO_FIND = new UtopiaErrorCodeClass(24203, "");
     public final static UtopiaErrorCodeClass TARGET_DATAMEDIA_NO_FIND = new UtopiaErrorCodeClass(24204, "");
 
-    public final static UtopiaErrorCodeClass LOAD_KAFKA_PUT_FAIL = new UtopiaErrorCodeClass(24374, "");
+    public final static UtopiaErrorCodeClass ERROR_EXIT = new UtopiaErrorCodeClass(24374, "");
     public final static UtopiaErrorCodeClass LOAD_NO_KAFKA = new UtopiaErrorCodeClass(24375, "");
     public final static UtopiaErrorCodeClass LOAD_NO_SERIALIZATION = new UtopiaErrorCodeClass(24376, "");
     public final static UtopiaErrorCodeClass LOAD_SOURCE_DATA_NO_SUPPORT = new UtopiaErrorCodeClass(24377, "");

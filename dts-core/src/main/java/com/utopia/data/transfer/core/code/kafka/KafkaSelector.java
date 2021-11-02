@@ -9,22 +9,23 @@ import com.utopia.data.transfer.model.code.entity.EntityDesc;
 import com.utopia.data.transfer.model.code.entity.kafka.KafkaProperty;
 import com.utopia.data.transfer.model.code.pipeline.Pipeline;
 import com.utopia.extension.UtopiaExtensionLoader;
+import com.utopia.model.rsp.UtopiaErrorCodeClass;
 import com.utopia.serialization.api.SerializationApi;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import lombok.var;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.h2.util.NetUtils;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @author owen.cai
@@ -33,7 +34,7 @@ import java.util.Optional;
  * @alter_date
  */
 @Slf4j
-public class KafkaSelector {
+public class KafkaSelector extends AbstractSelfCirculation<KafkaOrder> {
 
     @Getter
     private Pipeline                        pipeline;
@@ -48,6 +49,7 @@ public class KafkaSelector {
      * 是否处于运行中
      */
     private volatile boolean        running          = false;
+    private Thread processThread;
 
     public KafkaSelector(Long pipelineId, ConfigService configService, EntityDesc source, KafkaProperties kafkaProperties) {
         this.configService = configService;
@@ -55,6 +57,18 @@ public class KafkaSelector {
         this.kafkaProperties = kafkaProperties;
         this.source = source;
         this.timeoutDuration = Duration.ofMillis(pipeline.getParams().getBatchTimeout());
+
+        init(new SelfCirculationCallback() {
+            @Override
+            public boolean isRunning() {
+                return running;
+            }
+
+            @Override
+            public void sign() {
+                //kafka不用做什么
+            }
+        });
     }
 
     public void start() {
@@ -75,6 +89,16 @@ public class KafkaSelector {
 
         stringKafkaConsumer.subscribe(Collections.singletonList(kafka.getTopic()));
         running = true;
+
+        /**
+         * 自建线程
+         */
+        this.processThread = new Thread(() -> {
+            //自动执行
+            autoRun();
+        });
+
+        this.processThread.start();
     }
 
     public boolean isStart() {
@@ -85,31 +109,36 @@ public class KafkaSelector {
         if (!running) {
             return;
         }
+
+        var kafkaOrderOptionalSelfCirculationOrder = new SelfCirculationOrder<KafkaOrder, Optional<Message<EventDataTransaction>>>(KafkaOrder.STOP);
+        try{
+            runAction(kafkaOrderOptionalSelfCirculationOrder);
+        }catch (Throwable e){
+            log.error("runAction stop error", e);
+        }
         running = false;
-        stringKafkaConsumer.unsubscribe();
-        stringKafkaConsumer.close();
+        closeAction();
+
+        //等待退出，最多等待10s
+        try {
+            processThread.join(10000);
+        } catch (InterruptedException e) {
+            log.error("processThread no stopup interrupt");
+            processThread.interrupt();
+        }
     }
 
     public Optional<Message<EventDataTransaction>> selector() throws InterruptedException {
-        ConsumerRecords<String, byte[]> poll = stringKafkaConsumer.poll(this.timeoutDuration);
-        if(poll.isEmpty()){
-            //no data
-            return Optional.empty();
-        }
+        var kafkaOrderOptionalSelfCirculationOrder = new SelfCirculationOrder<KafkaOrder, Optional<Message<EventDataTransaction>>>(KafkaOrder.SELECT);
+        runAction(kafkaOrderOptionalSelfCirculationOrder);
         if (!running) {
             throw new InterruptedException();
         }
-
-        List<EventDataTransaction> entries = new ArrayList();
-        Message<EventDataTransaction> result = new Message(0L, entries);
-
-        for (ConsumerRecord<String, byte[]> stringConsumerRecord : poll) {
-            Message<EventDataTransaction> message = this.serializationApi.read(stringConsumerRecord.value(), Message.class);
-            result.setId(message.getId());
-            entries.addAll(message.getDatas());
+        if(kafkaOrderOptionalSelfCirculationOrder.getCode().getCode() != ErrorCode.CODE_SUCCESS.getCode()) {
+            log.error("error return code {}", kafkaOrderOptionalSelfCirculationOrder.getCode().getCode());
+            throw new InterruptedException();
         }
-
-        return Optional.of(result);
+        return kafkaOrderOptionalSelfCirculationOrder.getResult();
     }
 
     public void ack(Long id) {
@@ -118,5 +147,41 @@ public class KafkaSelector {
 
     public void rollback() {
 
+    }
+
+    @Override
+    protected CompletableFuture<UtopiaErrorCodeClass> operator(KafkaOrder kafkaOrder, SelfCirculationOperator selfCirculationOperator) {
+        switch(kafkaOrder){
+            case SELECT:{
+                ConsumerRecords<String, byte[]> poll = stringKafkaConsumer.poll(this.timeoutDuration);
+
+                if(poll.isEmpty()){
+                    selfCirculationOperator.setResult(Optional.empty());
+                    return CompletableFuture.completedFuture(ErrorCode.CODE_SUCCESS);
+                }
+                List<EventDataTransaction> entries = new ArrayList();
+                Message<EventDataTransaction> result = new Message(0L, entries);
+
+                for (ConsumerRecord<String, byte[]> stringConsumerRecord : poll) {
+                    Message<EventDataTransaction> message = this.serializationApi.read(stringConsumerRecord.value(), Message.class);
+                    result.setId(message.getId());
+                    entries.addAll(message.getDatas());
+                }
+
+                selfCirculationOperator.setResult(Optional.of(result));
+                return CompletableFuture.completedFuture(ErrorCode.CODE_SUCCESS);
+            }
+            case STOP:{
+                stringKafkaConsumer.unsubscribe();
+                stringKafkaConsumer.close();
+                return CompletableFuture.completedFuture(ErrorCode.CODE_SUCCESS);
+            }
+        }
+        return null;
+    }
+
+    @Override
+    protected void idle() {
+        //do nothing
     }
 }

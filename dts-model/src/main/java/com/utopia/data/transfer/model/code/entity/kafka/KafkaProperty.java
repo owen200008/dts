@@ -101,7 +101,7 @@ public class KafkaProperty {
          * Default batch size. A small batch size will make batching less common and may
          * reduce throughput (a batch size of zero disables batching entirely).
          */
-        private Long batchSize = 16384L;
+        private Integer batchSize = 16384;
 
         /**
          * Total memory size the producer can use to buffer records waiting to be sent to
