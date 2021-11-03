@@ -69,11 +69,6 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      <dependency>
-        <groupId>com.utopia.service</groupId>
-        <artifactId>service-mgr-serviceid-starter</artifactId>
-        <version>${service-mgr.version}</version>
-      </dependency>
       <!-- archetype define end *************************************************** -->
 
       <!-- project define begin *************************************************** -->

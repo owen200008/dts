@@ -5,7 +5,6 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.utopia.data.transfer.core.code.service.ConfigService;
 import com.utopia.module.distributed.lock.api.DtbLockFactory;
-import com.utopia.unique.serviceid.api.UniqueServiceid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,9 +26,6 @@ public class PipelineEventService {
 
     @Autowired
     private DtbLockFactory redis;
-
-    @Autowired
-    private UniqueServiceid uniqueServiceid;
 
     /**
      *

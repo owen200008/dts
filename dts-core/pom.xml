@@ -87,11 +87,6 @@
     </dependency>
 
     <dependency>
-      <groupId>com.utopia.service</groupId>
-      <artifactId>service-mgr-serviceid-starter</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>com.utopia</groupId>
       <artifactId>spi-api</artifactId>
     </dependency>
