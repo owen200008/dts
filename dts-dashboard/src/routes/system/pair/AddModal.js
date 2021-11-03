@@ -3,6 +3,7 @@ import { Modal, Form, Switch, Input, Select, Divider, Button } from "antd";
 import { connect } from "dva";
 
 import AddDataMediaModal from '../sourceData/AddModal';
+import AddTargetDataMediaModal from '../targetData/AddModal';
 
 const { Option } = Select;
 const FormItem = Form.Item;
@@ -70,6 +71,39 @@ class AddModal extends PureComponent {
     this.setState({
       popup: (
         <AddDataMediaModal
+          disabled={false}
+          title={labelMaps[key]}
+          handleOk={values => {
+            dispatch({
+              type: `${key.replace('mediaId', '')}/add`,
+              payload: {
+                ...values
+              },
+              fetchValue: {
+                pageNum: 1,
+                pageSize: 10000
+              },
+              callback: ({ sourceDataId, targetDataId }) => {
+                this.setState({
+                  [key]: sourceDataId || targetDataId
+                })
+                this.closeModal();
+              }
+            });
+          }}
+          handleCancel={() => {
+            this.closeModal();
+          }}
+        />
+      )
+    });
+  }
+
+  addTargetData = (key) => {
+    const { dispatch } = this.props;
+    this.setState({
+      popup: (
+        <AddTargetDataMediaModal
           disabled={false}
           title={labelMaps[key]}
           handleOk={values => {
@@ -182,7 +216,7 @@ class AddModal extends PureComponent {
             )}
             <Button
               style={{ marginLeft: 20, marginTop: 0 }}
-              onClick={this.addDataSource.bind(this, 'targetDatamediaId')}
+              onClick={this.addTargetData.bind(this, 'targetDatamediaId')}
               icon="plus"
             >
               添加
