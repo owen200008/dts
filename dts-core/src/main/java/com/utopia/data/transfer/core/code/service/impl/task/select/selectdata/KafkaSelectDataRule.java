@@ -21,10 +21,10 @@ import java.util.Optional;
 public class KafkaSelectDataRule implements SelectDataRule {
 
     private KafkaSelector kafkaSelector;
-    void init(Long pipelineId, ConfigService configService, KafkaProperties kafkaProperties){
+    void init(Long pipelineId, ConfigService configService){
         Pipeline pipeline = configService.getPipeline(pipelineId);
 
-        kafkaSelector = new KafkaSelector(pipelineId, configService, configService.getEntityDesc(pipeline.getSourceEntityId()), kafkaProperties);
+        kafkaSelector = new KafkaSelector(pipelineId, configService, configService.getEntityDesc(pipeline.getSourceEntityId()));
         kafkaSelector.start();
     }
 

@@ -40,7 +40,6 @@ public class KafkaSelector extends AbstractSelfCirculation<KafkaOrder> {
     private Pipeline                        pipeline;
     private final EntityDesc                source;
     private ConfigService                   configService;
-    private final KafkaProperties           kafkaProperties;
     private SerializationApi                serializationApi;
     private KafkaConsumer<String, byte[]>   stringKafkaConsumer;
     private Duration timeoutDuration;
@@ -51,10 +50,9 @@ public class KafkaSelector extends AbstractSelfCirculation<KafkaOrder> {
     private volatile boolean        running          = false;
     private Thread processThread;
 
-    public KafkaSelector(Long pipelineId, ConfigService configService, EntityDesc source, KafkaProperties kafkaProperties) {
+    public KafkaSelector(Long pipelineId, ConfigService configService, EntityDesc source) {
         this.configService = configService;
         this.pipeline = configService.getPipeline(pipelineId);
-        this.kafkaProperties = kafkaProperties;
         this.source = source;
         this.timeoutDuration = Duration.ofMillis(pipeline.getParams().getBatchTimeout());
 

@@ -36,12 +36,10 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 public class LoadRunKafka implements LoadRun {
-    @UtopiaSPIInject
-    private KafkaProperties kafkaProperties;
 
     @Override
     public LoadRunItem createItem(Pipeline pipeline, EntityDesc sourceEntityDesc, EntityDesc targetEntityDesc) {
-        return new LoadRunKafkaItem(pipeline, sourceEntityDesc, targetEntityDesc, kafkaProperties);
+        return new LoadRunKafkaItem(pipeline, sourceEntityDesc, targetEntityDesc);
     }
 
     public static class LoadRunKafkaItem implements LoadRunItem{
@@ -49,17 +47,15 @@ public class LoadRunKafka implements LoadRun {
         private final Pipeline pipeline;
         private final EntityDesc sourceEntityDesc;
         private final EntityDesc targetEntityDesc;
-        private final KafkaProperties kafkaProperties;
 
         private String topic;
         private SerializationApi serializationApi;
         private KafkaProducer<String, byte[]> producer;
 
-        public LoadRunKafkaItem(Pipeline pipeline, EntityDesc sourceEntityDesc, EntityDesc targetEntityDesc, KafkaProperties kafkaProperties) {
+        public LoadRunKafkaItem(Pipeline pipeline, EntityDesc sourceEntityDesc, EntityDesc targetEntityDesc) {
             this.pipeline = pipeline;
             this.sourceEntityDesc = sourceEntityDesc;
             this.targetEntityDesc = targetEntityDesc;
-            this.kafkaProperties = kafkaProperties;
 
             KafkaProperty kafkaParam = targetEntityDesc.getParams().toJavaObject(KafkaProperty.class);
             this.serializationApi = UtopiaExtensionLoader.getExtensionLoader(SerializationApi.class).getExtension(kafkaParam.getSerialization());
