@@ -18,6 +18,7 @@ import com.utopia.register.center.sync.LocalCacheManager;
 import com.utopia.spring.extension.factory.UtopiaSelfDefineFactory;
 import com.utopia.string.UtopiaStringUtil;
 import com.utopia.sys.UtopiaShutdownHook;
+import com.utopia.unique.serviceid.api.UniqueServiceid;
 import com.utopia.utils.NetUtils;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -82,6 +83,9 @@ public class DTSMgr implements UtopiaShutdownHook.ShutdownCallbackFunc, LocalCac
     @SuppressWarnings("AlibabaThreadPoolCreation")
     @Getter
     private ScheduledExecutorService reloadSchedule = Executors.newScheduledThreadPool(1);
+
+    @Autowired
+    UniqueServiceid uniqueServiceid;
 
     private volatile String lastLoadMD5 = "";
     /**
