@@ -157,10 +157,8 @@ public class CanalEmbedSelector {
 
         canalServer.start();
 
-
-
-        canalServer.start(this.source.getName());
-        this.clientIdentity = new ClientIdentity(this.source.getName(), pipeline.getId().shortValue(), filter);
+        canalServer.start(pipeline.getId().toString());
+        this.clientIdentity = new ClientIdentity(pipeline.getId().toString(), pipeline.getId().shortValue(), filter);
         /**
          * 发起一次订阅
          */
@@ -174,14 +172,14 @@ public class CanalEmbedSelector {
             return;
         }
         running = false;
-        canalServer.stop(this.source.getName());
+        canalServer.stop(pipeline.getId().toString());
         canalServer.stop();
     }
 
     protected Canal createCanalByEntity(EntityDesc entityDesc){
         Canal canal = new Canal();
-        canal.setId(entityDesc.getId());
-        canal.setName(entityDesc.getName());
+        canal.setId(pipeline.getId());
+        canal.setName(pipeline.getId().toString());
         //canal.setStatus(CanalStatus.START);
 
         CanalParameter canalParameter = new CanalParameter();
@@ -207,7 +205,8 @@ public class CanalEmbedSelector {
         canalParameter.setDetectingIntervalInSeconds(5);
 
         canalParameter.setDdlIsolation(true);
-        canalParameter.setFilterTableError(false);
+        //过滤表解析异常
+        canalParameter.setFilterTableError(true);
         canalParameter.setMemoryStorageRawEntry(false);
 
         //使用gtid

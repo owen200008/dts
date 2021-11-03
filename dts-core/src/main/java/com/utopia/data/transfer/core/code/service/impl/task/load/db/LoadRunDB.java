@@ -17,7 +17,6 @@ import com.utopia.data.transfer.model.code.entity.EventColumn;
 import com.utopia.data.transfer.model.code.pipeline.Pipeline;
 import com.utopia.data.transfer.model.code.transfer.EventDataInterface;
 import com.utopia.data.transfer.model.code.transfer.EventDataTransactionInterface;
-import com.utopia.data.transfer.model.code.transfer.TransferEventData;
 import com.utopia.data.transfer.model.code.transfer.TransferEventDataTransaction;
 import com.utopia.extension.UtopiaExtensionLoader;
 import com.utopia.extension.UtopiaSPIInject;
