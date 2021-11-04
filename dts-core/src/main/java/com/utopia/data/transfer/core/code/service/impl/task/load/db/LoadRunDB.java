@@ -198,7 +198,7 @@ public class LoadRunDB implements LoadRun {
                                     log.info("run sql update {} {}", item.getSql(), update);
                                 });
                             } catch(Throwable e){
-                                log.error("doDml run data error", JSON.toJSONString(data));
+                                log.error("doDml run data error {}", JSON.toJSONString(data), e);
                                 throw new ServiceException(ErrorCode.LOAD_DML_RUN_ERROR);
                             }
                         }
