@@ -8,5 +8,6 @@ package com.utopia.data.transfer.core.code.kafka;
  */
 public enum KafkaOrder {
     SELECT,
-    STOP
+    STOP,
+    ACK
 }

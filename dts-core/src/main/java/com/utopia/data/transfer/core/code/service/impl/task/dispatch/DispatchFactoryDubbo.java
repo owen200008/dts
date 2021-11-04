@@ -1,5 +1,6 @@
 package com.utopia.data.transfer.core.code.service.impl.task.dispatch;
 
+import com.utopia.data.transfer.core.code.base.KernelConfigDubbo;
 import com.utopia.data.transfer.core.code.model.EventDataTransaction;
 import com.utopia.data.transfer.core.code.model.Message;
 import com.utopia.data.transfer.core.code.service.impl.task.LoadTaskImpl;
@@ -40,6 +41,9 @@ public class DispatchFactoryDubbo implements DispatchFactory {
     @UtopiaSPIInject
     private ApplicationEventPublisher applicationEventPublisher;
 
+    @UtopiaSPIInject
+    private KernelConfigDubbo kernelConfigDubbo;
+
     @Override
     public SelectDispatchRule createSelectDispatchRule(String dispatchRuleParam) {
         return new SelectDispatchDubbo(dispatchRuleParam);
@@ -47,7 +51,7 @@ public class DispatchFactoryDubbo implements DispatchFactory {
 
     @Override
     public LoadDispatchRule createLoadDispatchRule(String dispatchRuleParam) {
-        return new LoadDispatchDubbo(applicationContext, applicationEventPublisher);
+        return new LoadDispatchDubbo(applicationContext, applicationEventPublisher, kernelConfigDubbo);
     }
 
     public static class SelectDispatchDubbo implements SelectDispatchRule {
@@ -123,17 +127,20 @@ public class DispatchFactoryDubbo implements DispatchFactory {
 
         private final ApplicationContext applicationContext;
         private final ApplicationEventPublisher applicationEventPublisher;
+        private final KernelConfigDubbo kernelConfigDubbo;
         private ServiceBean<LoadTransferFacade> serviceBean;
 
-        public LoadDispatchDubbo(ApplicationContext applicationContext, ApplicationEventPublisher applicationEventPublisher) {
+        public LoadDispatchDubbo(ApplicationContext applicationContext, ApplicationEventPublisher applicationEventPublisher, KernelConfigDubbo kernelConfigDubbo) {
             this.applicationContext = applicationContext;
             this.applicationEventPublisher = applicationEventPublisher;
+            this.kernelConfigDubbo = kernelConfigDubbo;
         }
 
         @Override
         public void start(LoadTaskImpl loadTask) {
             //启动dubbo服务
-            serviceBean = createGlobalService(applicationContext, applicationEventPublisher, LoadTransferFacade.class, TRANSFER_VERSION, String.valueOf(loadTask.getPipelineId()));
+            serviceBean = createGlobalService(applicationContext, applicationEventPublisher, LoadTransferFacade.class,
+                    TRANSFER_VERSION, String.valueOf(loadTask.getPipelineId()), kernelConfigDubbo.getCenter());
             serviceBean.setRef(loadTask);
             serviceBean.export();
         }
@@ -148,11 +155,13 @@ public class DispatchFactoryDubbo implements DispatchFactory {
                                                              ApplicationEventPublisher applicationEventPublisher,
                                                              Class<T> create,
                                                              String version,
-                                                             String group){
+                                                             String group,
+                                                             String registry){
             ServiceBean<T> tmpService = new ServiceBean();
             // 弱类型接口名
             tmpService.setApplicationEventPublisher(applicationEventPublisher);
             tmpService.setApplicationContext(applicationContext);
+            tmpService.setRegistryIds(registry);
             tmpService.setInterface(create);
             tmpService.setBeanName("dts");
             tmpService.setVersion(version);

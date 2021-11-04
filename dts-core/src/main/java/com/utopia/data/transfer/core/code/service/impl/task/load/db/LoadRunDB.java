@@ -18,6 +18,7 @@ import com.utopia.data.transfer.model.code.pipeline.Pipeline;
 import com.utopia.data.transfer.model.code.transfer.EventDataInterface;
 import com.utopia.data.transfer.model.code.transfer.EventDataTransactionInterface;
 import com.utopia.data.transfer.model.code.transfer.TransferEventDataTransaction;
+import com.utopia.data.transfer.model.code.transfer.TransferUniqueDesc;
 import com.utopia.extension.UtopiaExtensionLoader;
 import com.utopia.extension.UtopiaSPIInject;
 import com.utopia.model.rsp.UtopiaErrorCodeClass;
@@ -33,6 +34,8 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * @author owen.cai
@@ -112,11 +115,20 @@ public class LoadRunDB implements LoadRun {
             boolean isDdl = false;
             List<TransferEventDataTransactionGroup> ayList = new ArrayList();
             List<EventDataTransactionInterface> subTransaction = new ArrayList();
+            //保存当前最大的gtid
+            TransferUniqueDesc lastGtid = null;
             for (EventDataTransactionInterface transferEventDatum : datas) {
                 if(this.syncRuleItem.filter(transferEventDatum.getGtid())){
                     //过滤已经执行的
                     continue;
                 }
+                if(Objects.nonNull(lastGtid)){
+                    if(lastGtid.filter(transferEventDatum.getGtid())) {
+                        //去掉数据重复
+                        continue;
+                    }
+                }
+                lastGtid = transferEventDatum.getGtid();
 
                 if(isDdlDatas(transferEventDatum)) {
                     if(!isDdl) {

@@ -140,7 +140,12 @@ public class KafkaSelector extends AbstractSelfCirculation<KafkaOrder> {
     }
 
     public void ack(Long id) {
-        stringKafkaConsumer.commitSync();
+        var kafkaOrderOptionalSelfCirculationOrder = new SelfCirculationOrder<KafkaOrder, Optional<Message<EventDataTransaction>>>(KafkaOrder.ACK);
+        try {
+            runAction(kafkaOrderOptionalSelfCirculationOrder);
+        } catch (InterruptedException e) {
+            log.error("kafka ack error", e);
+        }
     }
 
     public void rollback() {
@@ -172,6 +177,10 @@ public class KafkaSelector extends AbstractSelfCirculation<KafkaOrder> {
             case STOP:{
                 stringKafkaConsumer.unsubscribe();
                 stringKafkaConsumer.close();
+                return CompletableFuture.completedFuture(ErrorCode.CODE_SUCCESS);
+            }
+            case ACK:{
+                stringKafkaConsumer.commitSync();
                 return CompletableFuture.completedFuture(ErrorCode.CODE_SUCCESS);
             }
         }
