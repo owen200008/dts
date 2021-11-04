@@ -122,10 +122,10 @@ public class DbRuleMapping implements DbRuleTemplate {
         for (int i = 0; i < size; i++) {
             EventColumn eventColumn = columns.get(i);
             if(eventColumn.isNull()){
-                sql.append(" ").append(columns.get(i).getColumnName()).append(" = null ");
+                sql.append(" `").append(columns.get(i).getColumnName()).append("` = null ");
             }
             else{
-                sql.append(" ").append(columns.get(i).getColumnName()).append(" = ").append("? ");
+                sql.append(" `").append(columns.get(i).getColumnName()).append("` = ").append("? ");
                 setColumns.add(eventColumn);
             }
             if (i != size - 1) {
@@ -139,10 +139,10 @@ public class DbRuleMapping implements DbRuleTemplate {
         for (int i = 0; i < size; i++) {
             EventColumn eventColumn = columns.get(i);
             if(eventColumn.isNull()){
-                sql.append(" ").append(columns.get(i).getColumnName()).append(" is null ");
+                sql.append(" `").append(columns.get(i).getColumnName()).append("` is null ");
             }
             else{
-                sql.append(" ").append(columns.get(i).getColumnName()).append(" = ").append("? ");
+                sql.append(" `").append(columns.get(i).getColumnName()).append("` = ").append("? ");
                 setColumns.add(eventColumn);
             }
             if (i != size - 1) {
@@ -157,7 +157,7 @@ public class DbRuleMapping implements DbRuleTemplate {
             sql.append(" , ");
         }
         for (int i = 0; i < size; i++) {
-            sql.append(columns.get(i).getColumnName()).append((i + 1 < size) ? " , " : "");
+            sql.append("`").append(columns.get(i).getColumnName()).append("`").append((i + 1 < size) ? " , " : "");
         }
     }
 
