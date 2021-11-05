@@ -1,4 +1,4 @@
-package com.utopia.data.transfer.core.code.model;
+package com.utopia.data.transfer.model.code.entity.data;
 
 import com.utopia.data.transfer.model.code.transfer.EventDataTransactionInterface;
 import com.utopia.data.transfer.model.code.transfer.TransferUniqueDesc;

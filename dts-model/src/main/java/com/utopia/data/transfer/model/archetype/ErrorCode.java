@@ -1,7 +1,6 @@
 package com.utopia.data.transfer.model.archetype;
 
 import com.utopia.model.rsp.UtopiaErrorCodeClass;
-import com.utopia.data.transfer.model.archetype.BaseErrorCode;
 
 /**
  * Created by czq on 2019/6/27.

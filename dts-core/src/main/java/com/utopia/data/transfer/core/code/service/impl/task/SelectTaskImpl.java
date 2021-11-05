@@ -5,8 +5,8 @@ import com.utopia.data.transfer.core.code.service.impl.task.dispatch.DispatchFac
 import com.utopia.data.transfer.core.code.service.impl.task.select.SelectDataFactory;
 import com.utopia.data.transfer.core.code.service.impl.task.select.SelectDataRule;
 import com.utopia.data.transfer.model.archetype.ErrorCode;
-import com.utopia.data.transfer.core.code.model.EventDataTransaction;
-import com.utopia.data.transfer.core.code.model.Message;
+import com.utopia.data.transfer.model.code.entity.data.EventDataTransaction;
+import com.utopia.data.transfer.model.code.entity.data.Message;
 import com.utopia.data.transfer.core.code.service.ArbitrateEventService;
 import com.utopia.data.transfer.core.code.service.ConfigService;
 import com.utopia.data.transfer.core.code.service.impl.TaskImpl;

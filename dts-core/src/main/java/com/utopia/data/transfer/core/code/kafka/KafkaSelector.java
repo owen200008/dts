@@ -1,11 +1,11 @@
 package com.utopia.data.transfer.core.code.kafka;
 
-import com.utopia.data.transfer.core.code.model.EventDataTransaction;
-import com.utopia.data.transfer.core.code.model.Message;
+import com.utopia.data.transfer.model.code.entity.data.EventDataTransaction;
 import com.utopia.data.transfer.core.code.service.ConfigService;
 import com.utopia.data.transfer.model.archetype.ErrorCode;
 import com.utopia.data.transfer.model.archetype.ServiceException;
 import com.utopia.data.transfer.model.code.entity.EntityDesc;
+import com.utopia.data.transfer.model.code.entity.data.Message;
 import com.utopia.data.transfer.model.code.entity.kafka.KafkaProperty;
 import com.utopia.data.transfer.model.code.pipeline.Pipeline;
 import com.utopia.extension.UtopiaExtensionLoader;
@@ -17,7 +17,6 @@ import lombok.var;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 
 import java.time.Duration;
 import java.util.ArrayList;

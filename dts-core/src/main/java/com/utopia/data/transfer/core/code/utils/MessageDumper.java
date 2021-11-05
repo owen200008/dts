@@ -16,10 +16,12 @@
 
 package com.utopia.data.transfer.core.code.utils;
 
-import com.utopia.data.transfer.core.code.model.EventData;
-import com.utopia.data.transfer.core.code.model.EventDataTransaction;
-import com.utopia.data.transfer.core.code.model.Message;
+import com.utopia.data.transfer.model.code.entity.data.EventData;
+import com.utopia.data.transfer.model.code.entity.data.EventDataTransaction;
+import com.utopia.data.transfer.model.code.entity.data.Message;
+import com.utopia.data.transfer.model.code.data.media.DataMediaRulePair;
 import com.utopia.data.transfer.model.code.entity.EventColumn;
+import com.utopia.data.transfer.model.code.pipeline.Pipeline;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.springframework.util.CollectionUtils;
@@ -71,7 +73,7 @@ public class MessageDumper {
                                     format.format(now), startPosition, endPosition);
     }
 
-    public static String dumpEventDatas(List<EventDataTransaction> eventDatas) {
+    public static String dumpEventDatas(List<EventDataTransaction> eventDatas, Pipeline pipeline) {
         if (CollectionUtils.isEmpty(eventDatas)) {
             return StringUtils.EMPTY;
         }
@@ -80,16 +82,18 @@ public class MessageDumper {
         StringBuilder builder = new StringBuilder(event_default_capacity * eventDatas.size());
         for (EventDataTransaction data : eventDatas) {
             for (EventData dataData : data.getDatas()) {
-                builder.append(dumpEventData(dataData));
+                builder.append(dumpEventData(dataData, pipeline));
             }
         }
         return builder.toString();
     }
 
-    public static String dumpEventData(EventData eventData) {
+    public static String dumpEventData(EventData eventData, Pipeline pipeline) {
+
+        DataMediaRulePair cacheSourcePairesBySourceId = pipeline.getCacheSourcePairesBySourceId(eventData.getTableId());
         boolean remedy = eventData.isRemedy();
         return MessageFormat.format(eventData_format, String.valueOf(eventData.getTableId()),
-                                    eventData.getSchemaName(), eventData.getTableName(),
+                cacheSourcePairesBySourceId.getSource().getNamespace(), cacheSourcePairesBySourceId.getSource().getValue(),
                                     eventData.getEventType().getValue(), String.valueOf(eventData.getExecuteTime()),
                                     remedy, dumpEventColumn(eventData.getKeys()),
                                     dumpEventColumn(eventData.getOldKeys()), dumpEventColumn(eventData.getColumns()),

@@ -1,4 +1,4 @@
-package com.utopia.data.transfer.core.code.model;
+package com.utopia.data.transfer.model.code.entity.data;
 
 import com.utopia.data.transfer.model.code.entity.EventColumn;
 import com.utopia.data.transfer.model.code.event.EventType;
@@ -22,10 +22,6 @@ public class EventData implements EventDataInterface, Serializable {
      * dts内部维护的一套tableId，与manager中得到的table Id对应
      */
     private long              tableId          = -1;
-
-    private String            tableName;
-
-    private String            schemaName;
 
     /**
      * 变更数据的业务类型(I/U/D/C/A/E),与canal中的EntryProtocol中定义的EventType一致.
@@ -53,7 +49,7 @@ public class EventData implements EventDataInterface, Serializable {
     private List<EventColumn> columns;
 
     /**
-     * 未更新的字段
+     * 所有
      */
     private Map<String, EventColumn> allColumns;
     // ====================== 运行过程中对数据的附加属性 =============================

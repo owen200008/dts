@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.utopia.data.transfer.core.code.model;
+package com.utopia.data.transfer.model.code.entity.data;
 
 import java.io.Serializable;
 import java.util.List;

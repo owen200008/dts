@@ -1,8 +1,8 @@
 package com.utopia.data.transfer.core.code.service.impl.task.load.db;
 
 import com.alibaba.fastjson.JSON;
-import com.utopia.data.transfer.core.code.model.EventDataTransaction;
-import com.utopia.data.transfer.core.code.model.Message;
+import com.utopia.data.transfer.model.code.entity.data.EventDataTransaction;
+import com.utopia.data.transfer.model.code.entity.data.Message;
 import com.utopia.data.transfer.model.archetype.ServiceException;
 import com.utopia.data.transfer.model.archetype.ErrorCode;
 import com.utopia.data.transfer.core.code.service.impl.task.load.LoadRun;
@@ -34,8 +34,6 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 /**
  * @author owen.cai

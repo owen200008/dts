@@ -3,7 +3,7 @@ package com.utopia.data.transfer.core.code.service;
 import com.alibaba.otter.canal.protocol.CanalEntry;
 import com.utopia.data.transfer.model.archetype.ServiceException;
 import com.utopia.data.transfer.model.archetype.ErrorCode;
-import com.utopia.data.transfer.core.code.model.EventDataTransaction;
+import com.utopia.data.transfer.model.code.entity.data.EventDataTransaction;
 import com.utopia.data.transfer.core.code.utils.ConfigHelper;
 import com.utopia.data.transfer.core.code.utils.EventColumnIndexComparable;
 import com.utopia.data.transfer.model.code.data.media.DataMediaRuleSource;
@@ -12,7 +12,7 @@ import com.utopia.data.transfer.model.code.entity.EventColumn;
 import com.utopia.data.transfer.model.code.event.EventType;
 import com.utopia.data.transfer.model.code.pipeline.Pipeline;
 import com.utopia.data.transfer.core.code.src.dialect.DbDialect;
-import com.utopia.data.transfer.core.code.model.EventData;
+import com.utopia.data.transfer.model.code.entity.data.EventData;
 import com.utopia.data.transfer.core.code.src.dialect.DbDialectFactory;
 import com.utopia.data.transfer.model.code.transfer.TransferUniqueDesc;
 import com.utopia.utils.CollectionUtils;
@@ -36,8 +36,6 @@ public class MessageParser {
     private ConfigService configService;
     @Autowired
     private DbDialectFactory dbDialectFactory;
-
-    private static final String compatibleMarkTable            = "retl_client";
 
     public List<EventDataTransaction> parse(Long pipelineId, List<CanalEntry.Entry> datas) throws ServiceException {
         List<EventDataTransaction> eventDatas = new ArrayList();
@@ -134,8 +132,6 @@ public class MessageParser {
 
             // 处理下ddl操作
             EventData eventData = new EventData();
-            eventData.setSchemaName(schemaName);
-            eventData.setTableName(tableName);
             eventData.setEventType(eventType);
             eventData.setExecuteTime(entry.getHeader().getExecuteTime());
             eventData.setSql(rowChange.getSql());
@@ -159,22 +155,22 @@ public class MessageParser {
     }
 
     private EventData internParse(Pipeline pipeline, CanalEntry.Entry entry, CanalEntry.RowChange rowChange, CanalEntry.RowData rowData) {
+        String onlyTableName = entry.getHeader().getTableName();
+        String schemaName = entry.getHeader().getSchemaName();
         EventData eventData = new EventData();
-        eventData.setTableName(entry.getHeader().getTableName());
-        eventData.setSchemaName(entry.getHeader().getSchemaName());
         eventData.setEventType(EventType.valueOf(rowChange.getEventType().name()));
         eventData.setExecuteTime(entry.getHeader().getExecuteTime());
         EventType eventType = eventData.getEventType();
 
         DataMediaRulePair dataMediaPair = ConfigHelper.findDataMediaPairBySourceName(pipeline,
-                eventData.getSchemaName(),
-                eventData.getTableName());
+                schemaName,
+                onlyTableName);
         DataMediaRuleSource dataMedia = dataMediaPair.getSource();
         eventData.setTableId(dataMedia.getId());
 
         List<CanalEntry.Column> beforeColumns = rowData.getBeforeColumnsList();
         List<CanalEntry.Column> afterColumns = rowData.getAfterColumnsList();
-        String tableName = eventData.getSchemaName() + "." + eventData.getTableName();
+        String tableName = schemaName + "." + onlyTableName;
 
         // 变更后的主键
         Map<String, EventColumn> keyColumns = new LinkedHashMap<String, EventColumn>();

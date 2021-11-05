@@ -1,13 +1,12 @@
 package com.utopia.data.transfer.core.code.service.impl.task.select.selectdata;
 
 import com.utopia.data.transfer.core.code.kafka.KafkaSelector;
-import com.utopia.data.transfer.core.code.model.EventDataTransaction;
-import com.utopia.data.transfer.core.code.model.Message;
+import com.utopia.data.transfer.model.code.entity.data.EventDataTransaction;
+import com.utopia.data.transfer.model.code.entity.data.Message;
 import com.utopia.data.transfer.core.code.service.ConfigService;
 import com.utopia.data.transfer.core.code.service.impl.task.select.SelectDataRule;
 import com.utopia.data.transfer.model.code.pipeline.Pipeline;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 
 import java.util.Optional;
 

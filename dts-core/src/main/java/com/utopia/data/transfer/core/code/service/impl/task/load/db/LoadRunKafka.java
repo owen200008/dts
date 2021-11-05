@@ -3,8 +3,8 @@ package com.utopia.data.transfer.core.code.service.impl.task.load.db;
 import com.alibaba.fastjson.JSON;
 import com.google.common.base.Joiner;
 import com.utopia.data.transfer.core.code.kafka.KafkaConfig;
-import com.utopia.data.transfer.core.code.model.EventDataTransaction;
-import com.utopia.data.transfer.core.code.model.Message;
+import com.utopia.data.transfer.model.code.entity.data.EventDataTransaction;
+import com.utopia.data.transfer.model.code.entity.data.Message;
 import com.utopia.data.transfer.core.code.service.impl.task.load.LoadRun;
 import com.utopia.data.transfer.model.archetype.ErrorCode;
 import com.utopia.data.transfer.model.archetype.ServiceException;
@@ -14,7 +14,6 @@ import com.utopia.data.transfer.model.code.pipeline.Pipeline;
 
 import com.utopia.data.transfer.model.code.transfer.TransferEventDataTransaction;
 import com.utopia.extension.UtopiaExtensionLoader;
-import com.utopia.extension.UtopiaSPIInject;
 import com.utopia.model.rsp.UtopiaErrorCodeClass;
 import com.utopia.serialization.api.SerializationApi;
 import groovy.lang.Closure;
@@ -23,7 +22,7 @@ import groovy.lang.Script;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;

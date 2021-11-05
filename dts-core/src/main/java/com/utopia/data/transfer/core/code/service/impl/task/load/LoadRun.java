@@ -1,7 +1,7 @@
 package com.utopia.data.transfer.core.code.service.impl.task.load;
 
-import com.utopia.data.transfer.core.code.model.EventDataTransaction;
-import com.utopia.data.transfer.core.code.model.Message;
+import com.utopia.data.transfer.model.code.entity.data.EventDataTransaction;
+import com.utopia.data.transfer.model.code.entity.data.Message;
 import com.utopia.data.transfer.model.code.entity.EntityDesc;
 import com.utopia.data.transfer.model.code.pipeline.Pipeline;
 import com.utopia.data.transfer.model.code.transfer.TransferEventDataTransaction;

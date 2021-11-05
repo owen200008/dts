@@ -19,12 +19,12 @@ import com.mysql.cj.conf.ConnectionUrlParser;
 import com.utopia.data.transfer.model.archetype.ServiceException;
 import com.utopia.data.transfer.model.archetype.ErrorCode;
 import com.utopia.data.transfer.core.code.base.config.DTSConstants;
-import com.utopia.data.transfer.core.code.model.EventDataTransaction;
+import com.utopia.data.transfer.model.code.entity.data.EventDataTransaction;
 import com.utopia.data.transfer.model.code.entity.CanalSupport;
 import com.utopia.data.transfer.model.code.entity.EntityDesc;
 import com.utopia.data.transfer.model.code.entity.mysql.MysqlProperty;
 import com.utopia.data.transfer.model.code.pipeline.Pipeline;
-import com.utopia.data.transfer.core.code.model.Message;
+import com.utopia.data.transfer.model.code.entity.data.Message;
 import com.utopia.data.transfer.core.code.service.ConfigService;
 import com.utopia.data.transfer.core.code.utils.MessageDumper;
 import com.utopia.data.transfer.core.code.service.MessageParser;
@@ -283,7 +283,7 @@ public class CanalEmbedSelector {
             log.info("****************************************************" + SEP);
             if (Boolean.TRUE.equals(pipeline.getParams().getDumpSelectorDetail())) {
                 // 判断一下是否需要打印详细信息
-                dumpEventDatas(message.getDatas());
+                dumpEventDatas(message.getDatas(), pipeline);
                 log.info("****************************************************" + SEP);
             }
         } finally {
@@ -294,15 +294,15 @@ public class CanalEmbedSelector {
     /**
      * 分批输出多个数据
      */
-    private void dumpEventDatas(List<EventDataTransaction> eventDatas) {
+    private void dumpEventDatas(List<EventDataTransaction> eventDatas, Pipeline pipeline) {
         int size = eventDatas.size();
         // 开始输出每条记录
         int index = 0;
         do {
             if (index + logSplitSize >= size) {
-                log.info(MessageDumper.dumpEventDatas(eventDatas.subList(index, size)));
+                log.info(MessageDumper.dumpEventDatas(eventDatas.subList(index, size), pipeline));
             } else {
-                log.info(MessageDumper.dumpEventDatas(eventDatas.subList(index, index + logSplitSize)));
+                log.info(MessageDumper.dumpEventDatas(eventDatas.subList(index, index + logSplitSize), pipeline));
             }
             index += logSplitSize;
         } while (index < size);

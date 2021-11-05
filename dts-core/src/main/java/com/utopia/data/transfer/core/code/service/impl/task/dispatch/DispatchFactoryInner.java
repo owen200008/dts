@@ -1,7 +1,7 @@
 package com.utopia.data.transfer.core.code.service.impl.task.dispatch;
 
-import com.utopia.data.transfer.core.code.model.EventDataTransaction;
-import com.utopia.data.transfer.core.code.model.Message;
+import com.utopia.data.transfer.model.code.entity.data.EventDataTransaction;
+import com.utopia.data.transfer.model.code.entity.data.Message;
 import com.utopia.data.transfer.core.code.service.impl.task.LoadTaskImpl;
 import com.utopia.data.transfer.core.code.service.impl.task.SelectTaskImpl;
 import com.utopia.data.transfer.core.code.service.impl.task.load.LoadTransferFacade;
