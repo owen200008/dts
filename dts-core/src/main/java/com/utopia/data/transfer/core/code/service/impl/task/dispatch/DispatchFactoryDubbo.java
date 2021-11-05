@@ -75,11 +75,11 @@ public class DispatchFactoryDubbo implements DispatchFactory {
             reference.setVersion(TRANSFER_VERSION);
             reference.setGroup(String.valueOf(selectTask.getPipelineId()));
             reference.setCluster(ClusterRules.FAIL_FAST);
-            reference.setLazy(true);
+            reference.setCheck(false);
             try{
                 this.loadTransferFacade = reference.get();
             }catch (Throwable e) {
-                log.error("pipelineid {} get facade error!!!", selectTask.getPipelineId());
+                log.error("pipelineid {} get facade error!!! {}", selectTask.getPipelineId(), e);
                 return false;
             }
             return true;
