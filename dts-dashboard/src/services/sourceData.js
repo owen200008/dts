@@ -1,6 +1,5 @@
 import request from "../utils/request";
 
-self.CACHE_MEMORY = self.CACHE_MEMORY || {};
 const baseUrl = document.getElementById("httpPath").innerHTML;
 
 
@@ -34,7 +33,8 @@ export async function deleteItem(params) {
 export async function getItem(params) {
   let key = `sourceData_id_${params.sourceId}`;
 
-  if (self.CACHE_MEMORY[key]) return Promise.resolve(self.CACHE_MEMORY[key]);
+  let cacheValue = sessionStorage.getItem(key);
+  if (cacheValue) return Promise.resolve(JSON.parse(cacheValue));
   return request(`${baseUrl}/dts/sourceData/get`, {
     method: `POST`,
     body: {
@@ -42,7 +42,7 @@ export async function getItem(params) {
     }
   }).then(resp => {
     if (resp.code === 200) {
-      self.CACHE_MEMORY[key] = resp;
+      sessionStorage.setItem(key, JSON.stringify(resp));
     }
     return resp;
   })

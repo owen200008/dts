@@ -31,9 +31,9 @@ export async function deleteItem(params) {
 }
 
 export async function getItem(params) {
-  let key = `targetData_id_${params.targeId}`;
-
-  if (self.CACHE_MEMORY[key]) return Promise.resolve(self.CACHE_MEMORY[key]);
+  let key = `targetData_id_${params.targetId}`;
+  let cacheValue = sessionStorage.getItem(key);
+  if (cacheValue) return Promise.resolve(JSON.parse(cacheValue));
   return request(`${baseUrl}/dts/targetData/get`, {
     method: `POST`,
     body: {
@@ -41,7 +41,7 @@ export async function getItem(params) {
     }
   }).then(resp => {
     if (resp.code === 200) {
-      self.CACHE_MEMORY[key] = resp;
+      sessionStorage.setItem(key, JSON.stringify(resp));
     }
     return resp;
   })

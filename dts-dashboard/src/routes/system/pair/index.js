@@ -28,6 +28,13 @@ export default class Pair extends PureComponent {
     const { currentPage, taskId } = this.state;
     const { dispatch } = this.props;
     dispatch({
+      type: "pair/saveList",
+      payload: {
+        dataList: [],
+        total: 0
+      }
+    });
+    dispatch({
       type: "pipeline/fetch",
       payload: {
         taskId: taskId || undefined,

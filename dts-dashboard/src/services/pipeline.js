@@ -1,7 +1,6 @@
 import request from "../utils/request";
 
 const baseUrl = document.getElementById("httpPath").innerHTML;
-self.CACHE_MEMORY = self.CACHE_MEMORY || {};
 
 export async function addItem(params) {
   return request(`${baseUrl}/dts/pipeline/add`, {
@@ -33,7 +32,8 @@ export async function updateItem(params) {
 export async function getItem(params) {
   let key = `pipeline_id_${params.pipelineId}`;
 
-  if (self.CACHE_MEMORY[key]) return Promise.resolve(self.CACHE_MEMORY[key]);
+  let cacheValue = sessionStorage.getItem(key);
+  if (cacheValue) return Promise.resolve(JSON.parse(cacheValue));
   return request(`${baseUrl}/dts/pipeline/get`, {
     method: `POST`,
     body: {
@@ -41,7 +41,7 @@ export async function getItem(params) {
     }
   }).then(resp => {
     if (resp.code === 200) {
-      self.CACHE_MEMORY[key] = resp;
+      sessionStorage.setItem(key, JSON.stringify(resp));
     }
     return resp;
   })
