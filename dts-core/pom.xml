@@ -143,10 +143,6 @@
       <classifier>indy</classifier>
     </dependency>
     <dependency>
-      <groupId>com.utopia</groupId>
-      <artifactId>serialization-kryo</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.apache.kafka</groupId>
       <artifactId>kafka-clients</artifactId>
     </dependency>

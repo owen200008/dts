@@ -9,6 +9,7 @@ import com.utopia.data.transfer.core.code.service.impl.task.load.LoadRun;
 import com.utopia.data.transfer.model.archetype.ErrorCode;
 import com.utopia.data.transfer.model.archetype.ServiceException;
 import com.utopia.data.transfer.model.code.entity.EntityDesc;
+import com.utopia.data.transfer.model.code.entity.data.SerializationId;
 import com.utopia.data.transfer.model.code.entity.kafka.KafkaProperty;
 import com.utopia.data.transfer.model.code.pipeline.Pipeline;
 
@@ -49,6 +50,7 @@ public class LoadRunKafka implements LoadRun {
 
         private String topic;
         private SerializationApi serializationApi;
+        private SerializationId serializationId;
         private KafkaProducer<String, byte[]> producer;
 
         public LoadRunKafkaItem(Pipeline pipeline, EntityDesc sourceEntityDesc, EntityDesc targetEntityDesc) {
@@ -57,6 +59,7 @@ public class LoadRunKafka implements LoadRun {
             this.targetEntityDesc = targetEntityDesc;
 
             KafkaProperty kafkaParam = targetEntityDesc.getParams().toJavaObject(KafkaProperty.class);
+            this.serializationId = SerializationId.valueOf(kafkaParam.getSerialization());
             this.serializationApi = UtopiaExtensionLoader.getExtensionLoader(SerializationApi.class).getExtension(kafkaParam.getSerialization());
             if(Objects.isNull(this.serializationApi)){
                 log.error("no find serializationApi {}", kafkaParam.getSerialization());
@@ -78,7 +81,9 @@ public class LoadRunKafka implements LoadRun {
         public UtopiaErrorCodeClass loadInner(Message<EventDataTransaction> message) {
             //目前只支持单topic，单分区
             try{
-                ProducerRecord<String, byte[]> record = new ProducerRecord(this.topic, this.serializationApi.writeOnce(message));
+                byte[] serialization = SerializationId.serialization(this.serializationId, this.serializationApi, message);
+
+                ProducerRecord<String, byte[]> record = new ProducerRecord(this.topic, serialization);
                 //最多5s
                 this.producer.send(record).get(5000, TimeUnit.SECONDS);
                 return ErrorCode.CODE_SUCCESS;

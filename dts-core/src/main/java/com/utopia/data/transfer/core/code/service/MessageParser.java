@@ -71,15 +71,28 @@ public class MessageParser {
         return eventDatas;
     }
 
-    protected void parseTransactionEnd(List<CanalEntry.Entry> transactionDataBuffer, Pipeline pipeline, List<EventDataTransaction> eventDatas){
+    protected void parseTransactionEnd(List<CanalEntry.Entry> transactionDataBuffer, Pipeline pipeline, List<EventDataTransaction> eventDatas) {
+        EventDataTransaction lastEventData = null;
         for (CanalEntry.Entry bufferEntry : transactionDataBuffer) {
             EventDataTransaction eventDataTransaction = internParse(pipeline, bufferEntry);
             if (eventDataTransaction == null || CollectionUtils.isEmpty(eventDataTransaction.getDatas())) {
                 // 可能为空，针对ddl返回时就为null
                 continue;
             }
-            //
-            eventDatas.add(eventDataTransaction);
+            //需要判断是否和上一个gtid相同，如果相同
+            if(lastEventData == null) {
+                lastEventData = eventDataTransaction;
+                eventDatas.add(eventDataTransaction);
+            }
+            else {
+                if(lastEventData.getGtid().isSame(eventDataTransaction.getGtid())){
+                    lastEventData.getDatas().addAll(eventDataTransaction.getDatas());
+                }
+                else{
+                    lastEventData = eventDataTransaction;
+                    eventDatas.add(eventDataTransaction);
+                }
+            }
         }
     }
 

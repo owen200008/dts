@@ -28,6 +28,11 @@ public class ErrorCode extends BaseErrorCode {
     public final static UtopiaErrorCodeClass FIND_TABLE_ERROR = new UtopiaErrorCodeClass(24105, "");
     public final static UtopiaErrorCodeClass GET_TABLE_ERROR = new UtopiaErrorCodeClass(24106, "");
 
+    public static final UtopiaErrorCodeClass DERIALIZATION_FORMAT_ERROR = new UtopiaErrorCodeClass(24110,"DERIALIZATION_FORMAT_ERROR");
+    public static final UtopiaErrorCodeClass DERIALIZATION_NOFIND_SERIALIZE = new UtopiaErrorCodeClass(24111,"DERIALIZATION_NOFIND_SERIALIZE");
+    public static final UtopiaErrorCodeClass DERIALIZATION_UNSUPPORT_SERIALIZE = new UtopiaErrorCodeClass(24112,"DERIALIZATION_UNSUPPORT_SERIALIZE");
+    public static final UtopiaErrorCodeClass DERIALIZATION_VERSION_ERROR = new UtopiaErrorCodeClass(24113,"DERIALIZATION_VERSION_ERROR");
+
 
     public final static UtopiaErrorCodeClass CHILD_NEED_DELETE_FIRST = new UtopiaErrorCodeClass(24201, "this not first delete");
     public final static UtopiaErrorCodeClass SOURCE_TYPE_ERROR = new UtopiaErrorCodeClass(24202, "");

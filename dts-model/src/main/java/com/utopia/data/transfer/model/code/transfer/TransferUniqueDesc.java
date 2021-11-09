@@ -125,4 +125,23 @@ public class TransferUniqueDesc implements Serializable {
         }
         return ret.toString();
     }
+
+
+    public boolean isSame(TransferUniqueDesc o) {
+        if(!key.equals(o.getKey())){
+            return false;
+        }
+        if(seq.size() != o.getSeq().size()){
+            return false;
+        }
+        for (int i = 0; i < seq.size(); i++) {
+            Pair<Long, Long> src = seq.get(i);
+            Pair<Long, Long> dst = o.getSeq().get(i);
+
+            if(!(src.getLeft().equals(dst.getLeft()) && src.getRight().equals(dst.getRight()))){
+                return false;
+            }
+        }
+        return true;
+    }
 }
