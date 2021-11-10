@@ -6,8 +6,10 @@ import com.utopia.data.transfer.model.archetype.ErrorCode;
 import com.utopia.data.transfer.model.archetype.ServiceException;
 import com.utopia.data.transfer.model.code.entity.EntityDesc;
 import com.utopia.data.transfer.model.code.entity.data.Message;
+import com.utopia.data.transfer.model.code.entity.data.SerializationId;
 import com.utopia.data.transfer.model.code.entity.kafka.KafkaProperty;
 import com.utopia.data.transfer.model.code.pipeline.Pipeline;
+import com.utopia.exception.UtopiaException;
 import com.utopia.extension.UtopiaExtensionLoader;
 import com.utopia.model.rsp.UtopiaErrorCodeClass;
 import com.utopia.serialization.api.SerializationApi;
@@ -165,7 +167,13 @@ public class KafkaSelector extends AbstractSelfCirculation<KafkaOrder> {
                 Message<EventDataTransaction> result = new Message(0L, entries);
 
                 for (ConsumerRecord<String, byte[]> stringConsumerRecord : poll) {
-                    Message<EventDataTransaction> message = this.serializationApi.read(stringConsumerRecord.value(), Message.class);
+                    Message<EventDataTransaction> message = null;
+                    try {
+                        message = SerializationId.derialization(Message.class, stringConsumerRecord.value());
+                    } catch (UtopiaException e) {
+                        log.error("SerializationId.derialization error", e);
+                        continue;
+                    }
                     result.setId(message.getId());
                     entries.addAll(message.getDatas());
                 }

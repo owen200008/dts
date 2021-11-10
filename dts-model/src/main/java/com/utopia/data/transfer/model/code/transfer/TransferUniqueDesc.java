@@ -21,7 +21,7 @@ public class TransferUniqueDesc implements Serializable {
     private static String SIGN_SPLITE = ":";
 
     private String key;
-    private List<Pair<Long, Long>> seq = new ArrayList();
+    private List<TransferUniquePair> seq = new ArrayList();
 
     public static TransferUniqueDesc parseGtid(String gtid) {
         TransferUniqueDesc ret = new TransferUniqueDesc();
@@ -32,16 +32,21 @@ public class TransferUniqueDesc implements Serializable {
         }
         ret.setKey(split[0]);
 
-        List<Pair<Long, Long>> set = new ArrayList();
+        List<TransferUniquePair> set = new ArrayList();
         for (int i = 1; i < split.length; i++) {
             String[] split1 = split[i].split("-");
             if(split.length == 1){
                 long l = Long.parseLong(split1[0]);
-
-                set.add(Pair.of(l, l));
+                set.add(TransferUniquePair.builder()
+                        .begin(l)
+                        .end(l)
+                        .build());
             }
             else{
-                set.add(Pair.of(Long.parseLong(split1[0]), Long.parseLong(split1[1])));
+                set.add(TransferUniquePair.builder()
+                        .begin(Long.parseLong(split1[0]))
+                        .end(Long.parseLong(split1[1]))
+                        .build());
             }
         }
         ret.setSeq(set);
@@ -55,17 +60,17 @@ public class TransferUniqueDesc implements Serializable {
         if(parseGtid.getSeq().size() == 0){
             return;
         }
-        List<Pair<Long, Long>> last = new ArrayList();
+        List<TransferUniquePair> last = new ArrayList();
         last.addAll(parseGtid.getSeq());
         last.addAll(this.seq);
-        last.sort(Comparator.comparing(Pair::getLeft));
+        last.sort(Comparator.comparing(TransferUniquePair::getBegin));
         //合并
         this.seq = new ArrayList();
-        Pair<Long, Long> longLongPair = last.get(0);
+        TransferUniquePair longLongPair = last.get(0);
         for (int i = 1; i < last.size(); i++) {
             //判断是否连续
-            Pair<Long, Long> tmp = last.get(i);
-            Pair combin = isCombin(longLongPair, tmp);
+            TransferUniquePair tmp = last.get(i);
+            TransferUniquePair combin = isCombin(longLongPair, tmp);
             if(Objects.isNull(combin)){
                 this.seq.add(longLongPair);
                 longLongPair = tmp;
@@ -77,22 +82,25 @@ public class TransferUniqueDesc implements Serializable {
         this.seq.add(longLongPair);
     }
 
-    private Pair isCombin(Pair<Long, Long> longLongPair, Pair<Long, Long> tmp) {
-        if(tmp.getLeft() <= longLongPair.getRight() + 1){
-            return Pair.of(longLongPair.getLeft(), Math.max(tmp.getRight(), longLongPair.getRight()));
+    private TransferUniquePair isCombin(TransferUniquePair longLongPair, TransferUniquePair tmp) {
+        if(tmp.getBegin() <= longLongPair.getEnd() + 1){
+            return TransferUniquePair.builder()
+                    .begin(longLongPair.getBegin())
+                    .end(Math.max(tmp.getEnd(), longLongPair.getEnd()))
+                    .build();
         }
         return null;
     }
 
     public boolean filter(TransferUniqueDesc gtid) {
-        List<Pair<Long, Long>> seq = gtid.getSeq();
+        List<TransferUniquePair> seq = gtid.getSeq();
         //in才要过滤
         for (int i = 0; i < seq.size(); i++) {
-            Pair<Long, Long> longLongPair = seq.get(i);
+            TransferUniquePair longLongPair = seq.get(i);
             boolean in = false;
             for (int j = 0; j < this.seq.size(); j++) {
-                if(longLongPair.getLeft() >= this.seq.get(j).getLeft() && longLongPair.getLeft() <= this.seq.get(j).getRight()){
-                    if(longLongPair.getRight() <= this.seq.get(j).getRight()){
+                if(longLongPair.getBegin() >= this.seq.get(j).getBegin() && longLongPair.getBegin() <= this.seq.get(j).getEnd()){
+                    if(longLongPair.getEnd() <= this.seq.get(j).getEnd()){
                         in = true;
                         break;
                     }
@@ -110,14 +118,14 @@ public class TransferUniqueDesc implements Serializable {
         ret.append(this.key);
         ret.append(SIGN_SPLITE);
         for (int i = 0; i < seq.size(); i++) {
-            Pair<Long, Long> item = seq.get(i);
-            if(item.getLeft().equals(item.getRight())) {
-                ret.append(item.getLeft());
+            TransferUniquePair item = seq.get(i);
+            if(item.getBegin() == item.getEnd()) {
+                ret.append(item.getBegin());
             }
             else {
-                ret.append(item.getLeft());
+                ret.append(item.getBegin());
                 ret.append("-");
-                ret.append(item.getRight());
+                ret.append(item.getEnd());
             }
             if(i != seq.size() - 1){
                 ret.append(SIGN_SPLITE);
@@ -135,10 +143,10 @@ public class TransferUniqueDesc implements Serializable {
             return false;
         }
         for (int i = 0; i < seq.size(); i++) {
-            Pair<Long, Long> src = seq.get(i);
-            Pair<Long, Long> dst = o.getSeq().get(i);
+            TransferUniquePair src = seq.get(i);
+            TransferUniquePair dst = o.getSeq().get(i);
 
-            if(!(src.getLeft().equals(dst.getLeft()) && src.getRight().equals(dst.getRight()))){
+            if(!(src.getBegin() == dst.getBegin() && src.getEnd() == dst.getEnd())){
                 return false;
             }
         }

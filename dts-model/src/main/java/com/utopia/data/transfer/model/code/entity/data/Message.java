@@ -32,6 +32,12 @@ public class Message<T> implements Serializable {
      */
     private List<T>         datas;
 
+    /**
+     * kryo序列化需要默认构造
+     */
+    public Message(){
+
+    }
     public Message(Long id, List<T> datas){
         this.id = id;
         this.datas = datas;

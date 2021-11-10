@@ -19,6 +19,9 @@ public class EventDataTransaction implements EventDataTransactionInterface, Seri
     private TransferUniqueDesc                  gtid;
     private List<EventData>                     datas;
 
+
+    public EventDataTransaction(){}
+
     public EventDataTransaction(TransferUniqueDesc gtid) {
         this.gtid = gtid;
     }

@@ -15,6 +15,8 @@ import com.utopia.extension.UtopiaExtensionLoader;
 import com.utopia.register.center.instance.RegistrationInstance;
 import com.utopia.register.center.instance.RegistrationInstanceFactory;
 import com.utopia.register.center.sync.LocalCacheManager;
+import com.utopia.serialization.kryo.utils.KryoIdUnique;
+import com.utopia.serialization.kryo.utils.KryoUtils;
 import com.utopia.spring.extension.factory.UtopiaSelfDefineFactory;
 import com.utopia.string.UtopiaStringUtil;
 import com.utopia.sys.UtopiaShutdownHook;
@@ -110,6 +112,10 @@ public class DTSMgr implements UtopiaShutdownHook.ShutdownCallbackFunc, LocalCac
 
     @PostConstruct
     public void init() {
+        //使用kryo
+        KryoRegister.registerKryo();
+
+
         //注册自定义的UtopiaSPIInject
         UtopiaSelfDefineFactory self = (UtopiaSelfDefineFactory) UtopiaExtensionLoader.getExtensionLoader(UtopiaExtensionFactory.class).getExtension("self");
         self.add(ApplicationContext.class,"applicationContext", applicationContext);

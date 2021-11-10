@@ -80,6 +80,8 @@ public enum EventType {
 
     private String value;
 
+    EventType() {
+    }
     private EventType(String value){
         this.value = value;
     }
