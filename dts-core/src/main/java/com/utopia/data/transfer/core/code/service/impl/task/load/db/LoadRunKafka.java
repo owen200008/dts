@@ -3,6 +3,9 @@ package com.utopia.data.transfer.core.code.service.impl.task.load.db;
 import com.alibaba.fastjson.JSON;
 import com.google.common.base.Joiner;
 import com.utopia.data.transfer.core.code.kafka.KafkaConfig;
+import com.utopia.data.transfer.model.code.data.media.DataMediaRulePair;
+import com.utopia.data.transfer.model.code.data.media.DataMediaRuleTarget;
+import com.utopia.data.transfer.model.code.entity.data.EventData;
 import com.utopia.data.transfer.model.code.entity.data.EventDataTransaction;
 import com.utopia.data.transfer.model.code.entity.data.Message;
 import com.utopia.data.transfer.core.code.service.impl.task.load.LoadRun;
@@ -21,10 +24,15 @@ import groovy.lang.Closure;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
 import lombok.extern.slf4j.Slf4j;
+import lombok.var;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -48,7 +56,6 @@ public class LoadRunKafka implements LoadRun {
         private final EntityDesc sourceEntityDesc;
         private final EntityDesc targetEntityDesc;
 
-        private String topic;
         private SerializationApi serializationApi;
         private SerializationId serializationId;
         private KafkaProducer<String, byte[]> producer;
@@ -66,7 +73,6 @@ public class LoadRunKafka implements LoadRun {
                 throw new ServiceException(ErrorCode.LOAD_NO_SERIALIZATION);
             }
 
-            this.topic = kafkaParam.getTopic();
             //Map<String, Object> props = this.kafkaProperties.buildProducerProperties();
             this.producer = new KafkaProducer(KafkaConfig.buildProducerProperties(kafkaParam, pipeline));
         }
@@ -77,20 +83,75 @@ public class LoadRunKafka implements LoadRun {
             return ErrorCode.UNKNOW_ERROR;
         }
 
+        class MessageMgr {
+
+            //target => Message
+            private Map<Long, Pair<DataMediaRuleTarget, Message<EventDataTransaction>>> map = new HashMap<>();
+
+            private final Message<EventDataTransaction> message;
+            public MessageMgr(Message<EventDataTransaction> message) {
+                this.message = message;
+            }
+
+            public Message<EventDataTransaction> getMessage(DataMediaRuleTarget targetId){
+                var eventDataTransactionMessage = map.get(targetId.getId());
+                if(Objects.isNull(eventDataTransactionMessage)) {
+                    eventDataTransactionMessage = Pair.of(targetId, new Message(message.getId(), Arrays.asList()));
+                }
+                return eventDataTransactionMessage.getRight();
+            }
+
+            public Map<Long, Pair<DataMediaRuleTarget, Message<EventDataTransaction>>> getResult() {
+                return map;
+            }
+        }
+
         @Override
         public UtopiaErrorCodeClass loadInner(Message<EventDataTransaction> message) {
             //目前只支持单topic，单分区
             try{
-                byte[] serialization = SerializationId.serialization(this.serializationId, this.serializationApi, message);
+                //根据
+                MessageMgr messageMgr = new MessageMgr(message);
 
-                ProducerRecord<String, byte[]> record = new ProducerRecord(this.topic, serialization);
-                //最多5s
-                this.producer.send(record).get(5000, TimeUnit.SECONDS);
+                for (EventDataTransaction data : message.getDatas()) {
+                    for (EventData dataData : data.getDatas()) {
+                        DataMediaRulePair cacheSourcePairesBySourceId = pipeline.getCacheSourcePairesBySourceId(dataData.getTableId());
+                        if(Objects.isNull(cacheSourcePairesBySourceId)) {
+                            return ErrorCode.LOAD_NO_TOPIC_CONFIG;
+                        }
+                        addDataToMessage(messageMgr, data, dataData, cacheSourcePairesBySourceId);
+                    }
+                }
+
+                for (var longMessageEntry : messageMgr.getResult().entrySet()) {
+                    byte[] serialization = SerializationId.serialization(this.serializationId, this.serializationApi, longMessageEntry.getValue().getRight());
+                    ProducerRecord<String, byte[]> record = new ProducerRecord(longMessageEntry.getValue().getLeft().getValue(), serialization);
+                    //最多5s
+                    this.producer.send(record).get(5000, TimeUnit.SECONDS);
+                }
                 return ErrorCode.CODE_SUCCESS;
             } catch (Throwable e) {
                 log.error("kafka put error", e);
             }
             return ErrorCode.UNKNOW_ERROR;
+        }
+
+        private void addDataToMessage(MessageMgr messageMgr, EventDataTransaction data, EventData dataData, DataMediaRulePair cacheSourcePairesBySourceId) {
+            Message<EventDataTransaction> message = messageMgr.getMessage(cacheSourcePairesBySourceId.getTarget());
+
+            //跟最后一个gtid是否相同
+            List<EventDataTransaction> datas = message.getDatas();
+            if(datas.size() > 0) {
+                EventDataTransaction eventDataTransaction = datas.get(datas.size() - 1);
+                if(eventDataTransaction.getGtid().isSame(data.getGtid())) {
+                    eventDataTransaction.getDatas().add(dataData);
+                    return;
+                }
+            }
+            //不相同，创建
+            EventDataTransaction eventDataTransaction = new EventDataTransaction(data.getGtid());
+            eventDataTransaction.setDatas(Arrays.asList(dataData));
+            datas.add(eventDataTransaction);
         }
 
         @Override

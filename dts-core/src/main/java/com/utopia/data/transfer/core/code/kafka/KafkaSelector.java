@@ -1,5 +1,6 @@
 package com.utopia.data.transfer.core.code.kafka;
 
+import com.utopia.data.transfer.model.code.data.media.DataMediaRulePair;
 import com.utopia.data.transfer.model.code.entity.data.EventDataTransaction;
 import com.utopia.data.transfer.core.code.service.ConfigService;
 import com.utopia.data.transfer.model.archetype.ErrorCode;
@@ -27,6 +28,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 /**
  * @author owen.cai
@@ -86,7 +88,12 @@ public class KafkaSelector extends AbstractSelfCirculation<KafkaOrder> {
         //Map<String, Object> props = kafkaProperties.buildConsumerProperties();
         this.stringKafkaConsumer = new KafkaConsumer(KafkaConfig.buildConsumerProperties(kafka, this.pipeline));
 
-        stringKafkaConsumer.subscribe(Collections.singletonList(kafka.getTopic()));
+        List<DataMediaRulePair> dataMediaPairs = pipeline.getPairs();
+        for (DataMediaRulePair dataMediaPair : dataMediaPairs) {
+            dataMediaPair.getSource().getValue();
+        }
+
+        stringKafkaConsumer.subscribe(pipeline.getPairs().stream().map(item -> item.getSource().getValue()).collect(Collectors.toList()));
         running = true;
 
         /**

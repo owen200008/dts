@@ -2,7 +2,6 @@ package com.utopia.data.transfer.model.code.entity.kafka;
 
 import lombok.Data;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -33,11 +32,6 @@ public class KafkaProperty {
      *
      */
     private String serialization = "kryo";
-
-    /**
-     * topic
-     */
-    private String topic = "xxx-xxx-xxx";
 
     @Data
     public static class Consumer {
