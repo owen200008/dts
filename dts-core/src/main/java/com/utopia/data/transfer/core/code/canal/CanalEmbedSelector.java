@@ -140,17 +140,6 @@ public class CanalEmbedSelector {
                         }
                     }
                 };
-//                instance.setAlarmHandler(otterAlarmHandler);
-
-                CanalEventSink eventSink = instance.getEventSink();
-                if (eventSink instanceof AbstractCanalEventSink) {
-//                    handler = new CanalDownStreamHandler();
-//                    handler.setPipelineId(pipeline.getId());
-//                    handler.setDetectingIntervalInSeconds(canal.getCanalParameter().getDetectingIntervalInSeconds());
-//                    // 添加到开头
-//                    ((AbstractCanalEventSink) eventSink).addHandler(handler, 0);
-//                    handler.start();
-                }
                 return instance;
             }
         });

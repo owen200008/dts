@@ -62,14 +62,15 @@ CREATE TABLE `u_region_pipeline` (
   UNIQUE KEY `u_region_pipeline_UN` (`mode`,`pipeline_id`)
 );
 
-
 -- u_dts.u_source_datamedia definition
 
 CREATE TABLE `u_source_datamedia` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `type` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `name` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '目标映射端名称',
   `namespace` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT 'datasouce映射库',
   `table` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT 'datasouce映射表',
+  `property` json DEFAULT NULL COMMENT '关联数据',
   `create_time` datetime NOT NULL COMMENT '创建时间',
   `modify_time` datetime NOT NULL COMMENT '修改时间',
   PRIMARY KEY (`id`)

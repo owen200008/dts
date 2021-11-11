@@ -1,4 +1,4 @@
-package com.utopia.data.transfer.core.code.service;
+package com.utopia.data.transfer.model.code.config;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.Serializer;
