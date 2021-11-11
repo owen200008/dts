@@ -152,7 +152,9 @@ public class LoadRunKafka implements LoadRun {
             }
             //不相同，创建
             EventDataTransaction eventDataTransaction = new EventDataTransaction(data.getGtid());
-            eventDataTransaction.setDatas(Arrays.asList(dataData));
+            eventDataTransaction.setDatas(new ArrayList(){{
+                this.add(dataData);
+            }});
             datas.add(eventDataTransaction);
         }
 
