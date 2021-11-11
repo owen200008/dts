@@ -124,7 +124,6 @@ class AddModal extends PureComponent {
           </FormItem>
           <FormItem label="Property" {...formItemLayout}>
             {getFieldDecorator("property", {
-              rules: [{ required: true, message: "请选择Property,可多选" }],
               initialValue: property || []
             })(
               <Select
