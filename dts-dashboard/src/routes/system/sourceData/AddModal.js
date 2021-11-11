@@ -36,8 +36,8 @@ class AddModal extends PureComponent {
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
 
-        let { name, namespace, table, type, property } = values;
-        handleOk({ id, name, namespace, table, type, linkSources: JSON.stringify({ property }) });
+        let { name, namespace, table, type, linkSources } = values;
+        handleOk({ id, name, namespace, table, type, property: JSON.stringify({ linkSources }) });
       }
     });
   };
@@ -45,10 +45,10 @@ class AddModal extends PureComponent {
   filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
 
   render() {
-    let { platform, title, handleCancel, form, name, namespace, table, type, linkSources } = this.props;
+    let { platform, title, handleCancel, form, name, namespace, table, type, property } = this.props;
     let { dataList } = this.state;
     let disable = false;
-    const { property } = linkSources ? JSON.parse(linkSources) : {};
+    const { linkSources } = property ? JSON.parse(property) : {};
     const { getFieldDecorator } = form;
 
     const formItemLayout = {
@@ -122,9 +122,9 @@ class AddModal extends PureComponent {
               <Input placeholder="请输入数据表名" disabled={disable} />
             )}
           </FormItem>
-          <FormItem label="Property" {...formItemLayout}>
-            {getFieldDecorator("property", {
-              initialValue: property || []
+          <FormItem label="Link" {...formItemLayout}>
+            {getFieldDecorator("linkSources", {
+              initialValue: linkSources || []
             })(
               <Select
                 mode="multiple"
