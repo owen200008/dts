@@ -29,6 +29,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -96,7 +97,8 @@ public class LoadRunKafka implements LoadRun {
             public Message<EventDataTransaction> getMessage(DataMediaRuleTarget targetId){
                 var eventDataTransactionMessage = map.get(targetId.getId());
                 if(Objects.isNull(eventDataTransactionMessage)) {
-                    eventDataTransactionMessage = Pair.of(targetId, new Message(message.getId(), Arrays.asList()));
+                    eventDataTransactionMessage = Pair.of(targetId, new Message(message.getId(), new ArrayList()));
+                    map.put(targetId.getId(), eventDataTransactionMessage);
                 }
                 return eventDataTransactionMessage.getRight();
             }

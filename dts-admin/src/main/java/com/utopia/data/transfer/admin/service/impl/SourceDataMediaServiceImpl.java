@@ -35,7 +35,7 @@ public class SourceDataMediaServiceImpl  implements SourceDataMediaService {
     public SourceDataMediaBean sourceDataMediaGet(Long id) {
         SourceDataMediaBeanDal sourceDataMediaBeanDal = new SourceDataMediaBeanDal();
         sourceDataMediaBeanDal.createCriteria().andIdEqualTo(id);
-        List<SourceDataMediaBean> sourceDataMediaBeans = sourceDataMediaBeanMapper.selectByExample(sourceDataMediaBeanDal);
+        List<SourceDataMediaBean> sourceDataMediaBeans = sourceDataMediaBeanMapper.selectByExampleWithBLOBs(sourceDataMediaBeanDal);
         if (CollectionUtils.isEmpty(sourceDataMediaBeans)){
             return null;
         }
@@ -57,7 +57,7 @@ public class SourceDataMediaServiceImpl  implements SourceDataMediaService {
             sourceDataMediaBeanDal.createCriteria().andNameEqualTo(queryDataMediaVo.getName());
         }
         sourceDataMediaBeanDal.setOrderByClause(" create_time");
-        List<SourceDataMediaBean> sourceDataMediaBeans = sourceDataMediaBeanMapper.selectByExample(sourceDataMediaBeanDal);
+        List<SourceDataMediaBean> sourceDataMediaBeans = sourceDataMediaBeanMapper.selectByExampleWithBLOBs(sourceDataMediaBeanDal);
         PageRes<List<SourceDataMediaBean>> pageRes = PageRes.getPage(page.getTotal(), page.getPageSize(), sourceDataMediaBeans);
         return pageRes;
     }
@@ -77,6 +77,6 @@ public class SourceDataMediaServiceImpl  implements SourceDataMediaService {
 
     @Override
     public List<SourceDataMediaBean> getAll() {
-        return sourceDataMediaBeanMapper.selectByExample(new SourceDataMediaBeanDal());
+        return sourceDataMediaBeanMapper.selectByExampleWithBLOBs(new SourceDataMediaBeanDal());
     }
 }
