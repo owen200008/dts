@@ -15,15 +15,21 @@ public interface SourceDataMediaBeanMapper extends BaseDao {
 
     int insertSelective(SourceDataMediaBean record);
 
+    List<SourceDataMediaBean> selectByExampleWithBLOBs(SourceDataMediaBeanDal example);
+
     List<SourceDataMediaBean> selectByExample(SourceDataMediaBeanDal example);
 
     SourceDataMediaBean selectByPrimaryKey(Long id);
 
     int updateByExampleSelective(@Param("record") SourceDataMediaBean record, @Param("example") SourceDataMediaBeanDal example);
 
+    int updateByExampleWithBLOBs(@Param("record") SourceDataMediaBean record, @Param("example") SourceDataMediaBeanDal example);
+
     int updateByExample(@Param("record") SourceDataMediaBean record, @Param("example") SourceDataMediaBeanDal example);
 
     int updateByPrimaryKeySelective(SourceDataMediaBean record);
+
+    int updateByPrimaryKeyWithBLOBs(SourceDataMediaBean record);
 
     int updateByPrimaryKey(SourceDataMediaBean record);
 }

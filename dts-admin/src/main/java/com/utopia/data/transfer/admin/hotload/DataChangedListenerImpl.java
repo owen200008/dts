@@ -1,5 +1,6 @@
 package com.utopia.data.transfer.admin.hotload;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -11,6 +12,7 @@ import java.util.stream.Collectors;
 
 import com.alibaba.fastjson.JSON;
 import com.utopia.algorithm.UtopiaAlgorithm;
+import com.utopia.data.transfer.admin.bean.SourceDataMedisProperty;
 import com.utopia.data.transfer.admin.contants.PathConstants;
 import com.utopia.data.transfer.admin.dao.entity.PairBean;
 import com.utopia.data.transfer.admin.dao.entity.PipelineBean;
@@ -147,6 +149,30 @@ public class DataChangedListenerImpl implements DataChangedListener, Initializin
         }
         return null;
     }
+
+    protected DataMediaRuleSource createDataMediaRuleSource(Long sourceId, Map<Long, SourceDataMediaBean> mapSource, HashSet<Long> existSource) {
+        if(existSource.contains(sourceId)) {
+            log.error("source loop error!!!!", sourceId);
+            return null;
+        }
+
+        SourceDataMediaBean sourceDataMediaBean = mapSource.get(sourceId);
+        if(Objects.isNull(sourceDataMediaBean)){
+            return null;
+        }
+        existSource.add(sourceId);
+        DataMediaRuleSource dataMediaRuleSource = new DataMediaRuleSource();
+        dataMediaRuleSource.setId(sourceDataMediaBean.getId());
+        dataMediaRuleSource.setDataMediaType(DataMediaType.valueOf(sourceDataMediaBean.getType()));
+        dataMediaRuleSource.setNamespace(sourceDataMediaBean.getNamespace());
+        dataMediaRuleSource.setValue(sourceDataMediaBean.getTable());
+        if(UtopiaStringUtil.isNotBlank(sourceDataMediaBean.getProperty())) {
+            SourceDataMedisProperty sourceDataMedisProperty = JSON.parseObject(sourceDataMediaBean.getProperty(), SourceDataMedisProperty.class);
+            dataMediaRuleSource.setSources(sourceDataMedisProperty.getLinkSources().stream().map(linkSource-> createDataMediaRuleSource(linkSource, mapSource, existSource)).collect(Collectors.toList()));
+        }
+        return dataMediaRuleSource;
+    }
+
     public DTSServiceConf getKernelConfig() {
         try {
             //全量获取
@@ -170,9 +196,12 @@ public class DataChangedListenerImpl implements DataChangedListener, Initializin
                 return ret;
             }).collect(Collectors.toList());
 
+            Map<Long, EntityDesc> mapEntityDesc = ayEntity.stream().collect(Collectors.toMap(EntityDesc::getId, item -> item));
+
             List<Pipeline> setPipeline = ayPipeline.stream().map(item -> {
                 List<RegionPipelineBean> findRegion = mapRegion.get(item.getId());
                 if(CollectionUtils.isEmpty(findRegion)){
+                    log.error("no find region {}", JSON.toJSONString(item));
                     return null;
                 }
                 Map<StageType, String> stageTypeStringMap = StageType.checkAndChange(type -> {
@@ -183,6 +212,7 @@ public class DataChangedListenerImpl implements DataChangedListener, Initializin
                     return mapIdToRegion.get(regionByType.getRegionId()).getRegion();
                 });
                 if(CollectionUtils.isEmpty(stageTypeStringMap)){
+                    log.error("stageTypeStringMap error {}", JSON.toJSONString(item));
                     return null;
                 }
 
@@ -195,6 +225,18 @@ public class DataChangedListenerImpl implements DataChangedListener, Initializin
                 pipeline.setId(item.getId());
                 pipeline.setName(item.getName());
 
+                EntityDesc sourceEntityDesc = mapEntityDesc.get(item.getSourceEntityId());
+                if(Objects.isNull(sourceEntityDesc)) {
+                    log.error("no source entity error {}", JSON.toJSONString(item));
+                    return null;
+                }
+
+                EntityDesc targetEntityDesc = mapEntityDesc.get(item.getTargetEntityId());
+                if(Objects.isNull(targetEntityDesc)) {
+                    log.error("no target entity error {}", JSON.toJSONString(item));
+                    return null;
+                }
+
                 pipeline.setSourceEntityId(item.getSourceEntityId());
                 pipeline.setTargetEntityId(item.getTargetEntityId());
 
@@ -203,26 +245,24 @@ public class DataChangedListenerImpl implements DataChangedListener, Initializin
 
                 SyncRuleBean syncRuleBean = mapSyncRuleBean.get(pipeline.getId());
                 if(Objects.isNull(syncRuleBean)){
+                    log.error("syncRuleBean error {}", JSON.toJSONString(item));
                     return null;
                 }
 
                 List<PairBean> pairBeans = mapPair.get(pipeline.getId());
                 if(CollectionUtils.isEmpty(pairBeans)){
+                    log.error("pairBeans error {}", JSON.toJSONString(item));
                     return null;
                 }
 
                 pipeline.setPairs(pairBeans.stream().map(pair->{
                     DataMediaRulePair dataMediaRulePair = new DataMediaRulePair();
 
-                    SourceDataMediaBean sourceDataMediaBean = mapSource.get(pair.getSourceDatamediaId());
-                    if(Objects.isNull(sourceDataMediaBean)){
+                    HashSet<Long> existSource = new HashSet<>();
+                    DataMediaRuleSource dataMediaRuleSource = createDataMediaRuleSource(pair.getSourceDatamediaId(), mapSource, existSource);
+                    if(!sourceEntityDesc.getType().equals(dataMediaRuleSource.getDataMediaType())) {
                         return null;
                     }
-                    DataMediaRuleSource dataMediaRuleSource = new DataMediaRuleSource();
-                    dataMediaRuleSource.setId(sourceDataMediaBean.getId());
-                    dataMediaRuleSource.setNamespace(sourceDataMediaBean.getNamespace());
-                    dataMediaRuleSource.setValue(sourceDataMediaBean.getTable());
-
                     dataMediaRulePair.setSource(dataMediaRuleSource);
 
                     TargetDataMediaBean targetDataMediaBean = mapTarget.get(pair.getTargetDatamediaId());

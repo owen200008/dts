@@ -2,8 +2,10 @@ package com.utopia.data.transfer.model.code.pipeline;
 
 import com.utopia.data.transfer.model.code.bean.StageType;
 import com.utopia.data.transfer.model.code.data.media.DataMediaRulePair;
+import com.utopia.data.transfer.model.code.data.media.DataMediaRuleSource;
 import com.utopia.data.transfer.model.code.data.media.DataMediaType;
 import com.utopia.data.transfer.model.code.data.media.SyncRuleTarget;
+import com.utopia.utils.CollectionUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,7 +15,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * @author owen.cai
@@ -57,8 +58,18 @@ public class Pipeline implements Serializable {
     public DataMediaRulePair getCacheSourcePairesBySourceId(long sourceId){
         if(sourcePaires == null){
             synchronized (this){
-                if(sourcePaires == null){
-                    sourcePaires = pairs.stream().collect(Collectors.toMap(item->item.getSource().getId(), item->item));
+                if(sourcePaires == null) {
+                    Map<Long, DataMediaRulePair> sourcePairesTmp = new HashMap();
+                    for (DataMediaRulePair pair : pairs) {
+                        sourcePairesTmp.put(pair.getSource().getId(), pair);
+                        List<DataMediaRuleSource> sources = pair.getSource().getSources();
+                        if(!CollectionUtils.isEmpty(sources)) {
+                            for (DataMediaRuleSource source : sources) {
+                                sourcePairesTmp.put(source.getId(), pair);
+                            }
+                        }
+                    }
+                    sourcePaires = sourcePairesTmp;
                 }
             }
         }

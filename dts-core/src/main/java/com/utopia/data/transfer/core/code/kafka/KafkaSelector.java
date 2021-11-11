@@ -93,7 +93,7 @@ public class KafkaSelector extends AbstractSelfCirculation<KafkaOrder> {
             dataMediaPair.getSource().getValue();
         }
 
-        stringKafkaConsumer.subscribe(pipeline.getPairs().stream().map(item -> item.getSource().getValue()).collect(Collectors.toList()));
+        stringKafkaConsumer.subscribe(pipeline.getPairs().stream().map(item -> item.getSource().getValue()).distinct().collect(Collectors.toList()));
         running = true;
 
         /**
