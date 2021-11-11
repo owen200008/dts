@@ -1,7 +1,6 @@
 import request from "../utils/request";
 
 const baseUrl = document.getElementById("httpPath").innerHTML;
-self.CACHE_MEMORY = self.CACHE_MEMORY || {};
 
 export async function addItem(params) {
   return request(`${baseUrl}/dts/targetData/add`, {

@@ -38,6 +38,14 @@ export default {
         });
       }
     },
+    * fetchList(params, { call }) {
+      const { payload, callback } = params;
+      const json = yield call(listItems, payload);
+      if (json.code === 200) {
+        let { data = [] } = json.data || {};
+        callback(data)
+      }
+    },
     * fetchItem(params, { call }) {
       const { payload, callback } = params;
       const json = yield call(getItem, payload);

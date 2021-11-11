@@ -7,28 +7,48 @@ const { TextArea } = Input;
 const FormItem = Form.Item;
 
 @connect(({ global }) => ({
-  platform: global.platform
+  platform: global.platform,
 }))
 class AddModal extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      dataList: []
+    };
+    const { dispatch } = props;
+    dispatch({
+      type: 'sourceData/fetchList',
+      payload: {
+        pageNum: 1,
+        pageSize: 10000
+      },
+      callback: (data) => {
+        this.setState({
+          dataList: data,
+        })
+      }
+    })
+  }
+
   handleSubmit = e => {
     const { form, handleOk, id = "" } = this.props;
     e.preventDefault();
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
 
-        let { name, namespace, table } = values;
-
-
-        handleOk({ id, name, namespace, table });
+        let { name, namespace, table, type, property } = values;
+        handleOk({ id, name, namespace, table, type, linkSources: JSON.stringify({ property }) });
       }
     });
   };
 
+  filterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+
   render() {
-    let { title, handleCancel, form, name, namespace, table } = this.props;
-
+    let { platform, title, handleCancel, form, name, namespace, table, type, linkSources } = this.props;
+    let { dataList } = this.state;
     let disable = false;
-
+    const { property } = linkSources ? JSON.parse(linkSources) : {};
     const { getFieldDecorator } = form;
 
     const formItemLayout = {
@@ -39,9 +59,9 @@ class AddModal extends PureComponent {
         sm: { span: 19 }
       }
     };
-    /*  let {
-       pluginTypeEnums
-     } = platform; */
+    let {
+      entityType
+    } = platform;
 
 
 
@@ -68,6 +88,24 @@ class AddModal extends PureComponent {
               <Input placeholder="请输入名称" disabled={disable} />
             )}
           </FormItem>
+          <FormItem label="类型" {...formItemLayout}>
+            {getFieldDecorator("type", {
+              rules: [{ required: true, message: "请选择类型" }],
+              initialValue: type || ''
+            })(
+              <Select
+                placeholder="请选择类型"
+              >
+                {entityType.map((item, index) => {
+                  return (
+                    <Option key={index} value={item.code}>
+                      {item.name}
+                    </Option>
+                  );
+                })}
+              </Select>
+            )}
+          </FormItem>
           <FormItem label="数据库名" {...formItemLayout}>
             {getFieldDecorator("namespace", {
               rules: [{ required: true, message: "请输入数据库名" }],
@@ -82,6 +120,27 @@ class AddModal extends PureComponent {
               initialValue: table,
             })(
               <Input placeholder="请输入数据表名" disabled={disable} />
+            )}
+          </FormItem>
+          <FormItem label="Property" {...formItemLayout}>
+            {getFieldDecorator("property", {
+              rules: [{ required: true, message: "请选择Property,可多选" }],
+              initialValue: property || []
+            })(
+              <Select
+                mode="multiple"
+                placeholder="可多选"
+                showSearch={true}
+                filterOption={this.filterOption}
+              >
+                {dataList.map((item, index) => {
+                  return (
+                    <Option key={index} value={item.id}>
+                      {item.name}
+                    </Option>
+                  );
+                })}
+              </Select>
             )}
           </FormItem>
         </Form>
