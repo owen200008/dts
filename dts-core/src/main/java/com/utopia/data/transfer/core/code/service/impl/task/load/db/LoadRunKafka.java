@@ -126,7 +126,8 @@ public class LoadRunKafka implements LoadRun {
                 }
 
                 for (var longMessageEntry : messageMgr.getResult().entrySet()) {
-                    byte[] serialization = SerializationId.serialization(this.serializationId, this.serializationApi, longMessageEntry.getValue().getRight());
+                    Message<EventDataTransaction> right = longMessageEntry.getValue().getRight();
+                    byte[] serialization = SerializationId.serialization(this.serializationId, this.serializationApi, right);
                     ProducerRecord<String, byte[]> record = new ProducerRecord(longMessageEntry.getValue().getLeft().getValue(), serialization);
                     //最多5s
                     this.producer.send(record).get(5000, TimeUnit.SECONDS);
@@ -152,9 +153,9 @@ public class LoadRunKafka implements LoadRun {
             }
             //不相同，创建
             EventDataTransaction eventDataTransaction = new EventDataTransaction(data.getGtid());
-            eventDataTransaction.setDatas(new ArrayList(){{
-                this.add(dataData);
-            }});
+            List<EventData> tmpEventData = new ArrayList();
+            tmpEventData.add(dataData);
+            eventDataTransaction.setDatas(tmpEventData);
             datas.add(eventDataTransaction);
         }
 
