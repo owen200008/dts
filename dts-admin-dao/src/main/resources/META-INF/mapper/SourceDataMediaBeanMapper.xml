@@ -3,11 +3,15 @@
 <mapper namespace="com.utopia.data.transfer.admin.dao.mapper.SourceDataMediaBeanMapper">
   <resultMap id="BaseResultMap" type="com.utopia.data.transfer.admin.dao.entity.SourceDataMediaBean">
     <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="namespace" jdbcType="VARCHAR" property="namespace" />
     <result column="table" jdbcType="VARCHAR" property="table" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.utopia.data.transfer.admin.dao.entity.SourceDataMediaBean">
+    <result column="property" jdbcType="LONGVARCHAR" property="property" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -68,8 +72,27 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, `name`, namespace, `table`, create_time, modify_time
+    id, `type`, `name`, namespace, `table`, create_time, modify_time
   </sql>
+  <sql id="Blob_Column_List">
+    property
+  </sql>
+  <select id="selectByExampleWithBLOBs" parameterType="com.utopia.data.transfer.admin.dao.entity.SourceDataMediaBeanDal" resultMap="ResultMapWithBLOBs">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from u_source_datamedia
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
   <select id="selectByExample" parameterType="com.utopia.data.transfer.admin.dao.entity.SourceDataMediaBeanDal" resultMap="BaseResultMap">
     select
     <if test="distinct">
@@ -84,9 +107,11 @@
       order by ${orderByClause}
     </if>
   </select>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
     select 
     <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
     from u_source_datamedia
     where id = #{id,jdbcType=BIGINT}
   </select>
@@ -104,10 +129,12 @@
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into u_source_datamedia (`name`, namespace, `table`, 
-      create_time, modify_time)
-    values (#{name,jdbcType=VARCHAR}, #{namespace,jdbcType=VARCHAR}, #{table,jdbcType=VARCHAR}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{modifyTime,jdbcType=TIMESTAMP})
+    insert into u_source_datamedia (`type`, `name`, namespace, 
+      `table`, create_time, modify_time, 
+      property)
+    values (#{type,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{namespace,jdbcType=VARCHAR}, 
+      #{table,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{modifyTime,jdbcType=TIMESTAMP}, 
+      #{property,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.utopia.data.transfer.admin.dao.entity.SourceDataMediaBean">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
@@ -115,6 +142,9 @@
     </selectKey>
     insert into u_source_datamedia
     <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="type != null">
+        `type`,
+      </if>
       <if test="name != null">
         `name`,
       </if>
@@ -130,8 +160,14 @@
       <if test="modifyTime != null">
         modify_time,
       </if>
+      <if test="property != null">
+        property,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="type != null">
+        #{type,jdbcType=VARCHAR},
+      </if>
       <if test="name != null">
         #{name,jdbcType=VARCHAR},
       </if>
@@ -147,6 +183,9 @@
       <if test="modifyTime != null">
         #{modifyTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="property != null">
+        #{property,jdbcType=LONGVARCHAR},
+      </if>
     </trim>
   </insert>
   <update id="updateByExampleSelective" parameterType="map">
@@ -154,6 +193,9 @@
     <set>
       <if test="record.id != null">
         id = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.type != null">
+        `type` = #{record.type,jdbcType=VARCHAR},
       </if>
       <if test="record.name != null">
         `name` = #{record.name,jdbcType=VARCHAR},
@@ -170,7 +212,24 @@
       <if test="record.modifyTime != null">
         modify_time = #{record.modifyTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="record.property != null">
+        property = #{record.property,jdbcType=LONGVARCHAR},
+      </if>
     </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map">
+    update u_source_datamedia
+    set id = #{record.id,jdbcType=BIGINT},
+      `type` = #{record.type,jdbcType=VARCHAR},
+      `name` = #{record.name,jdbcType=VARCHAR},
+      namespace = #{record.namespace,jdbcType=VARCHAR},
+      `table` = #{record.table,jdbcType=VARCHAR},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      modify_time = #{record.modifyTime,jdbcType=TIMESTAMP},
+      property = #{record.property,jdbcType=LONGVARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -178,6 +237,7 @@
   <update id="updateByExample" parameterType="map">
     update u_source_datamedia
     set id = #{record.id,jdbcType=BIGINT},
+      `type` = #{record.type,jdbcType=VARCHAR},
       `name` = #{record.name,jdbcType=VARCHAR},
       namespace = #{record.namespace,jdbcType=VARCHAR},
       `table` = #{record.table,jdbcType=VARCHAR},
@@ -190,6 +250,9 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.utopia.data.transfer.admin.dao.entity.SourceDataMediaBean">
     update u_source_datamedia
     <set>
+      <if test="type != null">
+        `type` = #{type,jdbcType=VARCHAR},
+      </if>
       <if test="name != null">
         `name` = #{name,jdbcType=VARCHAR},
       </if>
@@ -205,12 +268,27 @@
       <if test="modifyTime != null">
         modify_time = #{modifyTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="property != null">
+        property = #{property,jdbcType=LONGVARCHAR},
+      </if>
     </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.utopia.data.transfer.admin.dao.entity.SourceDataMediaBean">
+    update u_source_datamedia
+    set `type` = #{type,jdbcType=VARCHAR},
+      `name` = #{name,jdbcType=VARCHAR},
+      namespace = #{namespace,jdbcType=VARCHAR},
+      `table` = #{table,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      property = #{property,jdbcType=LONGVARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.utopia.data.transfer.admin.dao.entity.SourceDataMediaBean">
     update u_source_datamedia
-    set `name` = #{name,jdbcType=VARCHAR},
+    set `type` = #{type,jdbcType=VARCHAR},
+      `name` = #{name,jdbcType=VARCHAR},
       namespace = #{namespace,jdbcType=VARCHAR},
       `table` = #{table,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},

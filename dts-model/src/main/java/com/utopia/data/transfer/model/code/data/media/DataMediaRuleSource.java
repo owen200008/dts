@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author owen.cai
@@ -24,6 +25,12 @@ public class DataMediaRuleSource implements Serializable {
      */
     private long                id;
 
+    private DataMediaType       dataMediaType;
     private String              namespace;
     private String              value;
+
+    /**
+     * 指定内部的原始source信息
+     */
+    private List<DataMediaRuleSource> sources;
 }
