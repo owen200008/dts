@@ -39,6 +39,7 @@
     <common_lang>2.6</common_lang>
     <groovy.version>2.4.19</groovy.version>
     <pagehelper.version>5.1.11</pagehelper.version>
+    <commons_beanutils_version>1.9.4</commons_beanutils_version>
   </properties>
 
   <modules>
@@ -49,6 +50,10 @@
     <module>dts-model</module>
 	<module>dts-admin</module>
     <module>dts-admin-dao</module>
+      <module>dts-extension</module>
+      <module>dts-extension-datasource-mysql</module>
+      <module>dts-extension-dispatch-inner</module>
+      <module>dts-extension-implement</module>
   </modules>
 
   <dependencyManagement>
@@ -121,7 +126,11 @@
         <artifactId>pagehelper</artifactId>
         <version>${pagehelper.version}</version>
       </dependency>
-
+      <dependency>
+        <groupId>commons-beanutils</groupId>
+        <artifactId>commons-beanutils</artifactId>
+        <version>${commons_beanutils_version}</version>
+      </dependency>
 
     </dependencies>
   </dependencyManagement>

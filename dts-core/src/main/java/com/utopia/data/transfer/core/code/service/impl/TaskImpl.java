@@ -1,8 +1,8 @@
 package com.utopia.data.transfer.core.code.service.impl;
 
 import com.utopia.data.transfer.core.code.service.ArbitrateEventService;
-import com.utopia.data.transfer.core.code.service.ConfigService;
-import com.utopia.data.transfer.core.code.service.Task;
+import com.utopia.data.transfer.core.base.config.ConfigService;
+import com.utopia.data.transfer.model.code.entity.Task;
 import com.utopia.data.transfer.model.code.entity.EntityDesc;
 import com.utopia.data.transfer.model.code.pipeline.Pipeline;
 import lombok.Getter;
@@ -41,6 +41,15 @@ public abstract class TaskImpl implements Runnable, Task {
 
     protected String createTaskName(long pipelineId, String taskName) {
         return new StringBuilder().append("pipelineId = ").append(pipelineId).append(",taskName = ").append(taskName).toString();
+    }
+
+    /**
+     *
+     * @return
+     */
+    @Override
+    public Pipeline getPipeline() {
+        return pipeline;
     }
 
     @Override

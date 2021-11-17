@@ -3,7 +3,7 @@ package com.utopia.data.transfer.core.code.service.impl.event;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.utopia.data.transfer.core.code.service.ConfigService;
+import com.utopia.data.transfer.core.base.config.ConfigService;
 import com.utopia.module.distributed.lock.api.DtbLockFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

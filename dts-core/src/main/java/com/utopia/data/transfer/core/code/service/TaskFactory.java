@@ -1,12 +1,11 @@
 package com.utopia.data.transfer.core.code.service;
 
+import com.utopia.data.transfer.core.base.config.ConfigService;
 import com.utopia.data.transfer.core.code.service.impl.task.LoadTaskImpl;
 import com.utopia.data.transfer.core.code.service.impl.task.SelectTaskImpl;
 import com.utopia.data.transfer.model.code.bean.StageType;
-import com.utopia.register.center.api.ZookeeperConfig;
+import com.utopia.data.transfer.model.code.entity.Task;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 /**

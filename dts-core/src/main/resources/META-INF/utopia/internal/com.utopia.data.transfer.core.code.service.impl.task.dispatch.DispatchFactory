@@ -1,2 +1,0 @@
-DUBBO=com.utopia.data.transfer.core.code.service.impl.task.dispatch.DispatchFactoryDubbo
-INNER=com.utopia.data.transfer.core.code.service.impl.task.dispatch.DispatchFactoryInner

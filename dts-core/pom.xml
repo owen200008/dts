@@ -21,7 +21,68 @@
     <!-- archetype define begin *************************************************** -->
     <dependency>
       <groupId>com.utopia.data.transfer</groupId>
-      <artifactId>dts-model</artifactId>
+      <artifactId>dts-extension-dbdialect</artifactId>
+      <version>${project.parent.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.utopia.data.transfer</groupId>
+      <artifactId>dts-extension-dispatch</artifactId>
+      <version>${project.parent.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.utopia.data.transfer</groupId>
+      <artifactId>dts-extension-select-rule</artifactId>
+      <version>${project.parent.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.utopia.data.transfer</groupId>
+      <artifactId>dts-extension-load-run</artifactId>
+      <version>${project.parent.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.utopia.data.transfer</groupId>
+      <artifactId>dts-extension-sync-rule</artifactId>
+      <version>${project.parent.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.utopia.data.transfer</groupId>
+      <artifactId>dts-extension-db-rule</artifactId>
+      <version>${project.parent.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.utopia.data.transfer</groupId>
+      <artifactId>dts-extension-datasource-mysql</artifactId>
+      <version>${project.parent.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.utopia.data.transfer</groupId>
+      <artifactId>dts-extension-dbdialect-mysql</artifactId>
+      <version>${project.parent.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.utopia.data.transfer</groupId>
+      <artifactId>dts-extension-dispatch-inner</artifactId>
+      <version>${project.parent.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.utopia.data.transfer</groupId>
+      <artifactId>dts-extension-select-rule-inner</artifactId>
+      <version>${project.parent.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.utopia.data.transfer</groupId>
+      <artifactId>dts-extension-load-run-inner</artifactId>
+      <version>${project.parent.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.utopia.data.transfer</groupId>
+      <artifactId>dts-extension-sync-rule-db</artifactId>
+      <version>${project.parent.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.utopia.data.transfer</groupId>
+      <artifactId>dts-extension-db-rule-inner</artifactId>
       <version>${project.parent.version}</version>
     </dependency>
 
@@ -30,10 +91,10 @@
       <artifactId>spring-boot-configuration-processor</artifactId>
       <optional>true</optional>
     </dependency>
-      <dependency>
-          <groupId>org.springframework.boot</groupId>
-          <artifactId>spring-boot-starter-data-redis</artifactId>
-      </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-redis</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.apache.dubbo</groupId>
@@ -81,10 +142,6 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-pool2</artifactId>
     </dependency>
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-    </dependency>
 
     <dependency>
       <groupId>com.utopia</groupId>
@@ -110,18 +167,6 @@
 
     <!-- project define begin *************************************************** -->
     <dependency>
-      <groupId>com.alibaba.otter</groupId>
-      <artifactId>canal.server</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.ddlutils</groupId>
-      <artifactId>ddlutils</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>commons-dbcp</groupId>
-      <artifactId>commons-dbcp</artifactId>
-    </dependency>
-    <dependency>
       <groupId>com.utopia</groupId>
       <artifactId>register-center-sync</artifactId>
     </dependency>
@@ -136,15 +181,6 @@
     <dependency>
       <groupId>com.utopia</groupId>
       <artifactId>distributed-lock-redis</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.codehaus.groovy</groupId>
-      <artifactId>groovy</artifactId>
-      <classifier>indy</classifier>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.kafka</groupId>
-      <artifactId>kafka-clients</artifactId>
     </dependency>
   </dependencies>
   <build>

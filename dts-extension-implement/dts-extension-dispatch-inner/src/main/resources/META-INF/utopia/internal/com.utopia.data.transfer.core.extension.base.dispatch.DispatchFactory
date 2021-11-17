@@ -1,0 +1,2 @@
+DUBBO=com.utopia.data.transfer.core.extension.dispatch.DispatchFactoryDubbo
+INNER=com.utopia.data.transfer.core.extension.dispatch.DispatchFactoryInner

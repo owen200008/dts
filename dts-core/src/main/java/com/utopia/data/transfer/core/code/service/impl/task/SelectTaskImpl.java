@@ -1,16 +1,16 @@
 package com.utopia.data.transfer.core.code.service.impl.task;
 
 import com.alibaba.fastjson.JSON;
-import com.utopia.data.transfer.core.code.service.impl.task.dispatch.DispatchFactory;
-import com.utopia.data.transfer.core.code.service.impl.task.select.SelectDataFactory;
-import com.utopia.data.transfer.core.code.service.impl.task.select.SelectDataRule;
+import com.utopia.data.transfer.core.extension.base.select.SelectDataFactory;
+import com.utopia.data.transfer.core.extension.base.select.SelectDataRule;
+import com.utopia.data.transfer.core.extension.base.dispatch.DispatchFactory;
+import com.utopia.data.transfer.core.extension.base.dispatch.SelectDispatchRule;
 import com.utopia.data.transfer.model.archetype.ErrorCode;
 import com.utopia.data.transfer.model.code.entity.data.EventDataTransaction;
 import com.utopia.data.transfer.model.code.entity.data.Message;
 import com.utopia.data.transfer.core.code.service.ArbitrateEventService;
-import com.utopia.data.transfer.core.code.service.ConfigService;
+import com.utopia.data.transfer.core.base.config.ConfigService;
 import com.utopia.data.transfer.core.code.service.impl.TaskImpl;
-import com.utopia.data.transfer.core.code.service.impl.task.dispatch.SelectDispatchRule;
 import com.utopia.data.transfer.model.archetype.ServiceException;
 import com.utopia.data.transfer.model.code.pipeline.Pipeline;
 import com.utopia.data.transfer.model.code.pipeline.DispatchParamter;

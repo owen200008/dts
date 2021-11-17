@@ -1,0 +1,1 @@
+DEFAULT=com.utopia.data.transfer.core.extension.sync.rule.DbSyncRuleMapping

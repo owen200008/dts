@@ -1,0 +1,2 @@
+MYSQL=com.utopia.data.transfer.core.extension.select.SelectDataMysqlFactory
+KAFKA=com.utopia.data.transfer.core.extension.select.SelectDataKafkaFactory

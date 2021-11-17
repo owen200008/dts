@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>dts</artifactId>
+        <groupId>com.utopia.data.transfer</groupId>
+        <version>${revision}</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>dts-extension</artifactId>
+    <packaging>pom</packaging>
+    <modules>
+        <module>dts-extension-datasource</module>
+        <module>dts-extension-dispatch</module>
+        <module>dts-extension-config</module>
+        <module>dts-extension-select-rule</module>
+        <module>dts-extension-load-run</module>
+        <module>dts-extension-tools</module>
+        <module>dts-extension-dbdialect</module>
+        <module>dts-extension-kafka</module>
+        <module>dts-extension-sync-rule</module>
+        <module>dts-extension-db-rule</module>
+    </modules>
+</project>

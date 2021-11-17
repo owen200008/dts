@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>dts-extension-implement</artifactId>
+        <groupId>com.utopia.data.transfer</groupId>
+        <version>${revision}</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>dts-extension-select-rule-inner</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.utopia.data.transfer</groupId>
+            <artifactId>dts-extension-tools</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.utopia.data.transfer</groupId>
+            <artifactId>dts-extension-config</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.utopia.data.transfer</groupId>
+            <artifactId>dts-extension-kafka</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.utopia.data.transfer</groupId>
+            <artifactId>dts-extension-dbdialect</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.utopia.data.transfer</groupId>
+            <artifactId>dts-extension-select-rule</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-clients</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.utopia</groupId>
+            <artifactId>register-center-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.otter</groupId>
+            <artifactId>canal.server</artifactId>
+        </dependency>
+    </dependencies>
+</project>

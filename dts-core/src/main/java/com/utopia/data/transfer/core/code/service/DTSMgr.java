@@ -4,12 +4,14 @@ import com.alibaba.fastjson.JSON;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.utopia.data.transfer.core.code.base.config.DTSConstants;
-import com.utopia.data.transfer.core.code.base.datasource.DataSourceService;
-import com.utopia.data.transfer.core.code.src.dialect.DbDialectFactory;
+import com.utopia.data.transfer.core.base.config.ConfigService;
+import com.utopia.data.transfer.core.base.config.DTSConstants;
+import com.utopia.data.transfer.core.extension.base.datasource.DataSourceService;
+import com.utopia.data.transfer.core.extension.base.dialect.DbDialectFactory;
 import com.utopia.data.transfer.model.code.bean.StageType;
 import com.utopia.data.transfer.model.code.DTSServiceConf;
 import com.utopia.data.transfer.model.code.config.KryoRegister;
+import com.utopia.data.transfer.model.code.entity.Task;
 import com.utopia.data.transfer.model.code.pipeline.Pipeline;
 import com.utopia.extension.UtopiaExtensionFactory;
 import com.utopia.extension.UtopiaExtensionLoader;
@@ -97,12 +99,12 @@ public class DTSMgr implements UtopiaShutdownHook.ShutdownCallbackFunc, LocalCac
     /**
      * pipeline
      */
-    private LoadingCache<Long, LoadingCache<StageType, Task>> tasks = CacheBuilder.newBuilder().build(new CacheLoader<Long, LoadingCache<StageType, Task>>() {
+    private LoadingCache<Long, LoadingCache<StageType, com.utopia.data.transfer.model.code.entity.Task>> tasks = CacheBuilder.newBuilder().build(new CacheLoader<Long, LoadingCache<StageType, com.utopia.data.transfer.model.code.entity.Task>>() {
         @Override
-        public LoadingCache<StageType, Task> load (Long key) throws Exception {
-            return CacheBuilder.newBuilder().build(new CacheLoader<StageType, Task>() {
+        public LoadingCache<StageType, com.utopia.data.transfer.model.code.entity.Task> load (Long key) throws Exception {
+            return CacheBuilder.newBuilder().build(new CacheLoader<StageType, com.utopia.data.transfer.model.code.entity.Task>() {
                 @Override
-                public Task load (StageType key) throws Exception {
+                public com.utopia.data.transfer.model.code.entity.Task load (StageType key) throws Exception {
                     return null;
                 }
             });
@@ -174,14 +176,14 @@ public class DTSMgr implements UtopiaShutdownHook.ShutdownCallbackFunc, LocalCac
 
         //定时获取任务
         for (Pipeline nodeTask : object.getList()) {
-            LoadingCache<StageType, Task> stageTypeTaskLoadingCache = tasks.get(nodeTask.getId());
+            LoadingCache<StageType, com.utopia.data.transfer.model.code.entity.Task> stageTypeTaskLoadingCache = tasks.get(nodeTask.getId());
             if(nodeTask.isShutdown()){
                 tasks.invalidate(nodeTask.getId());
                 if (stageTypeTaskLoadingCache != null) {
                     log.info("pipeline {} shutdown this pipeline sync tasks = {}", nodeTask.getId(),
                             stageTypeTaskLoadingCache.asMap().keySet());
 
-                    ConcurrentMap<StageType, Task> stageTypeTaskConcurrentMap = stageTypeTaskLoadingCache.asMap();
+                    ConcurrentMap<StageType, com.utopia.data.transfer.model.code.entity.Task> stageTypeTaskConcurrentMap = stageTypeTaskLoadingCache.asMap();
                     stageTypeTaskConcurrentMap.forEach((stage, task)->{
                         task.shutdown();
                     });
@@ -199,7 +201,7 @@ public class DTSMgr implements UtopiaShutdownHook.ShutdownCallbackFunc, LocalCac
                 dbDialectFactory.closePipeline(nodeTask.getId());
                 arbitrateEventService.closePipeline(nodeTask.getId());
 
-                LoadingCache<StageType, Task> loadingCacheTasks = this.tasks.get(nodeTask.getId());
+                LoadingCache<StageType, com.utopia.data.transfer.model.code.entity.Task> loadingCacheTasks = this.tasks.get(nodeTask.getId());
 
                 for (Map.Entry<StageType, String> stageTypeStringEntry : nodeTask.getStage().entrySet()) {
                     //分配给自己的任务
