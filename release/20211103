@@ -115,6 +115,14 @@ CREATE TABLE `u_task` (
   PRIMARY KEY (`id`)
 );
 
+-- u_dts.u_jar definition
+
+CREATE TABLE `u_jar` (
+  `id` bigint(20) NOT NULL,
+  `name` varchar(64) NOT NULL,
+  `url` varchar(256) NOT NULL,
+  PRIMARY KEY (`id`)
+);
 
 
 

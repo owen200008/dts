@@ -6,6 +6,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.utopia.data.transfer.core.base.config.ConfigService;
 import com.utopia.data.transfer.core.base.config.DTSConstants;
+import com.utopia.data.transfer.core.code.config.JarConfig;
 import com.utopia.data.transfer.core.extension.base.datasource.DataSourceService;
 import com.utopia.data.transfer.core.extension.base.dialect.DbDialectFactory;
 import com.utopia.data.transfer.model.code.bean.StageType;
@@ -22,6 +23,7 @@ import com.utopia.spring.extension.factory.UtopiaSelfDefineFactory;
 import com.utopia.string.UtopiaStringUtil;
 import com.utopia.sys.UtopiaShutdownHook;
 import com.utopia.unique.serviceid.api.UniqueServiceid;
+import com.utopia.utils.CollectionUtils;
 import com.utopia.utils.NetUtils;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +35,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentMap;
@@ -55,6 +58,9 @@ public class DTSMgr implements UtopiaShutdownHook.ShutdownCallbackFunc, LocalCac
 
     @Value("${spring.application.region}")
     private String selfRegion;
+
+    @Autowired
+    private JarConfig jarConfig;
 
     /**
      * 上下文模块
@@ -82,6 +88,8 @@ public class DTSMgr implements UtopiaShutdownHook.ShutdownCallbackFunc, LocalCac
     private ArbitrateEventService arbitrateEventService;
     @Autowired
     private TaskFactory taskFactory;
+    @Autowired
+    private JarHotload jarHotload;
 
     @SuppressWarnings("AlibabaThreadPoolCreation")
     @Getter
@@ -115,6 +123,9 @@ public class DTSMgr implements UtopiaShutdownHook.ShutdownCallbackFunc, LocalCac
     public void init() {
         //使用kryo
         KryoRegister.registerKryo();
+
+        //注册加载包地址
+        jarHotload.init(jarConfig.getPath(), jarConfig.getJars());
 
 
         //注册自定义的UtopiaSPIInject
@@ -159,6 +170,15 @@ public class DTSMgr implements UtopiaShutdownHook.ShutdownCallbackFunc, LocalCac
     }
 
     private synchronized void reloadDTSServiceConf(DTSServiceConf object) throws ExecutionException {
+        //首先判断是否有需要加载的jar包
+        List<String> jars = object.getJars();
+        if(!CollectionUtils.isEmpty(jars)) {
+            for (String jar : jars) {
+                jarHotload.loadRemote(jar);
+            }
+        }
+
+
         //配置先加载
         configService.reloadConf(object);
 

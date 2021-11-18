@@ -181,6 +181,50 @@
            enableUpdateByExample="true">
       <generatedKey column="id" sqlStatement="MySql" identity="true"></generatedKey>
     </table>
+    <table schema="u_dts" tableName="u_jar" domainObjectName="JarBean"
+           enableInsert="true"
+           enableDeleteByPrimaryKey="true"
+           enableSelectByPrimaryKey="false"
+           enableUpdateByPrimaryKey="false"
+           enableCountByExample="false"
+           enableDeleteByExample="true"
+           enableSelectByExample="true"
+           enableUpdateByExample="true">
+      <generatedKey column="id" sqlStatement="MySql" identity="true"></generatedKey>
+    </table>
+    <table schema="u_dts" tableName="u_datamedia_rule_type" domainObjectName="DataMediaRuleTypeBean"
+           enableInsert="true"
+           enableDeleteByPrimaryKey="true"
+           enableSelectByPrimaryKey="false"
+           enableUpdateByPrimaryKey="false"
+           enableCountByExample="false"
+           enableDeleteByExample="true"
+           enableSelectByExample="true"
+           enableUpdateByExample="true">
+      <generatedKey column="id" sqlStatement="MySql" identity="true"></generatedKey>
+    </table>
+    <table schema="u_dts" tableName="u_sync_rule_type" domainObjectName="SyncRuleTypeBean"
+           enableInsert="true"
+           enableDeleteByPrimaryKey="true"
+           enableSelectByPrimaryKey="false"
+           enableUpdateByPrimaryKey="false"
+           enableCountByExample="false"
+           enableDeleteByExample="true"
+           enableSelectByExample="true"
+           enableUpdateByExample="true">
+      <generatedKey column="id" sqlStatement="MySql" identity="true"></generatedKey>
+    </table>
+    <table schema="u_dts" tableName="u_entity_type" domainObjectName="EntityTypeBean"
+           enableInsert="true"
+           enableDeleteByPrimaryKey="true"
+           enableSelectByPrimaryKey="false"
+           enableUpdateByPrimaryKey="false"
+           enableCountByExample="false"
+           enableDeleteByExample="true"
+           enableSelectByExample="true"
+           enableUpdateByExample="true">
+      <generatedKey column="id" sqlStatement="MySql" identity="true"></generatedKey>
+    </table>
 
   </context>
 </generatorConfiguration>

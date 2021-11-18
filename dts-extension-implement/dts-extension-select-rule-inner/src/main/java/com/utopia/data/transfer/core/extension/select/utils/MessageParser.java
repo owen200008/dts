@@ -18,8 +18,6 @@ import com.utopia.data.transfer.model.code.entity.data.EventData;
 import com.utopia.data.transfer.model.code.transfer.TransferUniqueDesc;
 import com.utopia.utils.CollectionUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,13 +34,15 @@ import java.util.Objects;
  * @alter_date
  */
 @Slf4j
-@Service
 public class MessageParser {
 
-    @Autowired
-    private ConfigService configService;
-    @Autowired
-    private DbDialectFactory dbDialectFactory;
+    private final ConfigService configService;
+    private final DbDialectFactory dbDialectFactory;
+
+    public MessageParser(ConfigService configService, DbDialectFactory dbDialectFactory) {
+        this.configService = configService;
+        this.dbDialectFactory = dbDialectFactory;
+    }
 
     public List<EventDataTransaction> parse(Long pipelineId, List<CanalEntry.Entry> datas) throws ServiceException {
         List<EventDataTransaction> eventDatas = new ArrayList();

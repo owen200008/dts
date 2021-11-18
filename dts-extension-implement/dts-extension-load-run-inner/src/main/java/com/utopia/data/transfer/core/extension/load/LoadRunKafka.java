@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * @author owen.cai
@@ -116,13 +117,29 @@ public class LoadRunKafka implements LoadRun {
                 MessageMgr messageMgr = new MessageMgr(message);
 
                 for (EventDataTransaction data : message.getDatas()) {
-                    for (EventData dataData : data.getDatas()) {
+                    Map<DataMediaRuleTarget, List<EventData>> collect = data.getDatas().stream().collect(Collectors.groupingBy(dataData -> {
                         DataMediaRulePair cacheSourcePairesBySourceId = pipeline.getCacheSourcePairesBySourceId(dataData.getTableId());
-                        if(Objects.isNull(cacheSourcePairesBySourceId)) {
-                            return ErrorCode.LOAD_NO_TOPIC_CONFIG;
+                        if (Objects.isNull(cacheSourcePairesBySourceId)) {
+                            return null;
                         }
-                        addDataToMessage(messageMgr, data, dataData, cacheSourcePairesBySourceId);
+                        return cacheSourcePairesBySourceId.getTarget();
+                    }));
+
+                    for (Map.Entry<DataMediaRuleTarget, List<EventData>> dataMediaRuleTargetListEntry : collect.entrySet()) {
+                        Message<EventDataTransaction> messageMgrMessage = messageMgr.getMessage(dataMediaRuleTargetListEntry.getKey());
+                        List<EventDataTransaction> datas = messageMgrMessage.getDatas();
+                        EventDataTransaction eventDataTransaction = new EventDataTransaction();
+                        eventDataTransaction.setGtid(data.getGtid());
+                        eventDataTransaction.setDatas(dataMediaRuleTargetListEntry.getValue());
+                        datas.add(eventDataTransaction);
                     }
+//                    for (EventData dataData : data.getDatas()) {
+//                        DataMediaRulePair cacheSourcePairesBySourceId = pipeline.getCacheSourcePairesBySourceId(dataData.getTableId());
+//                        if(Objects.isNull(cacheSourcePairesBySourceId)) {
+//                            return ErrorCode.LOAD_NO_TOPIC_CONFIG;
+//                        }
+//                        addDataToMessage(messageMgr, data, dataData, cacheSourcePairesBySourceId);
+//                    }
                 }
 
                 for (var longMessageEntry : messageMgr.getResult().entrySet()) {

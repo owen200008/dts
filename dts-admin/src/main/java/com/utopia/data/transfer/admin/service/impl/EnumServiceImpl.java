@@ -19,11 +19,16 @@
 package com.utopia.data.transfer.admin.service.impl;
 
 import com.google.common.collect.Maps;
+import com.utopia.data.transfer.admin.service.DataMediaRuleTypeService;
+import com.utopia.data.transfer.admin.service.EntityTypeService;
 import com.utopia.data.transfer.admin.service.EnumService;
+import com.utopia.data.transfer.admin.service.SyncRuleTypeService;
 import com.utopia.data.transfer.admin.vo.EnumVO;
 import com.utopia.data.transfer.model.code.bean.StageType;
+import com.utopia.data.transfer.model.code.data.media.DataMediaRuleType;
 import com.utopia.data.transfer.model.code.data.media.DataMediaType;
 import com.utopia.data.transfer.model.code.data.media.SyncRuleType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -39,6 +44,13 @@ import java.util.stream.Collectors;
 @Service
 public class EnumServiceImpl implements EnumService {
 
+    @Autowired
+    private EntityTypeService entityTypeService;
+    @Autowired
+    private SyncRuleTypeService syncRuleTypeService;
+    @Autowired
+    private DataMediaRuleTypeService dataMediaRuleTypeService;
+
     /**
      * find list of enum.
      *
@@ -50,22 +62,26 @@ public class EnumServiceImpl implements EnumService {
         /**
          * commu 支持的类型
          */
-        List<EnumVO> ayDataMediaType = Arrays.stream(DataMediaType.values())
-                .map(httpMethodEnum -> new EnumVO(httpMethodEnum.name(), httpMethodEnum.name(), true))
+        List<EnumVO> ayDataMediaType = entityTypeService.getAll().stream()
+                .map(item-> new EnumVO(item.getName(), item.getName(), true))
                 .collect(Collectors.toList());
 
-        List<EnumVO> aySyncRuleType = Arrays.stream(SyncRuleType.values())
-                .map(httpMethodEnum -> new EnumVO(httpMethodEnum.name(), httpMethodEnum.name(), true))
+        List<EnumVO> aySyncRuleType = syncRuleTypeService.getAll().stream()
+                .map(httpMethodEnum -> new EnumVO(httpMethodEnum.getName(), httpMethodEnum.getName(), true))
+                .collect(Collectors.toList());
+
+        List<EnumVO> ayDataMediaRuleType = dataMediaRuleTypeService.getAll().stream()
+                .map(httpMethodEnum -> new EnumVO(httpMethodEnum.getName(), httpMethodEnum.getName(), true))
                 .collect(Collectors.toList());
 
         List<EnumVO> ayStageType = Arrays.stream(StageType.values())
                 .map(httpMethodEnum -> new EnumVO(httpMethodEnum.name(), httpMethodEnum.name(), true))
                 .collect(Collectors.toList());
 
-
         Map<String, List<EnumVO>> enums = Maps.newHashMap();
         enums.put("entityType", ayDataMediaType);
         enums.put("syncRule", aySyncRuleType);
+        enums.put("dataMediaRule", ayDataMediaRuleType);
         enums.put("stageType", ayStageType);
         return enums;
     }

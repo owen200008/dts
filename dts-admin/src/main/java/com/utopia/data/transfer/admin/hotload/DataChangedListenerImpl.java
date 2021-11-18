@@ -14,6 +14,7 @@ import com.alibaba.fastjson.JSON;
 import com.utopia.algorithm.UtopiaAlgorithm;
 import com.utopia.data.transfer.admin.bean.SourceDataMedisProperty;
 import com.utopia.data.transfer.admin.contants.PathConstants;
+import com.utopia.data.transfer.admin.dao.entity.JarBean;
 import com.utopia.data.transfer.admin.dao.entity.PairBean;
 import com.utopia.data.transfer.admin.dao.entity.PipelineBean;
 import com.utopia.data.transfer.admin.dao.entity.RegionBean;
@@ -23,6 +24,7 @@ import com.utopia.data.transfer.admin.dao.entity.SyncRuleBean;
 import com.utopia.data.transfer.admin.dao.entity.TargetDataMediaBean;
 import com.utopia.data.transfer.admin.dao.entity.TaskBean;
 import com.utopia.data.transfer.admin.service.EntityService;
+import com.utopia.data.transfer.admin.service.JarService;
 import com.utopia.data.transfer.admin.service.PairService;
 import com.utopia.data.transfer.admin.service.PipelineService;
 import com.utopia.data.transfer.admin.service.RegionPipelineService;
@@ -87,6 +89,8 @@ public class DataChangedListenerImpl implements DataChangedListener, Initializin
     TargetDataMediaService targetDataMediaService;
     @Autowired
     LocalCacheManager localCacheManager;
+    @Autowired
+    JarService jarService;
 
     @Value("${utopia.channel.datachange.exporttime:60000}")
     Integer exporttime;
@@ -184,6 +188,7 @@ public class DataChangedListenerImpl implements DataChangedListener, Initializin
             Map<Long, List<PairBean>> mapPair = pairService.getAll().stream().collect(Collectors.groupingBy(PairBean::getPipelineId));
             Map<Long, SourceDataMediaBean> mapSource = sourceDataMediaService.getAll().stream().collect(Collectors.toMap(SourceDataMediaBean::getId, item -> item));
             Map<Long, TargetDataMediaBean> mapTarget = targetDataMediaService.getAll().stream().collect(Collectors.toMap(TargetDataMediaBean::getId, item -> item));
+            List<String> ayJars = jarService.getAll().stream().map(JarBean::getUrl).collect(Collectors.toList());
 
             List<EntityDesc> ayEntity = entityService.getAll().stream().map(item -> {
                 var ret = new EntityDesc();
@@ -291,7 +296,9 @@ public class DataChangedListenerImpl implements DataChangedListener, Initializin
 
 
             DTSServiceConf conf = DTSServiceConf.builder().list(setPipeline)
-                    .entityDescs(ayEntity).build();
+                    .entityDescs(ayEntity)
+                    .jars(ayJars)
+                    .build();
             conf.setMd5Data(UtopiaAlgorithm.md5Encode(JSON.toJSONString(conf)));
             return conf;
         } catch (Exception e) {

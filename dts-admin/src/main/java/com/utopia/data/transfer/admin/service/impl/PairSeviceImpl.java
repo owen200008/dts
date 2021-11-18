@@ -36,9 +36,7 @@ public class PairSeviceImpl implements PairService {
 
     @Override
     public void pairDelete(Long id) {
-        PairBeanDal pairBeanDal = new PairBeanDal();
-        pairBeanDal.createCriteria().andIdEqualTo(id);
-        pairBeanMapper.deleteByExample(pairBeanDal);
+        pairBeanMapper.deleteByPrimaryKey(id);
     }
 
     @Override

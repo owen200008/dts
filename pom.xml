@@ -50,10 +50,8 @@
     <module>dts-model</module>
 	<module>dts-admin</module>
     <module>dts-admin-dao</module>
-      <module>dts-extension</module>
-      <module>dts-extension-datasource-mysql</module>
-      <module>dts-extension-dispatch-inner</module>
-      <module>dts-extension-implement</module>
+    <module>dts-extension</module>
+    <module>dts-extension-implement</module>
   </modules>
 
   <dependencyManagement>

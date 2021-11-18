@@ -34,4 +34,5 @@ public interface DTSConstants {
      * 读取的配置
      */
     public static final String CONF_PATH_DUBBO = "utopia.dts.dubbo";
+    public static final String CONF_PATH_JAR = "utopia.dts.jar";
 }

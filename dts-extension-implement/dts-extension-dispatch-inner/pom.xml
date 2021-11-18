@@ -27,4 +27,15 @@
             <artifactId>dubbo</artifactId>
         </dependency>
     </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <outputDirectory>../../dts-web/target</outputDirectory>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

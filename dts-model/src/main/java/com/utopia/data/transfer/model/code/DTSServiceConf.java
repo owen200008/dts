@@ -32,6 +32,8 @@ public class DTSServiceConf implements Serializable {
 
     private List<Pipeline> list;
     private List<EntityDesc> entityDescs;
+
+    private List<String> jars;
     private String md5Data;
 
     public boolean checkIsValid () {

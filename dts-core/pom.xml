@@ -21,6 +21,21 @@
     <!-- archetype define begin *************************************************** -->
     <dependency>
       <groupId>com.utopia.data.transfer</groupId>
+      <artifactId>dts-extension-kafka</artifactId>
+      <version>${project.parent.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.utopia.data.transfer</groupId>
+      <artifactId>dts-extension-config</artifactId>
+      <version>${project.parent.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.utopia.data.transfer</groupId>
+      <artifactId>dts-extension-tools</artifactId>
+      <version>${project.parent.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.utopia.data.transfer</groupId>
       <artifactId>dts-extension-dbdialect</artifactId>
       <version>${project.parent.version}</version>
     </dependency>
@@ -50,41 +65,41 @@
       <version>${project.parent.version}</version>
     </dependency>
 
-    <dependency>
-      <groupId>com.utopia.data.transfer</groupId>
-      <artifactId>dts-extension-datasource-mysql</artifactId>
-      <version>${project.parent.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.utopia.data.transfer</groupId>
-      <artifactId>dts-extension-dbdialect-mysql</artifactId>
-      <version>${project.parent.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.utopia.data.transfer</groupId>
-      <artifactId>dts-extension-dispatch-inner</artifactId>
-      <version>${project.parent.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.utopia.data.transfer</groupId>
-      <artifactId>dts-extension-select-rule-inner</artifactId>
-      <version>${project.parent.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.utopia.data.transfer</groupId>
-      <artifactId>dts-extension-load-run-inner</artifactId>
-      <version>${project.parent.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.utopia.data.transfer</groupId>
-      <artifactId>dts-extension-sync-rule-db</artifactId>
-      <version>${project.parent.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.utopia.data.transfer</groupId>
-      <artifactId>dts-extension-db-rule-inner</artifactId>
-      <version>${project.parent.version}</version>
-    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>com.utopia.data.transfer</groupId>-->
+<!--      <artifactId>dts-extension-datasource-mysql</artifactId>-->
+<!--      <version>${project.parent.version}</version>-->
+<!--    </dependency>-->
+<!--    <dependency>-->
+<!--      <groupId>com.utopia.data.transfer</groupId>-->
+<!--      <artifactId>dts-extension-dbdialect-mysql</artifactId>-->
+<!--      <version>${project.parent.version}</version>-->
+<!--    </dependency>-->
+<!--    <dependency>-->
+<!--      <groupId>com.utopia.data.transfer</groupId>-->
+<!--      <artifactId>dts-extension-dispatch-inner</artifactId>-->
+<!--      <version>${project.parent.version}</version>-->
+<!--    </dependency>-->
+<!--    <dependency>-->
+<!--      <groupId>com.utopia.data.transfer</groupId>-->
+<!--      <artifactId>dts-extension-select-rule-inner</artifactId>-->
+<!--      <version>${project.parent.version}</version>-->
+<!--    </dependency>-->
+<!--    <dependency>-->
+<!--      <groupId>com.utopia.data.transfer</groupId>-->
+<!--      <artifactId>dts-extension-load-run-inner</artifactId>-->
+<!--      <version>${project.parent.version}</version>-->
+<!--    </dependency>-->
+<!--    <dependency>-->
+<!--      <groupId>com.utopia.data.transfer</groupId>-->
+<!--      <artifactId>dts-extension-sync-rule-db</artifactId>-->
+<!--      <version>${project.parent.version}</version>-->
+<!--    </dependency>-->
+<!--    <dependency>-->
+<!--      <groupId>com.utopia.data.transfer</groupId>-->
+<!--      <artifactId>dts-extension-db-rule-inner</artifactId>-->
+<!--      <version>${project.parent.version}</version>-->
+<!--    </dependency>-->
 
     <dependency>
       <groupId>org.springframework.boot</groupId>
