@@ -140,6 +140,13 @@ CREATE TABLE `u_sync_rule_type` (
   PRIMARY KEY (`id`)
 );
 
+-- u_dts.u_entity_type definition
+
+CREATE TABLE `u_entity_type` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(32) NOT NULL,
+  PRIMARY KEY (`id`)
+);
 
 -- dts.gtid_sync definition
 
